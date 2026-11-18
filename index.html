@@ -375,6 +375,71 @@ html.intro-on{overflow:hidden}
 @keyframes iaRing{from{transform:scale(.85);opacity:.9}to{transform:scale(1.5);opacity:0}}
 @keyframes iaBar{from{transform:scaleX(0)}}
 </style>
+<style id="mobile-black-v2">
+/* ===== Desktop defaults for the new pieces ===== */
+.links a.l svg,.links a.l .sb,.fx-x{display:none}
+
+/* ===== CONTACT PAGE: black accents ===== */
+#p-contact h2::after{content:"";display:block;width:64px;height:5px;border-radius:3px;margin-top:10px;background:#000;box-shadow:0 0 0 1px rgba(52,211,153,.55)}
+#p-contact .chartcard{border-top:4px solid #000}
+#cr button.on,#cr button.on:hover{background:#000;border-color:#000;color:#6ee7b7}
+#send{background:#000;color:#6ee7b7;box-shadow:0 8px 24px rgba(0,0,0,.45),0 0 0 1px rgba(52,211,153,.55),inset 0 1px 0 rgba(255,255,255,.12)}
+#send:hover{background:#03120d;box-shadow:0 10px 30px rgba(0,0,0,.55),0 0 0 1px #34d399,0 0 22px rgba(52,211,153,.35)}
+/* How it works: black tick on a bright mint disc, black active step */
+.pst i svg{width:20px;height:20px;display:block}
+.pst.done i{background:linear-gradient(135deg,#a7f3d0,#34d399);border-color:#000;color:#000;box-shadow:0 0 0 3px rgba(0,0,0,.35)}
+.pst.on i{background:#000;color:#6ee7b7;border-color:#6ee7b7;box-shadow:0 0 0 6px rgba(52,211,153,.28)}
+.pl i{background:linear-gradient(90deg,#34d399,#10b981);box-shadow:0 0 10px rgba(52,211,153,.55)}
+
+/* ===== FEATURES on phones/tablets: tap a card, a sheet slides up ===== */
+@keyframes sheetUp{from{transform:translateY(100%)}}
+@keyframes fadeIn{from{opacity:0}}
+@media(max-width:900px){
+  html.fx-lock,html.fx-lock body{overflow:hidden}
+  .fx.open{grid-template-columns:1fr}
+  .fx.open .fgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:14px;overflow:visible;padding:0}
+  .fx.open .fc{min-width:0;flex:initial;padding:20px;align-items:flex-start}
+  .fx.open .fc p{display:block}
+  .fx.open .fc .ico{width:50px;height:50px;border-radius:15px}.fx.open .fc .ico svg{width:25px;height:25px}
+  .fx.open::before{content:"";position:fixed;inset:0;z-index:70;background:rgba(0,10,6,.62);-webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px);animation:fadeIn .25s ease-out}
+  .fx.open .fpanel{position:fixed;top:auto;left:0;right:0;bottom:0;z-index:71;max-height:88vh;max-height:88dvh;overflow:auto;overscroll-behavior:contain;
+    border-radius:24px 24px 0 0;border:1px solid rgba(52,211,153,.45);border-bottom:0;padding:12px 18px calc(22px + env(safe-area-inset-bottom,0px));
+    background:linear-gradient(165deg,#04281e,#063d2e);-webkit-backdrop-filter:none;backdrop-filter:none;box-shadow:0 -20px 60px rgba(0,0,0,.55)}
+  .fx.open .fpanel::before{content:"";display:block;width:44px;height:5px;border-radius:3px;background:rgba(255,255,255,.35);margin:0 auto 14px}
+  .fx.open .fpanel.in{animation:sheetUp .38s cubic-bezier(.2,.8,.2,1)}
+  .fx.open .fh{padding-right:44px}
+  .fx.open .fx-x{display:grid;place-items:center;position:absolute;top:14px;right:14px;width:38px;height:38px;border-radius:50%;border:1px solid rgba(52,211,153,.5);background:#000;color:#6ee7b7;cursor:pointer;padding:0}
+  .fx-x svg{width:18px;height:18px}
+}
+@media(max-width:900px) and (prefers-color-scheme:light){
+  :root:not([data-theme="dark"]) .fx.open .fpanel{background:linear-gradient(165deg,#fff,#e4f9ef)}
+  :root:not([data-theme="dark"]) .fx.open .fpanel::before{background:rgba(6,41,30,.25)}
+}
+
+/* ===== NAVIGATION on phones/tablets: always-visible bottom tab bar ===== */
+@media(max-width:860px){
+  body{padding-bottom:calc(78px + env(safe-area-inset-bottom,0px))}
+  html{scroll-padding-top:72px}.fpanel{scroll-margin-top:72px}
+  /* header keeps just logo + cart (no backdrop-filter, so the fixed bar anchors to the screen) */
+  header{-webkit-backdrop-filter:none;backdrop-filter:none;background:linear-gradient(180deg,rgba(0,0,0,.84),rgba(0,14,9,.76))}
+  header .wrap{flex-wrap:nowrap;padding-top:0;padding-bottom:0;min-height:58px;gap:10px}
+  .logo{height:58px}
+  .links{position:fixed;left:0;right:0;bottom:0;z-index:50;order:initial;flex:initial;display:grid;grid-template-columns:repeat(6,1fr);gap:2px;overflow:visible;
+    padding:6px max(6px,env(safe-area-inset-left,0px)) calc(6px + env(safe-area-inset-bottom,0px)) max(6px,env(safe-area-inset-right,0px));
+    background:linear-gradient(180deg,rgba(0,14,9,.88),rgba(0,0,0,.95));-webkit-backdrop-filter:blur(20px) saturate(150%);backdrop-filter:blur(20px) saturate(150%);
+    border-top:1px solid rgba(52,211,153,.38);box-shadow:0 -10px 30px rgba(0,0,0,.45)}
+  .links a.l{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;flex:initial;min-width:0;min-height:54px;padding:7px 2px 6px;border-radius:14px;
+    font-size:.66rem;font-weight:600;line-height:1.1;text-align:center;color:#a9d9c5;white-space:nowrap}
+  .links a.l::before{display:none}
+  .links a.l svg{display:block;width:22px;height:22px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+  .links a.l .sb{display:inline}.links a.l .lb.x{display:none}
+  .links a.l:not(.on):hover{background:rgba(52,211,153,.10);color:#fff;box-shadow:none}
+  .links a.l.on{background:linear-gradient(160deg,#6ee7b7,#34d399 45%,#10b981);color:#000;font-weight:800;box-shadow:0 4px 16px rgba(16,185,129,.45),inset 0 1px 0 rgba(255,255,255,.5)}
+  .toast{bottom:calc(92px + env(safe-area-inset-bottom,0px))}
+}
+@media(max-width:360px){.links a.l{font-size:.6rem}.links a.l svg{width:20px;height:20px}}
+@media(max-height:480px) and (orientation:landscape){.links a.l{flex-direction:row;gap:6px;min-height:44px;font-size:.7rem}.links a.l svg{width:18px;height:18px}body{padding-bottom:calc(60px + env(safe-area-inset-bottom,0px))}}
+</style>
 </head><body>
 <div id="intro" role="dialog" aria-label="Welcome to FinanceOS">
   <div class="ia-mark" id="ia-mark"><span class="ia-glow"></span><span class="ia-ring"></span><svg id="intro-logo" viewBox="0 0 64 64" role="img" aria-label="FinanceOS"><use href="#lg"/></svg></div>
@@ -389,7 +454,7 @@ html.intro-on{overflow:hidden}
 <svg width="0" height="0" style="position:absolute" aria-hidden="true"><symbol id="lg" viewBox="0 0 64 64"><defs><linearGradient id="ag" gradientUnits="userSpaceOnUse" x1="14" y1="54" x2="52" y2="12"><stop offset="0" stop-color="#0F9F86"/><stop offset=".55" stop-color="#20CDB5"/><stop offset="1" stop-color="#7DF0DE"/></linearGradient><linearGradient id="at" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#0F1A1C"/><stop offset="1" stop-color="#040607"/></linearGradient></defs><rect width="64" height="64" rx="18" fill="url(#at)"/><rect x=".75" y=".75" width="62.5" height="62.5" rx="17.3" fill="none" stroke="#20CDB5" stroke-opacity=".5" stroke-width="1.5"/><g fill="none" stroke="url(#ag)" stroke-linecap="round" stroke-linejoin="round" stroke-width="6.2"><path d="M20 50V28Q20 20 28 20H46"/><path d="M20 35H38"/></g><g fill="none" stroke="#43E0CC" stroke-linecap="round" stroke-linejoin="round" stroke-width="3.4"><path d="M37 55L50 42"/><path d="M41.5 42H50V50.5"/></g></symbol></svg>
 <header><div class="wrap"><nav>
 <a class="logo" href="#info"><svg width="36" height="36" aria-hidden="true"><use href="#lg"/></svg>Finance<b>OS</b></a>
-<div class="links"><a class="l" href="#info">Info</a><a class="l" href="#features">Features</a><a class="l" href="#pricing">Pricing</a><a class="l" href="#apk">Get the app</a><a class="l" href="#faq">FAQ</a><a class="l" href="#contact">Contact</a></div>
+<div class="links"><a class="l" href="#info"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 11l9-8 9 8v9a1 1 0 01-1 1h-5v-6H9v6H4a1 1 0 01-1-1z"/></svg><span class="lb">Info</span></a><a class="l" href="#features"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="3" width="7" height="7" rx="1.6"/><rect x="14" y="3" width="7" height="7" rx="1.6"/><rect x="3" y="14" width="7" height="7" rx="1.6"/><rect x="14" y="14" width="7" height="7" rx="1.6"/></svg><span class="lb">Features</span></a><a class="l" href="#pricing"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20.6 13.4l-7.2 7.2a2 2 0 01-2.8 0L3 13V3h10l7.6 7.6a2 2 0 010 2.8z"/><circle cx="7.5" cy="7.5" r="1.2"/></svg><span class="lb">Pricing</span></a><a class="l" href="#apk"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="6" y="2" width="12" height="20" rx="2.6"/><path d="M12 8v6m-3-3l3 3 3-3"/></svg><span class="lb x">Get the app</span><span class="sb">App</span></a><a class="l" href="#faq"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M9.6 9.4a2.5 2.5 0 114 2c-.9.6-1.6 1.1-1.6 2.2M12 17.3v.1"/></svg><span class="lb">FAQ</span></a><a class="l" href="#contact"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="2.6"/><path d="M3.5 7l8.5 6 8.5-6"/></svg><span class="lb">Contact</span></a></div>
 </nav><button class="cartb" id="cartb" aria-label="Open checkout cart"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 4h2l2.4 11.2a1 1 0 001 .8h8.7a1 1 0 001-.8L20 8H6.2"/><circle cx="9" cy="20" r="1.3"/><circle cx="17" cy="20" r="1.3"/></svg><b>1</b></button></div></header>
 
 <main class="wrap">
@@ -405,7 +470,7 @@ html.intro-on{overflow:hidden}
 <div class="card"><h3>Portfolio OS</h3><p>Everything you own, valued together.</p><ul><li>Stocks, funds, gold, property, crypto and more</li><li>Allocation, returns and tax view</li><li>Stress test against market drops</li><li>Retirement and international assets</li></ul></div></div>
 </section>
 
-<section class="page" id="p-features"><h2>What you get</h2><p class="lead">Pick any feature to try it right here. Everything below is already built into the app.</p><div class="fx" id="fx"><div class="fgrid" id="fgrid"></div><aside class="fpanel" id="fpanel"><div class="fh"></div><div class="fb"></div><button class="btn o sm" id="fclose">Show all features</button></aside></div></section>
+<section class="page" id="p-features"><h2>What you get</h2><p class="lead">Pick any feature to try it right here. Everything below is already built into the app.</p><div class="fx" id="fx"><div class="fgrid" id="fgrid"></div><aside class="fpanel" id="fpanel"><button class="fx-x" id="fxx" aria-label="Close feature"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/></svg></button><div class="fh"></div><div class="fb"></div><button class="btn o sm" id="fclose">Show all features</button></aside></div></section>
 
 <section class="page" id="p-pricing"><h2>Simple pricing</h2><p class="lead">Choose monthly or yearly. Yearly plans start with two months free.</p>
 <div class="seg" style="margin-top:20px"><button class="on" data-b="m">Monthly</button><button data-b="y">Yearly (2 months free)</button></div>
@@ -426,7 +491,7 @@ html.intro-on{overflow:hidden}
 <div class="card em" style="margin-top:24px"><small>Email us</small><b id="em"></b><div class="nx" style="margin-top:12px"><a class="btn sm" id="ml" href="#">Write an email</a><button class="btn o sm" id="cp">Copy email</button></div></div>
 <div class="tat"><div class="ring"><b>24h</b><small>reply time</small></div><p class="lead" style="margin:0">Every message gets a reply within 24 hours. Watch how it works below.</p></div>
 <h3 style="margin-top:32px">How it works</h3><div class="pr"><div class="pl"><i id="pf"></i></div><div class="pss" id="pss"></div></div><p class="lead" id="pd" style="min-height:3.2em"></p></div>
-<div style="display:grid;gap:20px"><div class="card" style="padding:22px"><div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px"><div><small style="color:var(--mu)">Net worth</small><h3 id="cv" style="font-size:1.9rem"></h3><small id="cc"></small></div><div class="seg" id="cr" style="margin:0"><button class="on" data-r="1M">1M</button><button data-r="6M">6M</button><button data-r="1Y">1Y</button></div></div><svg id="cs" viewBox="0 0 400 160" style="width:100%;margin-top:10px;touch-action:pan-y" role="img" aria-label="Net worth trend chart"></svg><div class="kpis" style="margin:12px 0 0"><div class="kpi"><small>Portfolio</small><strong class="up">+12.4%</strong></div><div class="kpi"><small>Savings rate</small><strong>39%</strong></div><div class="kpi"><small>Loans paid</small><strong>₹25K</strong></div></div></div>
+<div style="display:grid;gap:20px"><div class="card chartcard" style="padding:22px"><div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px"><div><small style="color:var(--mu)">Net worth</small><h3 id="cv" style="font-size:1.9rem"></h3><small id="cc"></small></div><div class="seg" id="cr" style="margin:0"><button class="on" data-r="1M">1M</button><button data-r="6M">6M</button><button data-r="1Y">1Y</button></div></div><svg id="cs" viewBox="0 0 400 160" style="width:100%;margin-top:10px;touch-action:pan-y" role="img" aria-label="Net worth trend chart"></svg><div class="kpis" style="margin:12px 0 0"><div class="kpi"><small>Portfolio</small><strong class="up">+12.4%</strong></div><div class="kpi"><small>Savings rate</small><strong>39%</strong></div><div class="kpi"><small>Loans paid</small><strong>₹25K</strong></div></div></div>
 <div class="card" style="padding:clamp(20px,3vw,32px)"><h3>Send a message</h3><div class="f"><input id="cn" placeholder="Your name"><input id="ce" placeholder="Your email"><select id="ct"><option>I’m an individual</option><option>I’m an investor</option><option>I represent a business</option></select><textarea id="cm" rows="5" placeholder="How can we help?"></textarea><button class="btn" id="send">Send message</button></div><p class="lead" style="font-size:.85rem">This opens your email app with your message ready to send to us.</p></div></div></div></section>
 </main>
 <footer><div class="wrap fw"><span>© 2026 MC Enterprise. All rights reserved.</span><span>Data shown on this site is for visual purposes only.</span></div></footer>
@@ -527,15 +592,15 @@ function openReport(sel){const has=n=>sel.includes(n),mo=['Jun','Jul','Aug','Sep
  h+='<p class="rf">Data shown is for visual purposes only. © 2026 MC Enterprise.</p>';
  const o=document.createElement('div');o.className='rv';o.innerHTML=`<div class="pap" role="dialog" aria-label="Report preview"><button class="btn sm rx">Close preview</button>${h}</div>`;
  const x=()=>{o.remove();removeEventListener('keydown',k)},k=e=>{if(e.key==='Escape')x()};o.onclick=e=>{if(e.target===o||e.target.classList.contains('rx'))x()};addEventListener('keydown',k);document.body.append(o);$('.rx',o).focus()}
-const fx=$('#fx'),fg=$('#fgrid'),fp=$('#fpanel');
+const fx=$('#fx'),fg=$('#fgrid'),fp=$('#fpanel');const mob=()=>matchMedia('(max-width:900px)').matches;
 fg.innerHTML=FD.map((f,k)=>`<button class="fc" data-k="${k}">${ico(f[0])}<span class="ft"><h3>${f[1]}</h3><p>${f[2]}</p></span></button>`).join('');
 function openF(k){const cards=$$('.fc',fg),was=fx.classList.contains('open'),bf=cards.map(c=>c.getBoundingClientRect());fx.classList.add('open');cards.forEach((c,i)=>c.classList.toggle('on',i===k));
- if(!was)cards.forEach((c,i)=>{const a=bf[i],b=c.getBoundingClientRect();c.animate([{transform:`translate(${a.left-b.left}px,${a.top-b.top}px)`},{transform:'none'}],{duration:550,easing:'cubic-bezier(.2,.8,.2,1)'})});
+ if(!was&&!mob())cards.forEach((c,i)=>{const a=bf[i],b=c.getBoundingClientRect();c.animate([{transform:`translate(${a.left-b.left}px,${a.top-b.top}px)`},{transform:'none'}],{duration:550,easing:'cubic-bezier(.2,.8,.2,1)'})});
  const f=FD[k],b=$('.fb',fp);$('.fh',fp).innerHTML=ico(f[0])+`<div><h3>${f[1]}</h3><p>${f[2]}</p></div>`;b.onclick=b.oninput=b.onkeydown=null;b.innerHTML='';f[3](b);
- fp.classList.remove('in');void fp.offsetWidth;fp.classList.add('in');if(innerWidth<900)fp.scrollIntoView({behavior:'smooth',block:'nearest'})}
+ fp.classList.remove('in');void fp.offsetWidth;fp.classList.add('in');if(mob()){document.documentElement.classList.add('fx-lock');fp.scrollTop=0}}
 fg.onclick=e=>{const c=e.target.closest('.fc');if(c)openF(+c.dataset.k)};
-function resetF(){fx.classList.remove('open');$$('.fc',fg).forEach(c=>c.classList.remove('on'))}
-$('#fclose').onclick=resetF;$$('nav a').forEach(a=>a.addEventListener('click',()=>{if(a.getAttribute('href')==='#features'&&location.hash==='#features')resetF()}));
+function resetF(){fx.classList.remove('open');document.documentElement.classList.remove('fx-lock');$$('.fc',fg).forEach(c=>c.classList.remove('on'))}
+$('#fclose').onclick=resetF;$('#fxx').onclick=resetF;fx.addEventListener('click',e=>{if(e.target===fx&&mob())resetF()});addEventListener('keydown',e=>{if(e.key==='Escape'&&fx.classList.contains('open')&&mob())resetF()});$$('nav a').forEach(a=>a.addEventListener('click',()=>{if(a.getAttribute('href')==='#features'&&location.hash==='#features')resetF()}));
 $('#inapp').innerHTML=FD.map(f=>`<button>${f[1]}</button>`).join('');$('#inapp').onclick=e=>{if(e.target.tagName==='BUTTON'){location.hash='features';setTimeout(()=>openF(FD.findIndex(f=>f[1]===e.target.textContent)),50)}};
 
 /* Pricing: monthly prices below drive everything; yearly = 10 x monthly (2 months free) */
@@ -596,13 +661,13 @@ $('#em').textContent=EMAIL;$('#ml').href=mail('FinanceOS enquiry','');
 $('#cp').onclick=async()=>{try{await navigator.clipboard.writeText(EMAIL);toast('Email copied')}catch(e){toast(EMAIL)}};
 $('#send').onclick=()=>{const n=$('#cn').value.trim(),e=$('#ce').value.trim(),m=$('#cm').value.trim();if(!n||!e||!m)return toast('Please fill in your name, email and message');const a=document.createElement('a');a.href=mail('FinanceOS enquiry ('+$('#ct').value+')','Name: '+n+'\nEmail: '+e+'\n\n'+m);a.target='_blank';a.rel='noopener';document.body.append(a);a.click();a.remove();toast('Opening your email app')};
 const PS=[['Send','You write to us','Send a message with the form, or email us directly.'],['Received','We get it','Your message lands in our inbox and is logged right away.'],['Review','We look into it','We read it properly and prepare an answer or a walkthrough.'],['Reply','You hear back','You get a reply within 24 hours.']];
-let ps=0,pt;const pdraw=()=>{$('#pss').innerHTML=PS.map((p,k)=>`<button class="pst ${k<ps?'done':''} ${k===ps?'on':''}" data-k="${k}"><i>${k<ps?'✓':k+1}</i><b>${p[0]}</b></button>`).join('');$('#pf').style.width=ps/(PS.length-1)*100+'%';$('#pd').innerHTML=`<b>${PS[ps][1]}.</b> ${PS[ps][2]}`;$('.ring').style.setProperty('--p',(ps+1)*25+'%')};
+const TICK='<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12.5l4.6 4.6L19 7.4" fill="none" stroke="#000" stroke-width="3.6" stroke-linecap="round" stroke-linejoin="round"/></svg>';let ps=0,pt;const pdraw=()=>{$('#pss').innerHTML=PS.map((p,k)=>`<button class="pst ${k<ps?'done':''} ${k===ps?'on':''}" data-k="${k}"><i>${k<ps?TICK:k+1}</i><b>${p[0]}</b></button>`).join('');$('#pf').style.width=ps/(PS.length-1)*100+'%';$('#pd').innerHTML=`<b>${PS[ps][1]}.</b> ${PS[ps][2]}`;$('.ring').style.setProperty('--p',(ps+1)*25+'%')};
 const ptick=()=>{if($('#p-contact').classList.contains('on')){ps=(ps+1)%PS.length;pdraw()}};
 pdraw();pt=setInterval(ptick,2400);$('#pss').onclick=e=>{const b=e.target.closest('.pst');if(b){ps=+b.dataset.k;pdraw();clearInterval(pt);pt=setInterval(ptick,2400)}};
 const CD={'1M':[22.9,23.1,23.0,23.4,23.9,24.1,24.0,24.5,24.8],'6M':[19.8,20.6,20.1,21.9,22.8,22.4,23.7,24.8],'1Y':[15.2,16.4,16.0,17.9,18.8,20.2,19.9,21.5,22.8,23.2,24.0,24.8]};let cr='1M';
 function cdraw(){const d=CD[cr],mn=Math.min(...d),mx=Math.max(...d),st=376/(d.length-1),pts=d.map((v,i)=>[12+i*st,140-(v-mn)/(mx-mn)*110]),ln='M'+pts.map(p=>p[0].toFixed(1)+' '+p[1].toFixed(1)).join(' L'),sv=$('#cs');
- sv.innerHTML=`<defs><linearGradient id="cg" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#10b981" stop-opacity=".4"/><stop offset="1" stop-color="#10b981" stop-opacity="0"/></linearGradient></defs>${[0,1,2].map(i=>`<line x1="0" x2="400" y1="${30+i*55}" y2="${30+i*55}" stroke="var(--line)" stroke-dasharray="3 5"/>`).join('')}<path d="${ln} L388 150 L12 150Z" fill="url(#cg)" id="ca" style="opacity:0;transition:opacity .8s .5s"/><path id="cl" d="${ln}" fill="none" stroke="#34d399" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/><line id="ch" y1="10" y2="150" stroke="var(--mu)" stroke-dasharray="3 3" style="display:none"/><circle id="cd" r="6" fill="#34d399" stroke="var(--bg)" stroke-width="3" style="display:none"/>`;
- const l=$('#cl'),L=l.getTotalLength();l.style.strokeDasharray=L;l.style.strokeDashoffset=L;l.getBoundingClientRect();l.style.transition='stroke-dashoffset 1.1s ease-out';l.style.strokeDashoffset=0;$('#ca').style.opacity=1;
+ sv.innerHTML=`<defs><linearGradient id="cg" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#000" stop-opacity=".42"/><stop offset="1" stop-color="#000" stop-opacity="0"/></linearGradient></defs>${[0,1,2].map(i=>`<line x1="0" x2="400" y1="${30+i*55}" y2="${30+i*55}" stroke="var(--line)" stroke-dasharray="3 5"/>`).join('')}<path d="${ln} L388 150 L12 150Z" fill="url(#cg)" id="ca" style="opacity:0;transition:opacity .8s .5s"/><path id="cl2" d="${ln}" fill="none" stroke="#6ee7b7" stroke-opacity=".9" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/><path id="cl" d="${ln}" fill="none" stroke="#000" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round"/><circle cx="${pts[pts.length-1][0].toFixed(1)}" cy="${pts[pts.length-1][1].toFixed(1)}" r="5.5" fill="#000" stroke="#6ee7b7" stroke-width="2.5" id="ce"/><line id="ch" y1="10" y2="150" stroke="#000" stroke-opacity=".65" stroke-dasharray="3 3" style="display:none"/><circle id="cd" r="6.5" fill="#000" stroke="#6ee7b7" stroke-width="3" style="display:none"/>`;
+ const l=$('#cl'),L=l.getTotalLength();[$('#cl2'),l].forEach(p=>{p.style.strokeDasharray=L;p.style.strokeDashoffset=L;p.getBoundingClientRect();p.style.transition='stroke-dashoffset 1.1s ease-out';p.style.strokeDashoffset=0});$('#ca').style.opacity=1;
  const show=i=>{$('#cv').textContent='₹'+d[i].toFixed(1)+'L';const c=(d[i]/d[0]-1)*100;$('#cc').innerHTML=`<span class="${c>=0?'up':'dn'}">${c>=0?'▲':'▼'} ${Math.abs(c).toFixed(1)}%</span> <span style="color:var(--mu)">since ${cr==='1M'?'the start of the month':cr==='6M'?'6 months ago':'the start of the year'}</span>`};show(d.length-1);
  sv.onpointermove=e=>{const r=sv.getBoundingClientRect(),i=Math.max(0,Math.min(d.length-1,Math.round(((e.clientX-r.left)/r.width*400-12)/st)));const h=$('#ch'),c=$('#cd');h.setAttribute('x1',pts[i][0]);h.setAttribute('x2',pts[i][0]);h.style.display='';c.setAttribute('cx',pts[i][0]);c.setAttribute('cy',pts[i][1]);c.style.display='';show(i)};
  sv.onpointerleave=()=>{$('#ch').style.display='none';$('#cd').style.display='none';show(d.length-1)}}
