@@ -104,6 +104,9 @@ header .wrap{display:flex;align-items:center;gap:10px}nav{flex:1;min-width:0}
 
 /* ===== Responsive (phones and tablets). Desktop above 1024px is untouched. ===== */
 .links{display:contents}
+.menub{display:none;position:relative;flex:none;width:44px;height:44px;border-radius:12px;border:1px solid var(--line);background:var(--card);color:var(--tx);cursor:pointer;place-items:center}.menub svg{width:22px;height:22px}.menub .i-close{display:none}header.menu-open .menub .i-open{display:none}header.menu-open .menub .i-close{display:block}
+@keyframes mdrop{from{opacity:0;transform:translateY(-8px)}}
+.fx.mopen .fpanel{display:block;position:static;grid-column:1/-1;margin:2px 0 6px}.fx.mopen .fpanel.in{animation:mdrop .3s ease-out}.fc[aria-expanded=true]{border-color:var(--em);background:var(--bg2)}
 @media(max-width:1024px){
  .wrap{padding-left:max(clamp(16px,4vw,72px),env(safe-area-inset-left,0px));padding-right:max(clamp(16px,4vw,72px),env(safe-area-inset-right,0px))}
  html{overflow-x:hidden}
@@ -118,20 +121,25 @@ header .wrap{display:flex;align-items:center;gap:10px}nav{flex:1;min-width:0}
 }
 @media(max-width:860px){
  body{min-height:100dvh}
- header .wrap{flex-wrap:wrap;gap:0 10px;padding-top:8px;padding-bottom:0}
+ header .wrap{flex-wrap:nowrap;min-height:62px;padding-top:0;padding-bottom:0}
  nav{display:contents}
- .logo{order:1;margin-right:auto;height:48px}
+ .logo{order:1;margin-right:auto}
  .cartb{order:2}
- .links{order:3;display:flex;flex:1 0 100%;gap:4px;overflow-x:auto;padding:6px 0 10px;scrollbar-width:none;-webkit-overflow-scrolling:touch;scroll-snap-type:x proximity}
- .links::-webkit-scrollbar{display:none}
- .links a.l{flex:none;padding:10px 15px;scroll-snap-align:center}
- html{scroll-padding-top:calc(110px + env(safe-area-inset-top,0px))}
- .fpanel{scroll-margin-top:calc(110px + env(safe-area-inset-top,0px))}
+ .menub{order:3;display:grid}
+ .links{display:none;position:absolute;left:0;right:0;top:100%;flex-direction:column;gap:4px;background:var(--bg);border-bottom:1px solid var(--line);box-shadow:0 18px 30px rgba(0,0,0,.25);padding:10px max(16px,env(safe-area-inset-left,0px)) 16px;max-height:calc(100dvh - 63px - env(safe-area-inset-top,0px));overflow-y:auto}
+ header.menu-open .links{display:flex}
+ .links a.l{padding:14px 16px;font-size:1.05rem;border-radius:12px}
+ html{scroll-padding-top:calc(72px + env(safe-area-inset-top,0px))}
+ .fc,.fpanel{scroll-margin-top:calc(72px + env(safe-area-inset-top,0px))}
+ .nwh{display:grid!important;grid-template-columns:minmax(0,1fr) auto;column-gap:12px!important;row-gap:0!important;align-items:start!important}
+ .nwl{display:contents}
+ .nwl>small:first-child{grid-column:1;grid-row:1}
+ .nwl>h3{grid-column:1;grid-row:2}
+ .nwl>#cc{display:block;grid-column:1/-1;grid-row:3;min-height:2.7em;line-height:1.35;margin-top:4px}
+ .nwh>.seg{grid-column:2;grid-row:1/span 2;justify-self:end;align-self:start;flex-wrap:nowrap}
  .page{padding-top:28px}
  .fpanel{padding:20px;border-radius:18px}
  .fb{min-height:240px}
- .fx.open .fgrid{scroll-snap-type:x proximity;scrollbar-width:thin}
- .fx.open .fc{scroll-snap-align:start;flex:none}
  .dtabs{scrollbar-width:none}.dtabs::-webkit-scrollbar{display:none}
  .dbody{padding:16px;min-height:320px}
 }
@@ -152,6 +160,7 @@ header .wrap{display:flex;align-items:center;gap:10px}nav{flex:1;min-width:0}
  .nx .si{max-width:none;flex:1 1 100%}
  .nx .btn{flex:1 1 auto;text-align:center}
  .tat{gap:14px}.ring{width:96px}.ring b{font-size:1.3rem}
+ #pd{min-height:4.9em!important}
  #p-contact .kpis{grid-template-columns:repeat(3,1fr);gap:8px}
  #p-contact .kpi{padding:10px 8px}#p-contact .kpi strong{font-size:1.05rem}#p-contact .kpi small{font-size:.75rem}
  .phone{width:min(260px,82%)}
@@ -168,6 +177,7 @@ header .wrap{display:flex;align-items:center;gap:10px}nav{flex:1;min-width:0}
 }
 @media(max-width:380px){
  .logo{font-size:1.15rem}.logo svg{width:30px;height:30px}
+ #pd{min-height:6.6em!important}
  .stats strong{font-size:1.45rem}
  .pst i{width:34px;height:34px}.pst{font-size:.82rem}.pl{top:15px}
 }
@@ -180,7 +190,7 @@ header .wrap{display:flex;align-items:center;gap:10px}nav{flex:1;min-width:0}
  input[type=range]{min-height:30px}
 }
 @media(max-height:480px) and (orientation:landscape){
- header{position:static}
+ header{position:relative}
  html{scroll-padding-top:0}
  .fpanel{position:static}
 }
@@ -188,8 +198,8 @@ header .wrap{display:flex;align-items:center;gap:10px}nav{flex:1;min-width:0}
 <svg width="0" height="0" style="position:absolute" aria-hidden="true"><symbol id="lg" viewBox="0 0 64 64"><defs><linearGradient id="ag" gradientUnits="userSpaceOnUse" x1="14" y1="54" x2="52" y2="12"><stop offset="0" stop-color="#0F9F86"/><stop offset=".55" stop-color="#20CDB5"/><stop offset="1" stop-color="#7DF0DE"/></linearGradient><linearGradient id="at" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#0F1A1C"/><stop offset="1" stop-color="#040607"/></linearGradient></defs><rect width="64" height="64" rx="18" fill="url(#at)"/><rect x=".75" y=".75" width="62.5" height="62.5" rx="17.3" fill="none" stroke="#20CDB5" stroke-opacity=".5" stroke-width="1.5"/><g fill="none" stroke="url(#ag)" stroke-linecap="round" stroke-linejoin="round" stroke-width="6.2"><path d="M20 50V28Q20 20 28 20H46"/><path d="M20 35H38"/></g><g fill="none" stroke="#43E0CC" stroke-linecap="round" stroke-linejoin="round" stroke-width="3.4"><path d="M37 55L50 42"/><path d="M41.5 42H50V50.5"/></g></symbol></svg>
 <header><div class="wrap"><nav>
 <a class="logo" href="#info"><svg width="36" height="36" aria-hidden="true"><use href="#lg"/></svg>Finance<b>OS</b></a>
-<div class="links"><a class="l" href="#info">Info</a><a class="l" href="#features">Features</a><a class="l" href="#pricing">Pricing</a><a class="l" href="#apk">Get the app</a><a class="l" href="#faq">FAQ</a><a class="l" href="#contact">Contact</a></div>
-</nav><button class="cartb" id="cartb" aria-label="Open checkout cart"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 4h2l2.4 11.2a1 1 0 001 .8h8.7a1 1 0 001-.8L20 8H6.2"/><circle cx="9" cy="20" r="1.3"/><circle cx="17" cy="20" r="1.3"/></svg><b>1</b></button></div></header>
+<div class="links" id="links"><a class="l" href="#info">Info</a><a class="l" href="#features">Features</a><a class="l" href="#pricing">Pricing</a><a class="l" href="#apk">Get the app</a><a class="l" href="#faq">FAQ</a><a class="l" href="#contact">Contact</a></div>
+</nav><button class="cartb" id="cartb" aria-label="Open checkout cart"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 4h2l2.4 11.2a1 1 0 001 .8h8.7a1 1 0 001-.8L20 8H6.2"/><circle cx="9" cy="20" r="1.3"/><circle cx="17" cy="20" r="1.3"/></svg><b>1</b></button><button class="menub" id="menub" type="button" aria-label="Open menu" aria-expanded="false" aria-controls="links"><svg class="i-open" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M4 7h16M4 12h16M4 17h16"/></svg><svg class="i-close" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg></button></div></header>
 
 <main class="wrap">
 <section class="page" id="p-info">
@@ -225,7 +235,7 @@ header .wrap{display:flex;align-items:center;gap:10px}nav{flex:1;min-width:0}
 <div class="card em" style="margin-top:24px"><small>Email us</small><b id="em"></b><div class="nx" style="margin-top:12px"><a class="btn sm" id="ml" href="#">Write an email</a><button class="btn o sm" id="cp">Copy email</button></div></div>
 <div class="tat"><div class="ring"><b>24h</b><small>reply time</small></div><p class="lead" style="margin:0">Every message gets a reply within 24 hours. Watch how it works below.</p></div>
 <h3 style="margin-top:32px">How it works</h3><div class="pr"><div class="pl"><i id="pf"></i></div><div class="pss" id="pss"></div></div><p class="lead" id="pd" style="min-height:3.2em"></p></div>
-<div style="display:grid;gap:20px"><div class="card" style="padding:22px"><div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px"><div><small style="color:var(--mu)">Net worth</small><h3 id="cv" style="font-size:1.9rem"></h3><small id="cc"></small></div><div class="seg" id="cr" style="margin:0"><button class="on" data-r="1M">1M</button><button data-r="6M">6M</button><button data-r="1Y">1Y</button></div></div><svg id="cs" viewBox="0 0 400 160" style="width:100%;margin-top:10px;touch-action:pan-y" role="img" aria-label="Net worth trend chart"></svg><div class="kpis" style="margin:12px 0 0"><div class="kpi"><small>Portfolio</small><strong class="up">+12.4%</strong></div><div class="kpi"><small>Savings rate</small><strong>39%</strong></div><div class="kpi"><small>Loans paid</small><strong>₹25K</strong></div></div></div>
+<div style="display:grid;gap:20px"><div class="card" style="padding:22px"><div class="nwh" style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px"><div class="nwl"><small style="color:var(--mu)">Net worth</small><h3 id="cv" style="font-size:1.9rem"></h3><small id="cc"></small></div><div class="seg" id="cr" style="margin:0"><button class="on" data-r="1M">1M</button><button data-r="6M">6M</button><button data-r="1Y">1Y</button></div></div><svg id="cs" viewBox="0 0 400 160" style="width:100%;margin-top:10px;touch-action:pan-y" role="img" aria-label="Net worth trend chart"></svg><div class="kpis" style="margin:12px 0 0"><div class="kpi"><small>Portfolio</small><strong class="up">+12.4%</strong></div><div class="kpi"><small>Savings rate</small><strong>39%</strong></div><div class="kpi"><small>Loans paid</small><strong>₹25K</strong></div></div></div>
 <div class="card" style="padding:clamp(20px,3vw,32px)"><h3>Send a message</h3><div class="f"><input id="cn" placeholder="Your name"><input id="ce" placeholder="Your email"><select id="ct"><option>I’m an individual</option><option>I’m an investor</option><option>I represent a business</option></select><textarea id="cm" rows="5" placeholder="How can we help?"></textarea><button class="btn" id="send">Send message</button></div><p class="lead" style="font-size:.85rem">This opens your email app with your message ready to send to us.</p></div></div></div></section>
 </main>
 <footer><div class="wrap fw"><span>© 2026 MC Enterprise. All rights reserved.</span><span>Data shown on this site is for visual purposes only.</span></div></footer>
@@ -236,8 +246,7 @@ const $=(s,r=document)=>r.querySelector(s),$$=(s,r=document)=>[...r.querySelecto
 const toast=t=>{const e=$('#toast');e.textContent=t;e.classList.add('on');setTimeout(()=>e.classList.remove('on'),2200)};
 const names=['info','features','pricing','apk','faq','contact'];
 function route(){let h=location.hash.slice(1);if(!names.includes(h))h='info';
- if(h!=='features'&&typeof resetF==='function')resetF();if(h==='contact'&&typeof cdraw==='function')cdraw();$$('.page').forEach(p=>p.classList.toggle('on',p.id==='p-'+h));$$('nav .l').forEach(a=>a.classList.toggle('on',a.getAttribute('href')==='#'+h));window.scrollTo(0,0);
- const ac=$('nav .l.on'),lk=ac&&ac.parentElement;if(lk&&lk.scrollWidth>lk.clientWidth)lk.scrollTo({left:ac.offsetLeft-(lk.clientWidth-ac.offsetWidth)/2,behavior:'smooth'})}
+ if(h!=='features'&&typeof resetF==='function')resetF();if(h==='contact'&&typeof cdraw==='function')cdraw();$$('.page').forEach(p=>p.classList.toggle('on',p.id==='p-'+h));$$('nav .l').forEach(a=>a.classList.toggle('on',a.getAttribute('href')==='#'+h));window.scrollTo(0,0)}
 addEventListener('hashchange',route);
 
 /* Demo */
@@ -326,15 +335,21 @@ function openReport(sel){const has=n=>sel.includes(n),mo=['Jun','Jul','Aug','Sep
  h+='<p class="rf">Data shown is for visual purposes only. © 2026 MC Enterprise.</p>';
  const o=document.createElement('div');o.className='rv';o.innerHTML=`<div class="pap" role="dialog" aria-label="Report preview"><button class="btn sm rx">Close preview</button>${h}</div>`;
  const x=()=>{o.remove();removeEventListener('keydown',k)},k=e=>{if(e.key==='Escape')x()};o.onclick=e=>{if(e.target===o||e.target.classList.contains('rx'))x()};addEventListener('keydown',k);document.body.append(o);$('.rx',o).focus()}
-const fx=$('#fx'),fg=$('#fgrid'),fp=$('#fpanel');
+const fx=$('#fx'),fg=$('#fgrid'),fp=$('#fpanel'),mq=matchMedia('(max-width:900px)');let curF=-1;
 fg.innerHTML=FD.map((f,k)=>`<button class="fc" data-k="${k}">${ico(f[0])}<span class="ft"><h3>${f[1]}</h3><p>${f[2]}</p></span></button>`).join('');
-function openF(k){const cards=$$('.fc',fg),was=fx.classList.contains('open'),bf=cards.map(c=>c.getBoundingClientRect());fx.classList.add('open');cards.forEach((c,i)=>c.classList.toggle('on',i===k));
- if(!was)cards.forEach((c,i)=>{const a=bf[i],b=c.getBoundingClientRect();c.animate([{transform:`translate(${a.left-b.left}px,${a.top-b.top}px)`},{transform:'none'}],{duration:550,easing:'cubic-bezier(.2,.8,.2,1)'})});
- const f=FD[k],b=$('.fb',fp);$('.fh',fp).innerHTML=ico(f[0])+`<div><h3>${f[1]}</h3><p>${f[2]}</p></div>`;b.onclick=b.oninput=b.onkeydown=null;b.innerHTML='';f[3](b);
- fp.classList.remove('in');void fp.offsetWidth;fp.classList.add('in');if(innerWidth<900)fp.scrollIntoView({behavior:'smooth',block:'nearest'})}
+function placeP(k){const cards=$$('.fc',fg),cols=Math.max(1,getComputedStyle(fg).gridTemplateColumns.split(' ').length),end=Math.min(cards.length-1,(Math.floor(k/cols)+1)*cols-1);cards[end].after(fp)}
+/* Desktop and tablet-landscape (above 900px): cards slide left, panel opens on the right. Phones and tablets (900px and below): the panel opens inline under the tapped card and every other feature stays visible. */
+function openF(k){const m=mq.matches,cards=$$('.fc',fg);if(m&&curF===k&&fx.classList.contains('mopen'))return resetF();
+ const was=fx.classList.contains('open'),bf=cards.map(c=>c.getBoundingClientRect());curF=k;
+ if(m){fx.classList.remove('open');fx.classList.add('mopen');placeP(k)}else{fx.classList.remove('mopen');if(fp.parentNode!==fx)fx.append(fp);fx.classList.add('open')}
+ cards.forEach((c,i)=>{c.classList.toggle('on',i===k);if(m)c.setAttribute('aria-expanded',i===k);else c.removeAttribute('aria-expanded')});
+ if(!m&&!was)cards.forEach((c,i)=>{const a=bf[i],b=c.getBoundingClientRect();c.animate([{transform:`translate(${a.left-b.left}px,${a.top-b.top}px)`},{transform:'none'}],{duration:550,easing:'cubic-bezier(.2,.8,.2,1)'})});
+ const f=FD[k],b=$('.fb',fp);$('.fh',fp).innerHTML=ico(f[0])+`<div><h3>${f[1]}</h3><p>${f[2]}</p></div>`;b.onclick=b.oninput=b.onkeydown=null;b.innerHTML='';f[3](b);$('#fclose').textContent=m?'Close':'Show all features';
+ fp.classList.remove('in');void fp.offsetWidth;fp.classList.add('in');if(m)requestAnimationFrame(()=>cards[k].scrollIntoView({behavior:'smooth',block:'start'}))}
 fg.onclick=e=>{const c=e.target.closest('.fc');if(c)openF(+c.dataset.k)};
-function resetF(){fx.classList.remove('open');$$('.fc',fg).forEach(c=>c.classList.remove('on'))}
-$('#fclose').onclick=resetF;$$('nav a').forEach(a=>a.addEventListener('click',()=>{if(a.getAttribute('href')==='#features'&&location.hash==='#features')resetF()}));
+function resetF(){fx.classList.remove('open','mopen');curF=-1;$$('.fc',fg).forEach(c=>{c.classList.remove('on');c.removeAttribute('aria-expanded')});if(fp.parentNode!==fx)fx.append(fp)}
+mq.addEventListener('change',()=>{const k=curF;if(k>=0){resetF();openF(k)}});
+$('#fclose').onclick=()=>{const k=curF,m=mq.matches;resetF();if(m&&k>=0)$$('.fc',fg)[k].scrollIntoView({behavior:'smooth',block:'nearest'})};$$('nav a').forEach(a=>a.addEventListener('click',()=>{if(a.getAttribute('href')==='#features'&&location.hash==='#features')resetF()}));
 $('#inapp').innerHTML=FD.map(f=>`<button>${f[1]}</button>`).join('');$('#inapp').onclick=e=>{if(e.target.tagName==='BUTTON'){location.hash='features';setTimeout(()=>openF(FD.findIndex(f=>f[1]===e.target.textContent)),50)}};
 
 /* Pricing: monthly prices below drive everything; yearly = 10 x monthly (2 months free) */
@@ -406,5 +421,13 @@ function cdraw(){const d=CD[cr],mn=Math.min(...d),mx=Math.max(...d),st=376/(d.le
  sv.onpointermove=e=>{const r=sv.getBoundingClientRect(),i=Math.max(0,Math.min(d.length-1,Math.round(((e.clientX-r.left)/r.width*400-12)/st)));const h=$('#ch'),c=$('#cd');h.setAttribute('x1',pts[i][0]);h.setAttribute('x2',pts[i][0]);h.style.display='';c.setAttribute('cx',pts[i][0]);c.setAttribute('cy',pts[i][1]);c.style.display='';show(i)};
  sv.onpointerleave=()=>{$('#ch').style.display='none';$('#cd').style.display='none';show(d.length-1)}}
 $('#cr').onclick=e=>{if(e.target.dataset.r){cr=e.target.dataset.r;$$('#cr button').forEach(b=>b.classList.toggle('on',b===e.target));cdraw()}};
+/* Mobile menu (860px and below; the button is hidden on desktop) */
+const hdr=$('header'),mbtn=$('#menub'),setMenu=o=>{hdr.classList.toggle('menu-open',o);mbtn.setAttribute('aria-expanded',o);mbtn.setAttribute('aria-label',o?'Close menu':'Open menu')};
+mbtn.onclick=()=>setMenu(!hdr.classList.contains('menu-open'));
+$('#links').addEventListener('click',e=>{if(e.target.closest('a'))setMenu(false)});
+document.addEventListener('click',e=>{if(!hdr.contains(e.target))setMenu(false)});
+addEventListener('keydown',e=>{if(e.key==='Escape')setMenu(false)});
+matchMedia('(min-width:861px)').addEventListener('change',e=>{if(e.matches)setMenu(false)});
+
 route();
 </script></body></html>
