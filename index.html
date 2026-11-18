@@ -440,6 +440,63 @@ html.intro-on{overflow:hidden}
 @media(max-width:360px){.links a.l{font-size:.6rem}.links a.l svg{width:20px;height:20px}}
 @media(max-height:480px) and (orientation:landscape){.links a.l{flex-direction:row;gap:6px;min-height:44px;font-size:.7rem}.links a.l svg{width:18px;height:18px}body{padding-bottom:calc(60px + env(safe-area-inset-bottom,0px))}}
 </style>
+<style id="privacy-page">
+.pvchips{display:flex;flex-wrap:wrap;gap:8px;margin-top:18px}
+.pvchips span{font-size:.8rem;font-weight:600;padding:6px 12px;border-radius:99px;background:rgba(0,0,0,.5);border:1px solid var(--edge-em);color:#6ee7b7}
+.pvic{width:48px;height:48px;border-radius:14px;display:grid;place-items:center;margin-bottom:12px;background:#000;border:1px solid rgba(52,211,153,.55);color:#6ee7b7;box-shadow:0 0 18px rgba(52,211,153,.25)}
+.pvic svg{width:24px;height:24px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.pvic.em{background:linear-gradient(135deg,#a7f3d0,#34d399);color:#000;border-color:transparent}
+.blk{background:linear-gradient(160deg,rgba(0,0,0,.80),rgba(2,28,20,.68));border:1px solid var(--edge-em);color:#effff8}
+.blk h3,.blk h2{color:#fff}.blk p,.blk li,.blk span{color:#c6ecdc}
+.blk .lead{color:#c6ecdc}
+.pvband{margin:56px 0 8px}.pvband .g3{margin-top:22px}
+.pv-hero{display:grid;grid-template-columns:1.1fr .9fr;gap:clamp(24px,5vw,80px);align-items:center}
+.pv-hero h1{font-size:clamp(2.2rem,5vw,3.8rem);margin:10px 0 0}
+.vault{background:linear-gradient(160deg,rgba(0,0,0,.80),rgba(2,24,17,.70));border:1px solid var(--edge-em);border-radius:26px;padding:28px 24px;text-align:center;-webkit-backdrop-filter:blur(18px);backdrop-filter:blur(18px);box-shadow:0 20px 60px rgba(0,0,0,.45),inset 0 1px 0 rgba(255,255,255,.12)}
+.shield{position:relative;width:128px;height:128px;margin:0 auto 14px;display:grid;place-items:center}
+.shield svg{position:relative;width:100%;height:100%;filter:drop-shadow(0 8px 26px rgba(52,211,153,.5))}
+.shield .vg{position:absolute;inset:-30%;border-radius:50%;background:radial-gradient(closest-side,rgba(52,211,153,.4),transparent);animation:pulse 4s ease-in-out infinite}
+.vault ul{list-style:none;padding:0;margin:18px 0 0;display:grid;gap:10px;text-align:left}
+.vault li{display:flex;align-items:center;gap:12px;padding:11px 13px;border-radius:13px;background:rgba(255,255,255,.07);border:1px solid rgba(52,211,153,.28);color:#effff8;font-size:.95rem}
+.vault li i{flex:none;width:26px;height:26px;border-radius:50%;background:linear-gradient(135deg,#a7f3d0,#34d399);display:grid;place-items:center}.vault li i svg{width:15px;height:15px}
+.pv-sec{margin-top:clamp(52px,7vw,96px);scroll-margin-top:90px}
+.pvmodes{margin-top:26px}.pvmodes .mode ul{list-style:none;padding:0;margin:14px 0 0;display:grid;gap:9px}
+.pvmodes .mode li{padding-left:26px;position:relative}.pvmodes .mode li::before{content:"";position:absolute;left:2px;top:.45em;width:12px;height:7px;border-left:3px solid #34d399;border-bottom:3px solid #34d399;transform:rotate(-45deg)}
+.pvbadge{display:inline-block;font-size:.76rem;font-weight:700;letter-spacing:.03em;padding:4px 11px;border-radius:99px;margin-bottom:12px;background:#000;color:#6ee7b7;border:1px solid rgba(52,211,153,.55)}
+.pvbadge.em{background:linear-gradient(135deg,#a7f3d0,#34d399);color:#000;border-color:transparent}
+.pvflow{margin-top:20px;padding:clamp(18px,3vw,30px)}
+.pvfh{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px;margin-bottom:22px}
+.flow{display:flex;align-items:stretch}
+.node{flex:1;min-width:0;text-align:center;padding:18px 14px;border-radius:16px;background:linear-gradient(160deg,rgba(0,0,0,.78),rgba(2,28,20,.62));border:1px solid var(--edge-em);color:#effff8}
+.node .pvic{margin:0 auto 10px}.node b{display:block;font:700 1rem "Bricolage Grotesque","DM Sans",sans-serif;color:#fff}.node small{display:block;color:#c6ecdc;margin-top:4px;line-height:1.35}
+.wire{flex:0 0 100px;position:relative;align-self:center;height:4px;margin:0 6px;border-radius:3px;background:rgba(0,0,0,.55);overflow:visible}
+.wire i{position:absolute;top:-3px;left:0;width:22px;height:10px;border-radius:6px;background:linear-gradient(90deg,transparent,#6ee7b7);animation:pvdot 1.8s linear infinite}
+.wire i:nth-child(2){animation-delay:.9s}
+.wire em{position:absolute;left:50%;top:-30px;transform:translateX(-50%);font-style:normal;font-size:.72rem;font-weight:700;white-space:nowrap;padding:3px 9px;border-radius:99px;background:#000;color:#6ee7b7;border:1px solid rgba(52,211,153,.55)}
+.wire.off{background:none;border-top:3px dashed rgba(0,0,0,.7)}.wire.off i{display:none}
+@keyframes pvdot{from{transform:translateX(-10px);opacity:0}15%{opacity:1}85%{opacity:1}to{transform:translateX(88px);opacity:0}}
+.pvgrid{margin-top:26px}
+.tw{overflow-x:auto}.pvtab{margin-top:22px;padding:clamp(12px,2vw,22px)}.pvtab .tb{min-width:560px}.pvtab th{color:var(--tx)}.pvtab td:first-child{font-weight:700}
+.pvnever{margin-top:22px}.pvnever .card{display:flex;align-items:center;gap:14px;padding:16px 18px}
+.pvnever b{flex:none;width:32px;height:32px;border-radius:50%;display:grid;place-items:center;background:#000;color:#f87171;border:1px solid rgba(248,113,113,.6);font-size:1.2rem;line-height:1}
+.pvcta{margin-top:clamp(52px,7vw,96px);text-align:center;padding:clamp(28px,5vw,56px)}.pvcta .lead{margin:12px auto 0}
+@media(max-width:900px){.pv-hero{grid-template-columns:1fr}}
+@media(max-width:700px){
+  .flow{flex-direction:column}
+  .wire{flex:0 0 64px;width:4px;height:64px;margin:12px 0;align-self:center}
+  .wire i{top:0;left:-3px;width:10px;height:22px;background:linear-gradient(180deg,transparent,#6ee7b7);animation-name:pvdotv}
+  .wire em{left:18px;top:50%;transform:translateY(-50%)}
+  .wire.off{border-top:0;border-left:3px dashed rgba(0,0,0,.7);width:0}
+  @keyframes pvdotv{from{transform:translateY(-10px);opacity:0}15%{opacity:1}85%{opacity:1}to{transform:translateY(52px);opacity:0}}
+}
+/* nav: 7 items */
+@media(min-width:861px) and (max-width:1180px){nav a.l{padding:8px 10px;font-size:.88rem}}
+@media(max-width:860px){
+  .links{grid-template-columns:repeat(7,1fr)}
+  .links a.l{font-size:.62rem;padding:7px 1px 6px}
+}
+@media(max-width:360px){.links a.l{font-size:.56rem}.links a.l svg{width:19px;height:19px}}
+</style>
 </head><body>
 <div id="intro" role="dialog" aria-label="Welcome to FinanceOS">
   <div class="ia-mark" id="ia-mark"><span class="ia-glow"></span><span class="ia-ring"></span><svg id="intro-logo" viewBox="0 0 64 64" role="img" aria-label="FinanceOS"><use href="#lg"/></svg></div>
@@ -454,7 +511,7 @@ html.intro-on{overflow:hidden}
 <svg width="0" height="0" style="position:absolute" aria-hidden="true"><symbol id="lg" viewBox="0 0 64 64"><defs><linearGradient id="ag" gradientUnits="userSpaceOnUse" x1="14" y1="54" x2="52" y2="12"><stop offset="0" stop-color="#0F9F86"/><stop offset=".55" stop-color="#20CDB5"/><stop offset="1" stop-color="#7DF0DE"/></linearGradient><linearGradient id="at" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#0F1A1C"/><stop offset="1" stop-color="#040607"/></linearGradient></defs><rect width="64" height="64" rx="18" fill="url(#at)"/><rect x=".75" y=".75" width="62.5" height="62.5" rx="17.3" fill="none" stroke="#20CDB5" stroke-opacity=".5" stroke-width="1.5"/><g fill="none" stroke="url(#ag)" stroke-linecap="round" stroke-linejoin="round" stroke-width="6.2"><path d="M20 50V28Q20 20 28 20H46"/><path d="M20 35H38"/></g><g fill="none" stroke="#43E0CC" stroke-linecap="round" stroke-linejoin="round" stroke-width="3.4"><path d="M37 55L50 42"/><path d="M41.5 42H50V50.5"/></g></symbol></svg>
 <header><div class="wrap"><nav>
 <a class="logo" href="#info"><svg width="36" height="36" aria-hidden="true"><use href="#lg"/></svg>Finance<b>OS</b></a>
-<div class="links"><a class="l" href="#info"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 11l9-8 9 8v9a1 1 0 01-1 1h-5v-6H9v6H4a1 1 0 01-1-1z"/></svg><span class="lb">Info</span></a><a class="l" href="#features"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="3" width="7" height="7" rx="1.6"/><rect x="14" y="3" width="7" height="7" rx="1.6"/><rect x="3" y="14" width="7" height="7" rx="1.6"/><rect x="14" y="14" width="7" height="7" rx="1.6"/></svg><span class="lb">Features</span></a><a class="l" href="#pricing"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20.6 13.4l-7.2 7.2a2 2 0 01-2.8 0L3 13V3h10l7.6 7.6a2 2 0 010 2.8z"/><circle cx="7.5" cy="7.5" r="1.2"/></svg><span class="lb">Pricing</span></a><a class="l" href="#apk"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="6" y="2" width="12" height="20" rx="2.6"/><path d="M12 8v6m-3-3l3 3 3-3"/></svg><span class="lb x">Get the app</span><span class="sb">App</span></a><a class="l" href="#faq"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M9.6 9.4a2.5 2.5 0 114 2c-.9.6-1.6 1.1-1.6 2.2M12 17.3v.1"/></svg><span class="lb">FAQ</span></a><a class="l" href="#contact"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="2.6"/><path d="M3.5 7l8.5 6 8.5-6"/></svg><span class="lb">Contact</span></a></div>
+<div class="links"><a class="l" href="#info"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 11l9-8 9 8v9a1 1 0 01-1 1h-5v-6H9v6H4a1 1 0 01-1-1z"/></svg><span class="lb">Info</span></a><a class="l" href="#privacy"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3l8 3v6c0 4.5-3.2 8-8 9-4.8-1-8-4.5-8-9V6z"/><path d="M9 12l2 2 4-4"/></svg><span class="lb">Privacy</span></a><a class="l" href="#features"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="3" width="7" height="7" rx="1.6"/><rect x="14" y="3" width="7" height="7" rx="1.6"/><rect x="3" y="14" width="7" height="7" rx="1.6"/><rect x="14" y="14" width="7" height="7" rx="1.6"/></svg><span class="lb">Features</span></a><a class="l" href="#pricing"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20.6 13.4l-7.2 7.2a2 2 0 01-2.8 0L3 13V3h10l7.6 7.6a2 2 0 010 2.8z"/><circle cx="7.5" cy="7.5" r="1.2"/></svg><span class="lb">Pricing</span></a><a class="l" href="#apk"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="6" y="2" width="12" height="20" rx="2.6"/><path d="M12 8v6m-3-3l3 3 3-3"/></svg><span class="lb x">Get the app</span><span class="sb">App</span></a><a class="l" href="#faq"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M9.6 9.4a2.5 2.5 0 114 2c-.9.6-1.6 1.1-1.6 2.2M12 17.3v.1"/></svg><span class="lb">FAQ</span></a><a class="l" href="#contact"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="2.6"/><path d="M3.5 7l8.5 6 8.5-6"/></svg><span class="lb">Contact</span></a></div>
 </nav><button class="cartb" id="cartb" aria-label="Open checkout cart"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 4h2l2.4 11.2a1 1 0 001 .8h8.7a1 1 0 001-.8L20 8H6.2"/><circle cx="9" cy="20" r="1.3"/><circle cx="17" cy="20" r="1.3"/></svg><b>1</b></button></div></header>
 
 <main class="wrap">
@@ -462,12 +519,63 @@ html.intro-on{overflow:hidden}
 <div class="hero"><div>
 <h1>All your money and investments in one place.</h1>
 <p>FinanceOS tracks your everyday money. Portfolio OS tracks everything you own. Together they show your real net worth, and Fin AI answers questions about it in plain language.</p>
-<div class="row"><a class="btn" href="#apk">Get the app</a><a class="btn o" href="#features">See all features</a></div></div>
+<div class="row"><a class="btn" href="#apk">Get the app</a><a class="btn o" href="#privacy">Privacy &amp; security</a><a class="btn o" href="#features">See all features</a></div><div class="pvchips"><span>Encrypted cloud</span><span>On-device JSON mode</span><span>Face ID &amp; PC Lock</span></div></div>
 <div class="glow"><div class="demo" id="demo"><div class="dtabs" id="dtabs"></div><div class="dbody" id="dbody"></div></div></div></div>
 <div class="stats"><div><strong>40+</strong><span>screens in one app</span></div><div><strong>20+</strong><span>asset classes tracked</span></div><div><strong>1</strong><span>net worth, always current</span></div></div>
-<h2>Two products, one login</h2>
+<div class="pvband"><span class="tag">Privacy first</span><h2>Built around your privacy</h2><p class="lead">Your finances are personal. Keep them on your own device, or sync them to an encrypted cloud account. You decide, and you can switch any time.</p>
+<div class="g3"><div class="card blk"><div class="pvic"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="6" y="2" width="12" height="20" rx="2.6"/><path d="M11 18h2"/></svg></div><h3>On your device</h3><p>Manual JSON mode keeps everything local. Nothing is uploaded, and you back up with a file you control.</p></div>
+<div class="card blk"><div class="pvic"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 18a4.5 4.5 0 01-.6-8.96A6 6 0 0118 9.5 4.3 4.3 0 0117.5 18z"/><path d="M12 11v5m-2-2l2 2 2-2"/></svg></div><h3>Encrypted in the cloud</h3><p>Cloud sync travels over HTTPS/TLS and every record is locked to your account at the database level.</p></div>
+<div class="card blk"><div class="pvic"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 11v3.5c0 2-.6 3.6-1.6 5M8 14.5c0 2.3-.5 4-1.5 5.5M16 12v2.5c0 2-.3 3.7-1 5M5.5 11.2A6.5 6.5 0 0112 5.5a6.5 6.5 0 016.5 5.7M9 8.8A4 4 0 0116 11"/></svg></div><h3>Locked by you</h3><p>Face ID, fingerprint or PC Lock, plus a Privacy Screen that hides your numbers whenever you look away.</p></div></div>
+<div class="nx"><a class="btn" href="#privacy">Explore privacy and security</a></div></div><h2 style="margin-top:56px">Two products, one login</h2>
 <div class="split"><div class="card"><h3>FinanceOS</h3><p>Your day-to-day money.</p><ul><li>Income, expenses and transactions</li><li>Loans, EMI and credit card tracking</li><li>Budgets that learn from your history</li><li>Fin AI for questions and insights</li></ul></div>
 <div class="card"><h3>Portfolio OS</h3><p>Everything you own, valued together.</p><ul><li>Stocks, funds, gold, property, crypto and more</li><li>Allocation, returns and tax view</li><li>Stress test against market drops</li><li>Retirement and international assets</li></ul></div></div>
+</section>
+
+<section class="page" id="p-privacy">
+<div class="pv-hero"><div><span class="tag">Privacy first</span><h1>Your money is nobody else&rsquo;s business.</h1>
+<p class="lead">FinanceOS is built around one promise: you decide where your financial data lives. Keep it only on your own device, or sync it to an encrypted cloud account. Either way it stays locked, private and yours.</p>
+<div class="nx"><button class="btn" data-go="pv-modes">Choose how you store</button><button class="btn o" data-go="pv-cloud">See the safeguards</button></div></div>
+<div class="glow"><div class="vault"><div class="shield"><span class="vg"></span><svg viewBox="0 0 64 64" aria-hidden="true"><defs><linearGradient id="vsg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#a7f3d0"/><stop offset="1" stop-color="#10b981"/></linearGradient></defs><path d="M32 5l22 8v15c0 14-9.4 24.4-22 30C19.4 52.400 10 42 10 28V13z" fill="#020b08" stroke="url(#vsg)" stroke-width="2.5"/><rect x="22" y="29" width="20" height="15" rx="3.5" fill="url(#vsg)"/><path d="M26 29v-5a6 6 0 0112 0v5" fill="none" stroke="url(#vsg)" stroke-width="3" stroke-linecap="round"/><circle cx="32" cy="36.500" r="2.200" fill="#020b08"/></svg></div>
+<h3 style="color:#fff">Your data, under your control</h3>
+<ul><li><i><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12.5l4.6 4.6L19 7.4" fill="none" stroke="#000" stroke-width="3.6" stroke-linecap="round" stroke-linejoin="round"/></svg></i><span>Stays on your device in Manual JSON mode</span></li><li><i><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12.5l4.6 4.6L19 7.4" fill="none" stroke="#000" stroke-width="3.6" stroke-linecap="round" stroke-linejoin="round"/></svg></i><span>Encrypted in transit with HTTPS/TLS</span></li><li><i><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12.5l4.6 4.6L19 7.4" fill="none" stroke="#000" stroke-width="3.6" stroke-linecap="round" stroke-linejoin="round"/></svg></i><span>Locked to your account in the cloud</span></li><li><i><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12.5l4.6 4.6L19 7.4" fill="none" stroke="#000" stroke-width="3.6" stroke-linecap="round" stroke-linejoin="round"/></svg></i><span>Protected by Face ID, fingerprint or PC Lock</span></li></ul></div></div></div>
+
+<div class="pv-sec" id="pv-modes"><h2>Two ways to store your data. You choose.</h2><p class="lead">Pick the mode that fits you in Settings. You can change your mind later.</p>
+<div class="split pvmodes">
+<div class="card blk mode"><span class="pvbadge">Maximum privacy</span><div class="pvic"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="6" y="2" width="12" height="20" rx="2.6"/><path d="M11 18h2"/></svg></div><h3>Manual JSON &middot; on your device</h3><p>Your data lives only on your phone or PC. Nothing is sent to the cloud.</p>
+<ul><li>Nothing uploaded, ever, in this mode</li><li>Works fully offline</li><li>Back up and move devices with a JSON file you export yourself</li><li>Logging out clears the device, so download a backup first</li></ul></div>
+<div class="card mode"><span class="pvbadge em">Every device, always current</span><div class="pvic em"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 18a4.5 4.5 0 01-.6-8.96A6 6 0 0118 9.5 4.3 4.3 0 0117.5 18z"/><path d="M12 11v5m-2-2l2 2 2-2"/></svg></div><h3>Cloud sync &middot; encrypted</h3><p>Your data syncs to your own account, so your phone, tablet and PC always agree.</p>
+<ul><li>Encrypted in transit with HTTPS/TLS</li><li>Records locked to your account at the database level</li><li>Changes saved straight away, other devices catch up within about a minute</li><li>Switch to device-only whenever you like</li></ul></div></div>
+
+<div class="card pvflow"><div class="pvfh"><h3>See how your data travels</h3><div class="seg" id="pvseg" style="margin:0"><button class="on" data-m="cloud">In the cloud</button><button data-m="dev">On my device</button></div></div><div class="flow" id="pvflow"></div><p class="lead" id="pvcap" style="margin:16px 0 0;font-size:.95rem"></p></div></div>
+
+<div class="pv-sec" id="pv-cloud"><h2>How the cloud keeps you safe</h2><p class="lead">When you choose cloud sync, these safeguards protect your data and your sign-in.</p>
+<div class="g3 pvgrid">
+<div class="card blk"><div class="pvic"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="5" y="11" width="14" height="10" rx="2.4"/><path d="M8 11V8a4 4 0 018 0v3"/></svg></div><h3>Encrypted in transit</h3><p>Everything sent between your device and the cloud travels over HTTPS/TLS, so it cannot be read on the way.</p></div>
+<div class="card blk"><div class="pvic"><svg viewBox="0 0 24 24" aria-hidden="true"><ellipse cx="12" cy="6" rx="8" ry="3"/><path d="M4 6v6c0 1.7 3.6 3 8 3s8-1.3 8-3V6M4 12v6c0 1.7 3.6 3 8 3s8-1.3 8-3v-6"/></svg></div><h3>Encrypted at rest</h3><p>Synced records are held in a managed cloud database that encrypts stored data.</p></div>
+<div class="card blk"><div class="pvic"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M2 12s3.6-7 10-7 10 7 10 7-3.6 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/><path d="M4 4l16 16"/></svg></div><h3>Your records, only yours</h3><p>Row-level access control scopes every record to your account. No other FinanceOS user can query, see or export your data.</p></div>
+<div class="card blk"><div class="pvic"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="8" cy="15" r="4"/><path d="M11 12l9-9m-3 3l3 3m-6-0l2 2"/></svg></div><h3>Passwords we never see</h3><p>Sign-in runs on a dedicated auth service with email confirmation. Your password is hashed, never stored or shown by FinanceOS. Forgot it? A single-use reset link does the job.</p></div>
+<div class="card blk"><div class="pvic"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 11v3.5c0 2-.6 3.6-1.6 5M8 14.5c0 2.3-.5 4-1.5 5.5M16 12v2.5c0 2-.3 3.7-1 5M5.5 11.2A6.5 6.5 0 0112 5.5a6.5 6.5 0 016.5 5.7M9 8.8A4 4 0 0116 11"/></svg></div><h3>Passkeys, if you want them</h3><p>Sign in with Face ID or fingerprint using your device&rsquo;s own security. Your fingerprint or face never leaves the device and is never sent to us.</p></div>
+<div class="card blk"><div class="pvic"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="2" y="7" width="20" height="10" rx="5"/><circle cx="16" cy="12" r="2.6"/></svg></div><h3>Sync is your call</h3><p>Turn automatic sync off, or stay in Manual JSON mode. Your theme, layouts, app lock and biometrics always stay on each device.</p></div></div></div>
+
+<div class="pv-sec" id="pv-device"><h2>Locks that live on your device</h2><p class="lead">Even if someone picks up your phone or sits at your PC, your numbers stay hidden.</p>
+<div class="g3 pvgrid">
+<div class="card blk"><div class="pvic"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 11v3.5c0 2-.6 3.6-1.6 5M8 14.5c0 2.3-.5 4-1.5 5.5M16 12v2.5c0 2-.3 3.7-1 5M5.5 11.2A6.5 6.5 0 0112 5.5a6.5 6.5 0 016.5 5.7M9 8.8A4 4 0 0116 11"/></svg></div><h3>App Lock</h3><p>Face ID, fingerprint or passkey on phones, and a PC Lock passkey on desktop. Your PC passkey is kept only as a salted hash, never in plain text.</p></div>
+<div class="card blk"><div class="pvic"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M2 12s3.6-7 10-7 10 7 10 7-3.6 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/><path d="M4 4l16 16"/></svg></div><h3>Privacy Screen</h3><p>The moment you click away, switch apps, minimise or open recent apps, a solid cover hides every amount. It lifts when you come back, or asks you to unlock after a delay you choose.</p></div>
+<div class="card blk"><div class="pvic"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="3"/><path d="M7 12h.01M12 12h.01M17 12h.01"/></svg></div><h3>Extra PIN for sensitive controls</h3><p>Admin controls sit behind a separate PIN, stored only as a salted PBKDF2 hash. Five wrong tries lock it for 30 seconds.</p></div></div></div>
+
+<div class="pv-sec"><h2>Device or cloud, side by side</h2>
+<div class="card pvtab"><div class="tw"><table class="tb"><thead><tr><th></th><th>Manual JSON</th><th>Cloud sync</th></tr></thead><tbody>
+<tr><td>Where your data lives</td><td>Only on your device</td><td>Your account in the cloud, plus your devices</td></tr>
+<tr><td>Leaves your device</td><td>Only if you export a file</td><td>Yes, over HTTPS/TLS</td></tr>
+<tr><td>Works offline</td><td>Yes</td><td>Yes, and syncs when you are back online</td></tr>
+<tr><td>Several devices</td><td>Move with a JSON file</td><td>Automatic</td></tr>
+<tr><td>Backup</td><td>You download it</td><td>Built in</td></tr>
+<tr><td>Best for</td><td>Maximum privacy</td><td>Convenience across devices</td></tr></tbody></table></div></div></div>
+
+<div class="pv-sec"><h2>What we never do</h2><div class="g2 pvnever">
+<div class="card blk"><b>&times;</b><span>See or store your password</span></div><div class="card blk"><b>&times;</b><span>Receive your fingerprint or face</span></div><div class="card blk"><b>&times;</b><span>Let other users query your records</span></div><div class="card blk"><b>&times;</b><span>Ask for your bank login. You add the entries yourself</span></div><div class="card blk"><b>&times;</b><span>Sell your data</span></div></div></div>
+
+<div class="pvcta card blk"><h2>Your finances, your rules.</h2><p class="lead">Try FinanceOS with the privacy setup that suits you.</p><div class="nx" style="justify-content:center"><a class="btn" href="#apk">Get the app</a><a class="btn o" href="#faq">Privacy questions</a><a class="btn o" href="#contact">Talk to us</a></div></div>
 </section>
 
 <section class="page" id="p-features"><h2>What you get</h2><p class="lead">Pick any feature to try it right here. Everything below is already built into the app.</p><div class="fx" id="fx"><div class="fgrid" id="fgrid"></div><aside class="fpanel" id="fpanel"><button class="fx-x" id="fxx" aria-label="Close feature"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/></svg></button><div class="fh"></div><div class="fb"></div><button class="btn o sm" id="fclose">Show all features</button></aside></div></section>
@@ -500,7 +608,7 @@ html.intro-on{overflow:hidden}
 <script>
 const $=(s,r=document)=>r.querySelector(s),$$=(s,r=document)=>[...r.querySelectorAll(s)];
 const toast=t=>{const e=$('#toast');e.textContent=t;e.classList.add('on');setTimeout(()=>e.classList.remove('on'),2200)};
-const names=['info','features','pricing','apk','faq','contact'];
+const names=['info','privacy','features','pricing','apk','faq','contact'];
 function route(){let h=location.hash.slice(1);if(!names.includes(h))h='info';
  if(h!=='features'&&typeof resetF==='function')resetF();if(h==='contact'&&typeof cdraw==='function')cdraw();$$('.page').forEach(p=>p.classList.toggle('on',p.id==='p-'+h));$$('nav .l').forEach(a=>a.classList.toggle('on',a.getAttribute('href')==='#'+h));window.scrollTo(0,0);
  const ac=$('nav .l.on'),lk=ac&&ac.parentElement;if(lk&&lk.scrollWidth>lk.clientWidth)lk.scrollTo({left:ac.offsetLeft-(lk.clientWidth-ac.offsetWidth)/2,behavior:'smooth'})}
@@ -612,7 +720,7 @@ $('#p-pricing .seg').onclick=e=>{if(e.target.dataset.b){bill=e.target.dataset.b;
 
 /* FAQ */
 const Q=[['Getting started','Is there a free trial?','Yes. Contact us for a walkthrough and you can try FinanceOS with your own numbers.'],['Getting started','Can I use it on my phone?','Yes. Open the site on your phone and install it from the Get the app page. It then opens like a normal app.'],['Getting started','Do I need to link my bank?','No. You add entries yourself, so you control exactly what the app knows.'],['Getting started','Which currencies work?','The app is built around the Indian rupee. The International assets screen handles holdings in other currencies.'],['Getting started','How long does setup take?','Most people are looking at their dashboard within a few minutes of signing in.'],
-['Privacy','Is my data safe?','Your account is protected by sign-in, and we never sell your data.'],['Privacy','Who can see my numbers?','Only you, unless you choose to export or share a report.'],['Privacy','Can I export or delete my data?','You can export reports as PDF, and you can ask us to remove your data at any time.'],
+['Privacy','Is my data safe?','Your account is protected by sign-in, and we never sell your data.'],['Privacy','Who can see my numbers?','Only you, unless you choose to export or share a report.'],['Privacy','Can I export or delete my data?','You can export reports as PDF, and you can ask us to remove your data at any time.'],['Privacy','Is my data encrypted?','In cloud mode, everything between your device and the cloud travels over HTTPS/TLS, and your records are locked to your account at the database level. In Manual JSON mode nothing is sent to the cloud at all.'],['Privacy','Can I keep my data only on my device?','Yes. Choose Manual JSON tracking in Settings, under Privacy and Updates. Your data stays on the device and you back it up with a JSON file you export yourself. Logging out clears it from the device, so download a backup first.'],['Privacy','Can I switch between cloud and device-only?','Yes, any time in Settings, under Privacy and Updates.'],['Privacy','Do you see my password or my fingerprint?','No. Passwords are hashed by the sign-in service and never shown to anyone. A fingerprint or face scan stays on your device and is never sent to us.'],['Privacy','What if I walk away with the app open?','The Privacy Screen covers everything the moment you click away, switch apps or open recent apps. You can also ask the app to demand Face ID, fingerprint or PC Lock when you come back.'],
 ['Plans','What does the yearly plan include?','You pay for 10 months and get 12. The first two months are free.'],['Plans','Can I switch plans later?','Yes. You can move between Starter and Pro whenever you like.'],['Plans','Can my business get its own branded version?','Yes. The Custom plan covers branding and modules, priced to your needs. Contact us to discuss it.'],
 ['Features','What is Fin AI?','An assistant inside the app. You ask in plain words and it answers from your own numbers.'],['Features','What can Portfolio OS track?','Stocks, mutual funds, gold, silver, property, bonds, crypto, deposits, retirement assets, ETFs, REITs and more, about 20 asset classes in all.'],['Features','Can I create reports to share?','Yes. PDF export builds clean reports with charts and tables.'],['Features','What are unusual-spend alerts?','Alerts that flag a payment much larger than your normal, or a big payment to a new payee.']];
 let qc='All',qq='';const cats=['All',...new Set(Q.map(x=>x[0]))];
@@ -672,6 +780,13 @@ function cdraw(){const d=CD[cr],mn=Math.min(...d),mx=Math.max(...d),st=376/(d.le
  sv.onpointermove=e=>{const r=sv.getBoundingClientRect(),i=Math.max(0,Math.min(d.length-1,Math.round(((e.clientX-r.left)/r.width*400-12)/st)));const h=$('#ch'),c=$('#cd');h.setAttribute('x1',pts[i][0]);h.setAttribute('x2',pts[i][0]);h.style.display='';c.setAttribute('cx',pts[i][0]);c.setAttribute('cy',pts[i][1]);c.style.display='';show(i)};
  sv.onpointerleave=()=>{$('#ch').style.display='none';$('#cd').style.display='none';show(d.length-1)}}
 $('#cr').onclick=e=>{if(e.target.dataset.r){cr=e.target.dataset.r;$$('#cr button').forEach(b=>b.classList.toggle('on',b===e.target));cdraw()}};
+const PVI={phone:'<svg viewBox="0 0 24 24"><rect x="6" y="2" width="12" height="20" rx="2.6"/><path d="M11 18h2"/></svg>',file:'<svg viewBox="0 0 24 24"><path d="M6 2h8l5 5v15H6z"/><path d="M14 2v5h5M9 13h6M9 17h6"/></svg>',cloud:'<svg viewBox="0 0 24 24"><path d="M7 18a4.5 4.5 0 01-.6-8.96A6 6 0 0118 9.5 4.3 4.3 0 0117.5 18z"/><path d="M12 11v5m-2-2l2 2 2-2"/></svg>',devs:'<svg viewBox="0 0 24 24"><rect x="2" y="6" width="14" height="10" rx="2"/><rect x="14" y="9" width="8" height="12" rx="2"/></svg>'};
+const pvn=(ic,t,s,c)=>`<div class="node"><div class="pvic ${c||''}">${PVI[ic]}</div><b>${t}</b><small>${s}</small></div>`;
+const PVF={cloud:[pvn('phone','Your device','Entries are saved straight away')+'<div class="wire"><em>HTTPS/TLS</em><i></i><i></i></div>'+pvn('cloud','Your private cloud space','Locked to your account at the database level','em')+'<div class="wire"><em>HTTPS/TLS</em><i></i><i></i></div>'+pvn('devs','Your other devices','Catch up within about a minute, instantly when you return'),'Encrypted on the way, locked to you when it arrives, and mirrored to every device you sign in on.'],
+dev:[pvn('phone','Your device','Data lives in the app\u2019s private storage')+'<div class="wire off"><em>No upload</em></div>'+pvn('file','JSON backup file','Exported by you, only when you choose','em'),'No cloud account in the middle. Nothing leaves your device unless you export a file yourself.']};
+const pvf=m=>{$('#pvflow').innerHTML=PVF[m][0];$('#pvcap').textContent=PVF[m][1];$$('#pvseg button').forEach(b=>b.classList.toggle('on',b.dataset.m===m))};
+$('#pvseg').onclick=e=>{const b=e.target.closest('button');if(b)pvf(b.dataset.m)};pvf('cloud');
+document.addEventListener('click',e=>{const b=e.target.closest('[data-go]');if(b){const t=document.getElementById(b.dataset.go);if(t)t.scrollIntoView({behavior:'smooth',block:'start'})}});
 route();
 </script>
 <script id="intro-js">
