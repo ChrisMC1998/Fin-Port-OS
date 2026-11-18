@@ -417,7 +417,7 @@ html.intro-on{overflow:hidden}
 }
 
 /* ===== NAVIGATION on phones/tablets: always-visible bottom tab bar ===== */
-@media(max-width:860px){
+@media(max-width:1024px){
   body{padding-bottom:calc(78px + env(safe-area-inset-bottom,0px))}
   html{scroll-padding-top:72px}.fpanel{scroll-margin-top:72px}
   /* header keeps just logo + cart (no backdrop-filter, so the fixed bar anchors to the screen) */
@@ -490,12 +490,33 @@ html.intro-on{overflow:hidden}
   @keyframes pvdotv{from{transform:translateY(-10px);opacity:0}15%{opacity:1}85%{opacity:1}to{transform:translateY(52px);opacity:0}}
 }
 /* nav: 7 items */
-@media(min-width:861px) and (max-width:1180px){nav a.l{padding:8px 10px;font-size:.88rem}}
-@media(max-width:860px){
+
+@media(max-width:1024px){
   .links{grid-template-columns:repeat(7,1fr)}
   .links a.l{font-size:.62rem;padding:7px 1px 6px}
 }
 @media(max-width:360px){.links a.l{font-size:.56rem}.links a.l svg{width:19px;height:19px}}
+</style>
+<style id="desktop-nav-v3">
+/* ===== Desktop header: same premium icon look as the mobile bar ===== */
+@media(min-width:1025px){
+  header nav .links a.l{display:inline-flex;align-items:center;gap:8px;padding:9px 15px;border-radius:14px;color:#a9d9c5;font-weight:600;font-size:.93rem;border:0;box-shadow:none}
+  header nav .links a.l::before{display:none}
+  header nav .links a.l svg{display:block;width:19px;height:19px;flex:none;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+  header nav .links a.l .sb{display:none}
+  header nav .links a.l:not(.on):hover{background:rgba(52,211,153,.10);color:#fff;box-shadow:none}
+  header nav .links a.l.on{background:linear-gradient(160deg,#6ee7b7,#34d399 45%,#10b981);color:#000;font-weight:800;box-shadow:0 4px 16px rgba(16,185,129,.45),inset 0 1px 0 rgba(255,255,255,.5)}
+  header .links{display:flex;gap:4px;align-items:center}
+  header{background:linear-gradient(180deg,rgba(0,0,0,.84),rgba(0,14,9,.76))}
+}
+@media(min-width:1025px) and (max-width:1200px){header nav .links a.l{padding:9px 11px;gap:6px;font-size:.86rem}header nav .links a.l svg{width:17px;height:17px}}
+/* ===== Tablets: bigger, roomier bottom bar ===== */
+@media(min-width:641px) and (max-width:1024px){
+  nav{display:contents}
+  .links{padding-top:8px}
+  .links a.l{font-size:.78rem;gap:4px;min-height:60px}
+  .links a.l svg{width:25px;height:25px}
+}
 </style>
 </head><body>
 <div id="intro" role="dialog" aria-label="Welcome to FinanceOS">
