@@ -442,8 +442,8 @@ html.intro-on{overflow:hidden}
 </style>
 <style id="pv-icon-fx">
 /* ── Privacy page: animated icons (everything respects reduced-motion through the global rule) ── */
-#p-privacy .pvic{position:relative;overflow:hidden}
-#p-privacy .pvic svg *{transform-box:fill-box;transform-origin:center}
+#p-privacy .pvic,.pvband .pvic{position:relative;overflow:hidden}
+#p-privacy .pvic svg *,.pvband .pvic svg *{transform-box:fill-box;transform-origin:center}
 
 /* hero shield + lock: a small radiant glow */
 .shield::before,.shield::after{content:"";position:absolute;inset:14%;border-radius:50%;border:2px solid rgba(110,231,183,.55);opacity:0;pointer-events:none;animation:shRing 3.2s ease-out infinite}
@@ -877,9 +877,9 @@ html.intro-on{overflow:hidden}
 <div class="glow stkglow"><div class="stk" id="stk"><div class="stk-stage" id="stkStage" tabindex="0" role="group" aria-roledescription="carousel" aria-label="FinanceOS features. Drag sideways or use the arrow keys, press Enter to open."></div><div class="stk-bar"><button class="stk-nav" id="stkPrev" aria-label="Previous feature"><svg viewBox="0 0 24 24"><path d="M15 6l-6 6 6 6"/></svg></button><div class="stk-dots" id="stkDots"></div><button class="stk-nav" id="stkNext" aria-label="Next feature"><svg viewBox="0 0 24 24"><path d="M9 6l6 6-6 6"/></svg></button><p class="stk-hint">Drag or swipe sideways. Tap the front card to try it live.</p></div></div></div></div>
 <div class="stats"><div><strong>40+</strong><span>screens in one app</span></div><div><strong>20+</strong><span>asset classes tracked</span></div><div><strong>1</strong><span>net worth, always current</span></div></div>
 <div class="pvband"><span class="tag">Privacy first</span><h2>Built around your privacy</h2><p class="lead">Your finances are personal. Keep them on your own device, or sync them to an encrypted cloud account. You decide, and you can switch any time.</p>
-<div class="g3"><div class="card blk"><div class="pvic"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="6" y="2" width="12" height="20" rx="2.6"/><path d="M11 18h2"/></svg></div><h3>On your device</h3><p>Manual JSON mode keeps everything local. Nothing is uploaded, and you back up with a file you control.</p></div>
-<div class="card blk"><div class="pvic"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 18a4.5 4.5 0 01-.6-8.96A6 6 0 0118 9.5 4.3 4.3 0 0117.5 18z"/><path d="M12 11v5m-2-2l2 2 2-2"/></svg></div><h3>Encrypted in the cloud</h3><p>Cloud sync travels over HTTPS/TLS and every record is locked to your account at the database level.</p></div>
-<div class="card blk"><div class="pvic"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 11v3.5c0 2-.6 3.6-1.6 5M8 14.5c0 2.3-.5 4-1.5 5.5M16 12v2.5c0 2-.3 3.7-1 5M5.5 11.2A6.5 6.5 0 0112 5.5a6.5 6.5 0 016.5 5.7M9 8.8A4 4 0 0116 11"/></svg></div><h3>Locked by you</h3><p>Face ID, fingerprint or PC Lock, plus a Privacy Screen that hides your numbers whenever you look away.</p></div></div>
+<div class="g3"><div class="card blk"><div class="pvic ic-phone"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="6" y="2" width="12" height="20" rx="2.6"/><path d="M11 18h2"/></svg></div><h3>On your device</h3><p>Manual JSON mode keeps everything local. Nothing is uploaded, and you back up with a file you control.</p></div>
+<div class="card blk"><div class="pvic ic-cloud"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 18a4.5 4.5 0 01-.6-8.96A6 6 0 0118 9.5 4.3 4.3 0 0117.5 18z"/><path d="M12 11v5m-2-2l2 2 2-2"/></svg></div><h3>Encrypted in the cloud</h3><p>Cloud sync travels over HTTPS/TLS and every record is locked to your account at the database level.</p></div>
+<div class="card blk"><div class="pvic ic-finger"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 11v3.5c0 2-.6 3.6-1.6 5M8 14.5c0 2.3-.5 4-1.5 5.5M16 12v2.5c0 2-.3 3.7-1 5M5.5 11.2A6.5 6.5 0 0112 5.5a6.5 6.5 0 016.5 5.7M9 8.8A4 4 0 0116 11"/></svg></div><h3>Locked by you</h3><p>Face ID, fingerprint or PC Lock, plus a Privacy Screen that hides your numbers whenever you look away.</p></div></div>
 <div class="nx"><a class="btn" href="#privacy">Explore privacy and security</a></div></div><h2 style="margin-top:56px">Two products, one login</h2>
 <div class="split"><div class="card"><h3>FinanceOS</h3><p>Your day-to-day money.</p><ul><li>Income, expenses and transactions</li><li>Loans, EMI and credit card tracking</li><li>Budgets that learn from your history</li><li>Fin AI for questions and insights</li></ul></div>
 <div class="card"><h3>Portfolio OS</h3><p>Everything you own, valued together.</p><ul><li>Stocks, funds, gold, property, crypto and more</li><li>Allocation, returns and tax view</li><li>Stress test against market drops</li><li>Retirement and international assets</li></ul></div></div>
@@ -1492,7 +1492,21 @@ dev:[pvn('phone','Your device','Data lives in the app\u2019s private storage')+'
 const pvf=m=>{$('#pvflow').innerHTML=PVF[m][0];$('#pvcap').textContent=PVF[m][1];$$('#pvseg button').forEach(b=>b.classList.toggle('on',b.dataset.m===m))};
 $('#pvseg').onclick=e=>{const b=e.target.closest('button');if(b)pvf(b.dataset.m)};pvf('cloud');
 document.addEventListener('click',e=>{const b=e.target.closest('[data-go]');if(b){const t=document.getElementById(b.dataset.go);if(t)t.scrollIntoView({behavior:'smooth',block:'start'})}});
+/* A refresh always starts on the home (Info) page, never on the page you were last viewing */
+try{history.scrollRestoration='manual';const nv=performance.getEntriesByType('navigation')[0];
+ if(nv&&nv.type==='reload'&&location.hash)history.replaceState(null,'',location.pathname+location.search)}catch(_){}
 route();
+
+/* Home page stats (40+, 20+) count up once per page load, after the welcome screen, when they come into view */
+(function(){const box=$('#p-info .stats');if(!box)return;
+ const T=[...box.querySelectorAll('strong')].filter(e=>/^\d+\+$/.test(e.textContent.trim())).map(e=>({e,n:parseInt(e.textContent,10)}));
+ if(!T.length||matchMedia('(prefers-reduced-motion:reduce)').matches)return;
+ T.forEach(t=>t.e.textContent='0+');
+ const DUR=2200,ease=k=>1-Math.pow(1-k,3);let started=false;
+ const run=()=>{started=true;const t0=performance.now();(function f(t){const k=Math.min(1,(t-t0)/DUR);T.forEach(x=>x.e.textContent=Math.round(x.n*ease(k))+'+');if(k<1)requestAnimationFrame(f)})(t0)};
+ const iv=setInterval(()=>{if(started){clearInterval(iv);return}
+  if(document.documentElement.classList.contains('intro-on')||!$('#p-info').classList.contains('on'))return;
+  const r=box.getBoundingClientRect();if(r.top<innerHeight*.92&&r.bottom>0){clearInterval(iv);run()}},150)})();
 </script>
 <script id="intro-js">
 /* Welcome screen: logo centred + welcome line, holds 5 s (tap / Enter / Esc to skip), then the logo glides to the
