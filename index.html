@@ -575,9 +575,205 @@ html.intro-on{overflow:hidden}
 @media(max-width:560px){#p-referrals .ref-form{grid-template-columns:1fr}#p-referrals .ref-field.full{grid-column:auto}}
 </style>
 
+<style id="stack-checkout">
+/* ═══════════════════════════════════════════════════════════════════
+   1. INFO PAGE: DRAGGABLE INFINITE CARD STACK
+═══════════════════════════════════════════════════════════════════ */
+.stk{position:relative;min-width:0}
+.stk-stage{position:relative;width:100%;perspective:1500px;perspective-origin:50% 40%;touch-action:pan-y;
+  user-select:none;-webkit-user-select:none;-webkit-tap-highlight-color:transparent;cursor:grab;outline:none;
+  overflow:hidden;overflow-x:clip;overflow-y:visible;border-radius:26px}
+.stk-stage.grab{cursor:grabbing}
+.stk-stage:focus-visible{box-shadow:0 0 0 3px var(--em2)}
+.stk.is-open .stk-stage{cursor:default;touch-action:auto}
+.stk.trans .stk-stage{transition:height .5s cubic-bezier(.2,.8,.2,1)}
+
+.stk-card{position:absolute;left:50%;top:18px;border-radius:22px;overflow:hidden;will-change:transform;
+  background:linear-gradient(160deg,#0c4132 0%,#06241b 58%,#031610 100%);
+  border:1px solid rgba(52,211,153,.38);color:var(--tx);
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.14),0 18px 44px rgba(0,20,14,.5)}
+.stk-card.front{border-color:var(--em2);box-shadow:inset 0 1px 0 rgba(255,255,255,.2),0 0 0 1px rgba(52,211,153,.4),0 26px 64px rgba(0,20,14,.55),0 0 46px rgba(16,185,129,.28)}
+.stk.trans .stk-card{transition:transform .55s cubic-bezier(.2,.8,.2,1),width .5s cubic-bezier(.2,.8,.2,1),height .5s cubic-bezier(.2,.8,.2,1),margin-left .5s cubic-bezier(.2,.8,.2,1),top .5s cubic-bezier(.2,.8,.2,1),opacity .4s}
+.sc-shade{position:absolute;inset:0;background:#00110b;opacity:0;pointer-events:none;border-radius:inherit;z-index:3}
+.sc-face{position:absolute;inset:0;padding:18px 18px 16px;display:flex;flex-direction:column;gap:14px;pointer-events:none;transition:opacity .25s}
+.stk.is-open .sc-face{opacity:0}
+.sc-h{display:flex;gap:12px;align-items:center}
+.sc-h .ico{width:44px;height:44px;border-radius:13px}.sc-h .ico svg{width:22px;height:22px}
+.sc-h b{display:block;font:800 1.15rem "Bricolage Grotesque","DM Sans",sans-serif;line-height:1.15}
+.sc-h small{display:block;color:var(--mu);font-size:.8rem;line-height:1.3;margin-top:2px}
+.sc-n{margin-left:auto;font:800 1.5rem "Bricolage Grotesque",sans-serif;color:rgba(110,231,183,.28)}
+.sc-pv{flex:1;min-height:0;display:flex;flex-direction:column;justify-content:center;gap:9px;overflow:hidden}
+.sc-cta{display:flex;align-items:center;justify-content:center;gap:8px;font-weight:700;font-size:.86rem;color:#6ee7b7;padding:10px;border-radius:12px;
+  background:rgba(0,0,0,.35);border:1px solid rgba(52,211,153,.35);opacity:0;transition:opacity .25s}
+.stk-card.front .sc-cta{opacity:1}
+.sc-cta svg{width:16px;height:16px;fill:none;stroke:currentColor;stroke-width:2.4;stroke-linecap:round;stroke-linejoin:round}
+
+/* little previews on the card faces */
+.pv-k{display:grid;grid-template-columns:1fr 1fr;gap:9px}
+.pv-k div{background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.14);border-radius:12px;padding:10px 12px}
+.pv-k small{display:block;color:var(--mu);font-size:.74rem}.pv-k b{font:800 1.3rem "Bricolage Grotesque",sans-serif}
+.pv-bars{display:flex;align-items:flex-end;gap:8px;height:100px;padding-top:4px}
+.pv-bars i{flex:1;border-radius:6px 6px 0 0;background:linear-gradient(180deg,#6ee7b7,#10b981 60%,#0d9488)}
+.pv-r{display:flex;justify-content:space-between;font-size:.86rem;margin-top:2px}.pv-r em{font-style:normal;color:var(--mu)}
+.sc-pv .track{margin:0 0 4px;height:9px}
+.pv-pf{display:flex;gap:16px;align-items:center}
+.pv-pf .donut{width:112px;flex:none}
+.pv-pf p{display:flex;align-items:center;gap:8px;font-size:.82rem;margin:3px 0;line-height:1.3}.pv-pf s{width:10px;height:10px;border-radius:3px;flex:none}.pv-pf em{margin-left:auto;font-style:normal;color:var(--mu);padding-left:10px}
+.pv-big{text-align:center;padding:6px 0 2px}.pv-big small{color:var(--mu)}.pv-big b{display:block;font:800 2.3rem "Bricolage Grotesque",sans-serif;color:#6ee7b7;line-height:1.1;margin:2px 0}.pv-big span{color:var(--mu);font-size:.84rem}
+.pv-chat{display:flex;flex-direction:column;gap:8px}.pv-chat .m{font-size:.83rem;padding:8px 12px}
+.pv-tx{display:flex;justify-content:space-between;gap:10px;padding:8px 0;border-bottom:1px solid rgba(255,255,255,.12);font-size:.88rem}.pv-tx small{display:block;color:var(--mu);font-size:.74rem}
+.pv-ring{display:flex;align-items:center;gap:16px}.pv-ring .donut{width:104px;flex:none}.pv-ring p{font-size:.84rem;color:var(--mu);margin:0}.pv-ring b{display:block;color:var(--tx);font-size:1.05rem}
+
+/* the open (interactive) state */
+.sc-live{position:absolute;left:0;top:0;z-index:2}
+.sc-lh{display:flex;gap:12px;align-items:center;padding:16px 18px 10px}
+.sc-lh .ico{width:42px;height:42px;border-radius:13px}.sc-lh .ico svg{width:21px;height:21px}
+.sc-lt{min-width:0;flex:1}.sc-lt b{display:block;font:800 1.15rem "Bricolage Grotesque",sans-serif;line-height:1.15}.sc-lt small{display:block;color:var(--mu);font-size:.8rem}
+.sc-lc{display:flex;gap:6px;flex:none}
+.sc-lc button{border:1px solid rgba(52,211,153,.45);background:rgba(0,0,0,.4);color:#6ee7b7;border-radius:11px;min-width:38px;height:38px;padding:0 10px;cursor:pointer;font:700 .82rem "DM Sans",sans-serif;display:inline-flex;align-items:center;justify-content:center;gap:6px}
+.sc-lc button:hover{background:rgba(0,0,0,.6);border-color:#6ee7b7}
+.sc-lc svg{width:16px;height:16px;fill:none;stroke:currentColor;stroke-width:2.4;stroke-linecap:round;stroke-linejoin:round}
+.sc-lb{padding:6px 18px 22px;min-height:300px}
+.sc-lb .seg{margin-bottom:12px}
+
+.stk-bar{display:flex;align-items:center;justify-content:center;gap:14px;margin-top:14px;flex-wrap:wrap}
+.stk.is-open .stk-bar{display:none}
+.stk-nav{width:42px;height:42px;border-radius:50%;border:1px solid rgba(52,211,153,.5);background:rgba(0,0,0,.45);color:#6ee7b7;cursor:pointer;display:grid;place-items:center;padding:0}
+.stk-nav:hover{background:rgba(0,0,0,.65);border-color:#6ee7b7}.stk-nav svg{width:18px;height:18px;fill:none;stroke:currentColor;stroke-width:2.4;stroke-linecap:round;stroke-linejoin:round}
+.stk-dots{display:flex;gap:8px;align-items:center}
+.stk-dots button{width:9px;height:9px;border-radius:99px;border:0;padding:0;background:rgba(255,255,255,.35);cursor:pointer;transition:width .25s,background .25s}
+.stk-dots button.on{width:26px;background:var(--btn)}
+:root:not([data-theme="dark"]) .stk-dots button{background:rgba(6,95,70,.28)}
+.stk-hint{flex:1 0 100%;text-align:center;color:var(--mu);font-size:.84rem;margin:0}
+@media(hover:none){.stk-nav{width:46px;height:46px}.stk-dots button{width:11px;height:11px}.stk-dots button.on{width:28px}}
+@media(max-width:480px){.sc-lh{padding:14px 14px 8px;flex-wrap:wrap}.sc-lc{flex:1 0 100%;justify-content:flex-end}.sc-lb{padding:4px 14px 18px}.sc-lc button.x span{display:inline}}
+
+@media(prefers-color-scheme:light){
+  :root:not([data-theme="dark"]) .stk-card{background:linear-gradient(160deg,#ffffff 0%,#e6faf0 62%,#d3f5e5 100%);border-color:rgba(6,95,70,.28);box-shadow:inset 0 1px 0 #fff,0 16px 40px rgba(6,95,70,.2)}
+  :root:not([data-theme="dark"]) .stk-card.front{border-color:#059669;box-shadow:inset 0 1px 0 #fff,0 0 0 1px rgba(5,150,105,.45),0 24px 56px rgba(6,95,70,.28)}
+  :root:not([data-theme="dark"]) .sc-shade{background:#bfe9d6}
+  :root:not([data-theme="dark"]) .sc-n{color:rgba(5,150,105,.3)}
+  :root:not([data-theme="dark"]) .pv-k div,:root:not([data-theme="dark"]) .pv-tx{background:rgba(6,95,70,.06);border-color:rgba(6,95,70,.16)}
+  :root:not([data-theme="dark"]) .sc-cta,:root:not([data-theme="dark"]) .sc-lc button,:root:not([data-theme="dark"]) .stk-nav{background:#052018;color:#6ee7b7}
+  :root:not([data-theme="dark"]) .pv-big b{color:#047857}
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+   2. PRICING: "what you get" panel under the plan cards
+═══════════════════════════════════════════════════════════════════ */
+.price[tabindex]{outline-offset:3px}
+.price.hot::after{content:"Showing details below";position:absolute;top:14px;right:16px;font-size:.7rem;font-weight:700;letter-spacing:.04em;color:#6ee7b7;background:#000;border:1px solid rgba(52,211,153,.5);padding:3px 10px;border-radius:99px;opacity:0;transition:opacity .2s}
+.price.hot.shown::after{opacity:1}
+.pdp{margin-top:22px;padding:clamp(20px,3.5vw,36px);scroll-margin-top:90px;border:1px solid var(--edge-em);
+  background:linear-gradient(160deg,rgba(0,0,0,.78),rgba(2,28,20,.66));color:#effff8}
+.pdp:empty{display:none}
+.pdp.in{animation:pdIn .5s cubic-bezier(.2,.8,.2,1)}
+@keyframes pdIn{from{opacity:0;transform:translateY(26px)}}
+.pdp h3,.pdp h4{color:#fff}.pdp .lead,.pdp li,.pdp p{color:#c6ecdc}
+.pdp-h{display:flex;justify-content:space-between;gap:20px;align-items:flex-start;flex-wrap:wrap;margin-bottom:6px}
+.pdp-h h3{font-size:clamp(1.35rem,2.6vw,1.9rem);margin:6px 0 0}
+.pdp-pr{text-align:right}.pdp-pr b{font:800 2rem "Bricolage Grotesque",sans-serif;color:#6ee7b7}.pdp-pr small{color:#c6ecdc;display:block}
+.pdp-soon{display:flex;gap:12px;align-items:center;margin:16px 0 0;padding:12px 16px;border-radius:14px;background:rgba(251,191,36,.1);border:1px solid rgba(251,191,36,.45);color:#fde68a;font-size:.92rem}
+.pdp-soon b{color:#fbbf24}
+.pdp-g{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:14px;margin-top:22px}
+.pdp-grp{padding:18px;border-radius:16px;background:rgba(255,255,255,.06);border:1px solid rgba(52,211,153,.28)}
+.pdp-grp h4{display:flex;align-items:center;gap:10px;font:700 1.02rem "Bricolage Grotesque",sans-serif;margin:0 0 10px}
+.pdp-grp .ico{width:34px;height:34px;border-radius:10px;box-shadow:none}.pdp-grp .ico svg{width:18px;height:18px}
+.pdp-grp ul{list-style:none;padding:0;margin:0;display:grid;gap:8px}
+.pdp-grp li{position:relative;padding-left:24px;font-size:.92rem;line-height:1.45}
+.pdp-grp li::before{content:"";position:absolute;left:2px;top:.4em;width:11px;height:6px;border-left:3px solid #34d399;border-bottom:3px solid #34d399;transform:rotate(-45deg)}
+.pdp-grp.dim{background:rgba(255,255,255,.03);border-style:dashed;border-color:rgba(255,255,255,.22)}
+.pdp-grp.dim li{color:#8db5a5}.pdp-grp.dim li::before{border-color:#6b8f80;width:10px;height:10px;border:0;transform:none;top:.3em;left:3px;content:"+";font-weight:800;color:#8db5a5;line-height:1;font-size:1rem}
+.pdp-chip{display:inline-block;font-size:.8rem;font-weight:600;padding:5px 12px;border-radius:99px;background:rgba(0,0,0,.5);border:1px solid var(--edge-em);color:#6ee7b7;margin:0 6px 6px 0}
+.pdp-cta{display:flex;gap:12px;flex-wrap:wrap;margin-top:22px;align-items:center}
+.pdp-cta .btn.o{color:#effff8}
+@media(max-width:640px){.pdp-pr{text-align:left}.pdp-cta .btn{flex:1 1 100%;text-align:center}}
+
+/* ═══════════════════════════════════════════════════════════════════
+   3. CHECKOUT inside the side drawer (cart → details → payment → done)
+═══════════════════════════════════════════════════════════════════ */
+.dro .drw{width:min(560px,100%);outline:none}
+.cks{display:flex;align-items:center;list-style:none;padding:0;margin:0 0 20px;gap:0}
+.cks li{display:flex;align-items:center;gap:8px;font-size:.84rem;font-weight:600;color:var(--mu);white-space:nowrap}
+.cks li i{width:26px;height:26px;border-radius:50%;display:grid;place-items:center;font-style:normal;font-weight:800;font-size:.78rem;border:1.5px solid rgba(255,255,255,.3);flex:none;transition:.3s}
+.cks li+li::before{content:"";width:clamp(14px,6vw,44px);height:2px;background:rgba(255,255,255,.2);margin:0 10px;border-radius:2px}
+.cks li.done{color:#effff8}.cks li.done i{background:linear-gradient(135deg,#a7f3d0,#34d399);color:#000;border-color:transparent}
+.cks li.done+li::before,.cks li.on::before{background:#34d399}
+.cks li.on{color:#fff}.cks li.on i{background:#000;color:#6ee7b7;border-color:#6ee7b7;box-shadow:0 0 0 4px rgba(52,211,153,.25)}
+.ckf{display:grid;grid-template-columns:1fr 1fr;gap:12px 12px}
+.ckf .full{grid-column:1/-1}
+.fld{display:grid;gap:5px;min-width:0}
+.fld>label{font-size:.82rem;font-weight:700;color:#c6ecdc}
+.fld .si{margin:0}
+.fld select.si{appearance:none;-webkit-appearance:none;background-image:linear-gradient(45deg,transparent 50%,#6ee7b7 50%),linear-gradient(135deg,#6ee7b7 50%,transparent 50%);background-position:calc(100% - 18px) 52%,calc(100% - 12px) 52%;background-size:6px 6px;background-repeat:no-repeat;padding-right:34px}
+.fld.err .si{border-color:var(--bad);box-shadow:0 0 0 1px var(--bad)}
+.fe{display:none;color:#fca5a5;font-size:.78rem}.fld.err .fe{display:block}
+.pfx{display:flex;align-items:stretch}.pfx>span{display:grid;place-items:center;padding:0 12px;border:1px solid var(--g-edge);border-right:0;border-radius:10px 0 0 10px;background:rgba(0,0,0,.3);color:#c6ecdc;font-size:.92rem}
+.pfx .si{border-radius:0 10px 10px 0}
+.ck-sum{margin:0 0 18px;padding:14px 16px}
+.ck-sum .tx{padding:8px 0}.ck-sum .tx:last-child{border-bottom:0;font-size:1.05rem}
+.ck-sum summary{font-size:.92rem}
+.ck-sum details{border:0;padding:0}
+.ck-act{display:flex;gap:10px;margin-top:18px}.ck-act .btn{flex:1;text-align:center}.ck-act .btn.o{flex:0 0 auto}
+.demo-note{display:flex;gap:10px;align-items:flex-start;margin-top:14px;padding:11px 13px;border-radius:12px;font-size:.8rem;line-height:1.45;background:rgba(251,191,36,.09);border:1px solid rgba(251,191,36,.4);color:#fde68a}
+.demo-note svg{width:18px;height:18px;flex:none;margin-top:1px;fill:none;stroke:#fbbf24;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.pm{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:0 0 16px}
+.pm button{display:flex;flex-direction:column;align-items:center;gap:6px;padding:12px 6px;border-radius:14px;border:1px solid var(--g-edge);background:rgba(0,0,0,.3);color:#c6ecdc;font:600 .84rem "DM Sans",sans-serif;cursor:pointer;min-height:70px}
+.pm button svg{width:24px;height:24px;fill:none;stroke:currentColor;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round}
+.pm button.on{background:linear-gradient(160deg,rgba(52,211,153,.32),rgba(16,185,129,.14));border-color:#34d399;color:#fff;box-shadow:0 0 18px rgba(52,211,153,.3)}
+.pm-body{animation:pdIn .35s cubic-bezier(.2,.8,.2,1)}
+.cardviz{position:relative;margin:0 0 14px;padding:16px 18px;border-radius:16px;min-height:104px;color:#fff;
+  background:linear-gradient(135deg,#047857 0%,#0f766e 55%,#022c22 100%);border:1px solid rgba(255,255,255,.25);box-shadow:0 12px 30px rgba(0,0,0,.4),inset 0 1px 0 rgba(255,255,255,.3)}
+.cardviz b{display:block;font:600 1.15rem/1.2 "DM Sans",monospace;letter-spacing:.14em;margin-top:26px;word-spacing:.2em}
+.cardviz small{display:flex;justify-content:space-between;color:#d1fae5;margin-top:10px;font-size:.78rem;letter-spacing:.06em;text-transform:uppercase;gap:10px}
+.cardviz .chip{position:absolute;top:16px;left:18px;width:34px;height:24px;border-radius:6px;background:linear-gradient(135deg,#fde68a,#d4a72c)}
+.qrbox{display:grid;justify-items:center;gap:10px;text-align:center;padding:18px;border-radius:16px;background:rgba(255,255,255,.06);border:1px solid rgba(52,211,153,.3)}
+.qrbox svg{width:min(210px,62vw);height:auto;background:#fff;padding:10px;border-radius:14px}
+.qrbox p{margin:0;font-size:.86rem;color:#c6ecdc}.qrbox b{font:800 1.3rem "Bricolage Grotesque",sans-serif;color:#fff}
+.qrt{font-variant-numeric:tabular-nums;color:#6ee7b7;font-weight:700}
+.ck-agree{display:flex;gap:10px;align-items:flex-start;margin-top:14px;font-size:.84rem;color:#c6ecdc;line-height:1.45}
+.ck-agree input{margin-top:3px;accent-color:#10b981;width:18px;height:18px;flex:none}
+.ck-agree a{color:#6ee7b7}
+.fld.err.ag .fe{display:block}
+.proc{text-align:center;padding:50px 10px}
+.spin{width:64px;height:64px;margin:0 auto 22px;border-radius:50%;border:5px solid rgba(255,255,255,.15);border-top-color:#34d399;animation:spn 0.9s linear infinite}
+@keyframes spn{to{transform:rotate(360deg)}}
+.okmark{width:76px;height:76px;margin:6px auto 16px;border-radius:50%;display:grid;place-items:center;background:linear-gradient(135deg,#a7f3d0,#34d399);box-shadow:0 0 0 8px rgba(52,211,153,.2),0 10px 30px rgba(16,185,129,.5);animation:okp .6s cubic-bezier(.2,.8,.2,1) both}
+.okmark svg{width:38px;height:38px;fill:none;stroke:#000;stroke-width:3.4;stroke-linecap:round;stroke-linejoin:round}
+@keyframes okp{from{transform:scale(.4);opacity:0}}
+.inst-s{margin-top:18px;padding:16px;border-radius:16px;background:rgba(255,255,255,.06);border:1px solid rgba(52,211,153,.3)}
+.inst-s h4{margin:0 0 4px;font:700 1.05rem "Bricolage Grotesque",sans-serif}
+.inst-s .steps{margin-top:8px}
+
+.drw .card,.drw .card.ck-sum{background:rgba(255,255,255,.07);border-color:rgba(52,211,153,.3);-webkit-backdrop-filter:none;backdrop-filter:none;box-shadow:none;color:#effff8}
+.drw .si{background:rgba(0,0,0,.38);border:1px solid rgba(52,211,153,.32);color:#effff8;box-shadow:none}
+.drw .si:focus{border-color:#6ee7b7;outline:2px solid rgba(110,231,183,.5);outline-offset:1px}
+.drw .si::placeholder{color:#8db5a5;opacity:1}
+.drw .si[readonly]{opacity:.7}
+.drw .qty{background:rgba(0,0,0,.38);border-color:rgba(52,211,153,.32)}
+.drw .op{background:rgba(255,255,255,.07);border-color:rgba(52,211,153,.3);-webkit-backdrop-filter:none;backdrop-filter:none;box-shadow:none;color:#effff8}
+.drw .op.on{border-color:#34d399;box-shadow:0 0 0 1px #34d399;background:linear-gradient(160deg,rgba(52,211,153,.25),rgba(16,185,129,.1))}
+.drw .tx small,.drw .lead,.drw .op small{color:#c6ecdc}
+.drw .seg button{background:rgba(0,0,0,.35);color:#c6ecdc}.drw .seg button.on{color:#6ee7b7;background:linear-gradient(145deg,rgba(52,211,153,.34),rgba(16,185,129,.14))}
+.drw .btn.o{background:rgba(0,0,0,.4);color:#effff8;border-color:rgba(52,211,153,.5)}
+.drw h3,.drw h4{color:#fff}
+.drw .steps li,.drw .fld>label,.drw summary,.drw .qrbox p{color:#effff8}
+.drw .tx{border-color:rgba(255,255,255,.14)}
+@media(max-width:560px){
+  .ckf{grid-template-columns:1fr}
+  .cks li span{display:none}.cks li.on span{display:inline}
+  .pm button{font-size:.78rem;padding:10px 4px}
+  .ck-act{flex-direction:column-reverse}.ck-act .btn.o{flex:1}
+}
+@media(prefers-color-scheme:light){
+  :root:not([data-theme="dark"]) .drw{color:#effff8}
+  :root:not([data-theme="dark"]) .fld>label{color:#c6ecdc}
+}
+</style>
+
 </head><body>
 <div id="intro" role="dialog" aria-label="Welcome to FinanceOS">
-  <div class="ia-mark" id="ia-mark"><span class="ia-glow"></span><span class="ia-ring"></span><svg id="intro-logo" viewBox="0 0 64 64" role="img" aria-label="FinanceOS"><use href="#lg"/></svg></div>
+  <div class="ia-mark" id="ia-mark"><span class="ia-glow"></span><span class="ia-ring"></span><svg id="intro-logo" viewBox="0 0 64 64" role="img" aria-label="FinanceOS"><use href="#fos-logo"/></svg></div>
   <div class="ia-bot" id="ia-bot">
     <div class="ia-hi">FinanceOS &amp; Portfolio OS</div>
     <div class="ia-msg">Welcome to the future of <em>your money.</em></div>
@@ -586,9 +782,9 @@ html.intro-on{overflow:hidden}
   </div>
 </div>
 
-<svg width="0" height="0" style="position:absolute" aria-hidden="true"><symbol id="lg" viewBox="0 0 64 64"><defs><linearGradient id="ag" gradientUnits="userSpaceOnUse" x1="14" y1="54" x2="52" y2="12"><stop offset="0" stop-color="#0F9F86"/><stop offset=".55" stop-color="#20CDB5"/><stop offset="1" stop-color="#7DF0DE"/></linearGradient><linearGradient id="at" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#0F1A1C"/><stop offset="1" stop-color="#040607"/></linearGradient></defs><rect width="64" height="64" rx="18" fill="url(#at)"/><rect x=".75" y=".75" width="62.5" height="62.5" rx="17.3" fill="none" stroke="#20CDB5" stroke-opacity=".5" stroke-width="1.5"/><g fill="none" stroke="url(#ag)" stroke-linecap="round" stroke-linejoin="round" stroke-width="6.2"><path d="M20 50V28Q20 20 28 20H46"/><path d="M20 35H38"/></g><g fill="none" stroke="#43E0CC" stroke-linecap="round" stroke-linejoin="round" stroke-width="3.4"><path d="M37 55L50 42"/><path d="M41.5 42H50V50.5"/></g></symbol></svg>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true"><symbol id="fos-logo" viewBox="0 0 64 64"><defs><linearGradient id="ag" gradientUnits="userSpaceOnUse" x1="14" y1="54" x2="52" y2="12"><stop offset="0" stop-color="#0F9F86"/><stop offset=".55" stop-color="#20CDB5"/><stop offset="1" stop-color="#7DF0DE"/></linearGradient><linearGradient id="at" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#0F1A1C"/><stop offset="1" stop-color="#040607"/></linearGradient></defs><rect width="64" height="64" rx="18" fill="url(#at)"/><rect x=".75" y=".75" width="62.5" height="62.5" rx="17.3" fill="none" stroke="#20CDB5" stroke-opacity=".5" stroke-width="1.5"/><g fill="none" stroke="url(#ag)" stroke-linecap="round" stroke-linejoin="round" stroke-width="6.2"><path d="M20 50V28Q20 20 28 20H46"/><path d="M20 35H38"/></g><g fill="none" stroke="#43E0CC" stroke-linecap="round" stroke-linejoin="round" stroke-width="3.4"><path d="M37 55L50 42"/><path d="M41.5 42H50V50.5"/></g></symbol></svg>
 <header><div class="wrap"><nav>
-<a class="logo" href="#info"><svg width="36" height="36" aria-hidden="true"><use href="#lg"/></svg>Finance<b>OS</b></a>
+<a class="logo" href="#info"><svg width="36" height="36" aria-hidden="true"><use href="#fos-logo"/></svg>Finance<b>OS</b></a>
 <div class="links"><a class="l" href="#info"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 11l9-8 9 8v9a1 1 0 01-1 1h-5v-6H9v6H4a1 1 0 01-1-1z"/></svg><span class="lb">Info</span></a><a class="l" href="#privacy"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3l8 3v6c0 4.5-3.2 8-8 9-4.8-1-8-4.5-8-9V6z"/><path d="M9 12l2 2 4-4"/></svg><span class="lb">Privacy</span></a><a class="l" href="#features"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="3" width="7" height="7" rx="1.6"/><rect x="14" y="3" width="7" height="7" rx="1.6"/><rect x="3" y="14" width="7" height="7" rx="1.6"/><rect x="14" y="14" width="7" height="7" rx="1.6"/></svg><span class="lb">Features</span></a><a class="l" href="#pricing"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20.6 13.4l-7.2 7.2a2 2 0 01-2.8 0L3 13V3h10l7.6 7.6a2 2 0 010 2.8z"/><circle cx="7.5" cy="7.5" r="1.2"/></svg><span class="lb">Pricing</span></a><a class="l" href="#apk"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="6" y="2" width="12" height="20" rx="2.6"/><path d="M12 8v6m-3-3l3 3 3-3"/></svg><span class="lb x">Get the app</span><span class="sb">App</span></a><a class="l" href="#faq"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M9.6 9.4a2.5 2.5 0 114 2c-.9.6-1.6 1.1-1.6 2.2M12 17.3v.1"/></svg><span class="lb">FAQ</span></a><a class="l" href="#contact"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="2.6"/><path d="M3.5 7l8.5 6 8.5-6"/></svg><span class="lb">Contact</span></a></div>
 </nav><a class="ref-head-link" href="#referrals" aria-label="Open Refer and Earn page" title="Refer &amp; Earn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="9" cy="8" r="3"/><path d="M3 20v-1.5A4.5 4.5 0 017.5 14h3a4.5 4.5 0 014.5 4.5V20M17 8h4m-2-2v4"/></svg></a><button class="cartb" id="cartb" aria-label="Open checkout cart"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 4h2l2.4 11.2a1 1 0 001 .8h8.7a1 1 0 001-.8L20 8H6.2"/><circle cx="9" cy="20" r="1.3"/><circle cx="17" cy="20" r="1.3"/></svg><b>1</b></button></div></header>
 
@@ -598,7 +794,7 @@ html.intro-on{overflow:hidden}
 <h1>All your money and investments in one place.</h1>
 <p>FinanceOS tracks your everyday money. Portfolio OS tracks everything you own. Together they show your real net worth, and Fin AI answers questions about it in plain language.</p>
 <div class="row"><a class="btn" href="#apk">Get the app</a><a class="btn o" href="#privacy">Privacy &amp; security</a><a class="btn o" href="#features">See all features</a></div><div class="pvchips"><span>Encrypted cloud</span><span>On-device JSON mode</span><span>Face ID &amp; PC Lock</span></div></div>
-<div class="glow"><div class="demo" id="demo"><div class="dtabs" id="dtabs"></div><div class="dbody" id="dbody"></div></div></div></div>
+<div class="glow"><div class="stk" id="stk"><div class="stk-stage" id="stkStage" tabindex="0" role="group" aria-roledescription="carousel" aria-label="FinanceOS features. Drag sideways or use the arrow keys, press Enter to open."></div><div class="stk-bar"><button class="stk-nav" id="stkPrev" aria-label="Previous feature"><svg viewBox="0 0 24 24"><path d="M15 6l-6 6 6 6"/></svg></button><div class="stk-dots" id="stkDots"></div><button class="stk-nav" id="stkNext" aria-label="Next feature"><svg viewBox="0 0 24 24"><path d="M9 6l6 6-6 6"/></svg></button><p class="stk-hint">Drag or swipe sideways. Tap the front card to try it live.</p></div></div></div></div>
 <div class="stats"><div><strong>40+</strong><span>screens in one app</span></div><div><strong>20+</strong><span>asset classes tracked</span></div><div><strong>1</strong><span>net worth, always current</span></div></div>
 <div class="pvband"><span class="tag">Privacy first</span><h2>Built around your privacy</h2><p class="lead">Your finances are personal. Keep them on your own device, or sync them to an encrypted cloud account. You decide, and you can switch any time.</p>
 <div class="g3"><div class="card blk"><div class="pvic"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="6" y="2" width="12" height="20" rx="2.6"/><path d="M11 18h2"/></svg></div><h3>On your device</h3><p>Manual JSON mode keeps everything local. Nothing is uploaded, and you back up with a file you control.</p></div>
@@ -660,12 +856,12 @@ html.intro-on{overflow:hidden}
 
 <section class="page" id="p-pricing"><h2>Simple pricing</h2><p class="lead">Choose monthly or yearly. Yearly plans start with two months free.</p>
 <div class="seg" style="margin-top:20px"><button class="on" data-b="m">Monthly</button><button data-b="y">Yearly (2 months free)</button></div>
-<div class="g3" id="pgrid"></div>
+<div class="g3" id="pgrid"></div><section class="card pdp" id="pdetail" aria-live="polite"></section>
 <h3 style="margin-top:56px">Every plan includes</h3><div class="g2" style="margin-top:16px"><div class="card"><h3>Secure sign-in</h3><p>Your account is protected by your login.</p></div><div class="card"><h3>Mobile install</h3><p>Use it like an app on your phone.</p></div><div class="card"><h3>Dark and light looks</h3><p>The app follows your device setting.</p></div><div class="card"><h3>Regular updates</h3><p>New features arrive without reinstalling.</p></div></div></section>
 
 <section class="page" id="p-apk"><div class="big"><div><span class="tag">Android, iPhone and desktop</span><h1 style="font-size:clamp(2.2rem,5vw,3.8rem)">Take FinanceOS with you.</h1><p class="lead">Install it from your browser in seconds, with no app store needed. It opens full screen, has its own icon on your home screen and works like any other app. Your net worth, budgets and portfolio are one tap away.</p>
 <div class="nx"><button class="btn" id="inst">Install app</button><button class="btn o" id="apkb" disabled>Android APK coming soon</button></div></div>
-<div class="glow"><div class="phone card"><div class="logo" style="font-size:1.3rem"><svg width="36" height="36" aria-hidden="true"><use href="#lg"/></svg>Finance<b>OS</b></div><p class="lead" style="margin:12px 0 0;font-size:.9rem">Net worth</p><h2 class="up">₹24.8L</h2><div class="mini"><i style="height:40%"></i><i style="height:55%"></i><i style="height:48%"></i><i style="height:70%"></i><i style="height:62%"></i><i style="height:90%"></i></div><div class="track"><i style="width:72%"></i></div><small style="color:var(--mu)">72% of your goal</small></div></div></div>
+<div class="glow"><div class="phone card"><div class="logo" style="font-size:1.3rem"><svg width="36" height="36" aria-hidden="true"><use href="#fos-logo"/></svg>Finance<b>OS</b></div><p class="lead" style="margin:12px 0 0;font-size:.9rem">Net worth</p><h2 class="up">₹24.8L</h2><div class="mini"><i style="height:40%"></i><i style="height:55%"></i><i style="height:48%"></i><i style="height:70%"></i><i style="height:62%"></i><i style="height:90%"></i></div><div class="track"><i style="width:72%"></i></div><small style="color:var(--mu)">72% of your goal</small></div></div></div>
 <h2 style="margin-top:72px">Available now and coming soon</h2><div class="g3"><div class="card"><span class="tag">Available now</span><h3>Install from your browser</h3><p>Open this site on your phone and tap Install. No store, no waiting.</p></div><div class="card" style="opacity:.6"><span class="tag">Coming soon</span><h3>Android APK</h3><p>A direct download for Android phones and tablets.</p></div><div class="card" style="opacity:.6"><span class="tag">Planned</span><h3>Play Store and App Store</h3><p>Store listings with automatic updates.</p></div></div>
 <h2 style="margin-top:72px">Install from your browser in three steps</h2><ol class="steps g3" style="gap:6px 40px"><li>Tap Install app on this page and choose your version at checkout.</li><li>Place your order, then tap Install app now. FinanceOS opens in a new tab.</li><li>Tap Install in the banner. On iPhone, tap Share, then Add to Home Screen.</li></ol>
 <h2 style="margin-top:72px">Inside the app</h2><div class="chips" id="inapp" style="margin-top:16px"></div></section>
@@ -817,42 +1013,39 @@ if(incomingReferralCode && /^[A-Za-z0-9_-]{4,40}$/.test(incomingReferralCode)){
 /* Demo */
 const inr=n=>'₹'+(n>=1e5?(n/1e5).toFixed(1)+'L':n.toLocaleString('en-IN'));
 const tabs=['Dashboard','Budgets','Portfolio','EMI','Fin AI','Transactions','Credit'];let cur=0;
-$('#dtabs').innerHTML=tabs.map((t,i)=>`<button data-i="${i}">${t}</button>`).join('');
-$('#dtabs').onclick=e=>{if(e.target.dataset.i)show(+e.target.dataset.i)};
 const months={'3M':[[62,48],[70,52],[66,45]],'6M':[[55,50],[60,47],[58,52],[64,49],[70,52],[66,45]]};
 const views=[
 ()=>`<div class="kpis"><div class="kpi"><small>Net worth</small><strong>₹24.8L</strong><small class="up">▲ 4.2%</small></div><div class="kpi"><small>Income</small><strong>₹1.1L</strong></div><div class="kpi"><small>Spent</small><strong>₹67K</strong><small class="dn">▲ 3%</small></div><div class="kpi"><small>Saved</small><strong>39%</strong></div></div>
-<div class="seg"><button class="on" data-r="3M">3 months</button><button data-r="6M">6 months</button></div><div class="bars" id="bars"></div>`,
-()=>`<p class="lead" style="margin:0 0 6px">Drag the spending slider. The bar fills up and warns you as you near the limit.</p><div id="bud"></div>`,
-()=>`<div class="pf"><div class="donut" id="dn"></div><div class="leg" id="lg"></div></div><div style="margin-top:18px"><b>Stress test:</b> market falls <b id="sv">10</b>%<input type="range" id="st" min="0" max="50" value="10"><p id="so" class="lead" style="margin:4px 0 0"></p></div>`,
-()=>`<div class="kpis"><div class="kpi"><small>Monthly EMI</small><strong id="em">-</strong></div><div class="kpi"><small>Total interest</small><strong id="ti">-</strong></div></div>
-<div class="row2"><div class="t"><span>Loan amount</span><b id="la"></b></div><input type="range" id="a" min="100000" max="5000000" step="50000" value="1500000"></div>
-<div class="row2"><div class="t"><span>Interest rate</span><b id="ra"></b></div><input type="range" id="r" min="6" max="16" step=".1" value="9"></div>
-<div class="row2"><div class="t"><span>Tenure</span><b id="ya"></b></div><input type="range" id="y" min="1" max="30" value="15"></div>`,
-()=>`<div class="chat" id="ch"><div class="m">Hi, I’m Fin AI. Ask me about your money.</div></div><div class="chips" id="cp"></div>`];
+<div class="seg"><button class="on" data-r="3M">3 months</button><button data-r="6M">6 months</button></div><div class="bars" id="dm-bars"></div>`,
+()=>`<p class="lead" style="margin:0 0 6px">Drag the spending slider. The bar fills up and warns you as you near the limit.</p><div id="dm-bud"></div>`,
+()=>`<div class="pf"><div class="donut" id="dm-dn"></div><div class="leg" id="dm-lg"></div></div><div style="margin-top:18px"><b>Stress test:</b> market falls <b id="dm-sv">10</b>%<input type="range" id="dm-st" min="0" max="50" value="10"><p id="dm-so" class="lead" style="margin:4px 0 0"></p></div>`,
+()=>`<div class="kpis"><div class="kpi"><small>Monthly EMI</small><strong id="dm-em">-</strong></div><div class="kpi"><small>Total interest</small><strong id="dm-ti">-</strong></div></div>
+<div class="row2"><div class="t"><span>Loan amount</span><b id="dm-la"></b></div><input type="range" id="dm-a" min="100000" max="5000000" step="50000" value="1500000"></div>
+<div class="row2"><div class="t"><span>Interest rate</span><b id="dm-ra"></b></div><input type="range" id="dm-r" min="6" max="16" step=".1" value="9"></div>
+<div class="row2"><div class="t"><span>Tenure</span><b id="dm-ya"></b></div><input type="range" id="dm-y" min="1" max="30" value="15"></div>`,
+()=>`<div class="chat" id="dm-ch"><div class="m">Hi, I’m Fin AI. Ask me about your money.</div></div><div class="chips" id="dm-cp"></div>`];
 const budgets=[['Food',12000,9800],['Travel',8000,3200],['Shopping',10000,9400],['Bills',15000,11000]];
 const assets=[['Stocks',34,'#10b981'],['Mutual funds',26,'#34d399'],['Gold',14,'#fbbf24'],['Real estate',16,'#38bdf8'],['Crypto',6,'#a78bfa'],['Cash',4,'#94a3b8']];
 const qa={'Where did I overspend?':'Shopping is at 94% of its limit with 12 days left. Food is next at 82%.','How is my portfolio doing?':'Up 4.2% this month. Stocks and funds lead, while crypto dragged slightly.','Can I afford a ₹20L loan?':'At 9% over 15 years the EMI is about ₹20,300. That is 18% of your income, which is comfortable.','Show my net worth':'Your net worth is ₹24.8L, up ₹1L since last month.'};
-function extra(i){$$('#dtabs button').forEach((b,k)=>b.classList.toggle('on',k===i));const B=$('#dbody');B.onclick=null;
+function extra(i,B){B.onclick=null;
 if(i===5){const T=[['Salary','Income',85000],['Rent','Housing',-22000],['Groceries','Food',-4200],['Dividend','Income',3100],['Flight tickets','Travel',-9800],['Electricity','Bills',-2100],['Freelance','Income',18000]];let f='All';
- B.innerHTML='<div class="chips"></div><div id="tl"></div>';$('.chips',B).innerHTML=['All','Income','Spending'].map(c=>`<button>${c}</button>`).join('');
- const r=()=>{$('#tl').innerHTML=T.filter(t=>f==='All'||(f==='Income'?t[2]>0:t[2]<0)).map(t=>`<div class="tx"><span>${t[0]}<small>${t[1]}</small></span><b class="${t[2]>0?'up':'dn'}">${t[2]>0?'+':'−'}${inr(Math.abs(t[2]))}</b></div>`).join('');$$('.chips button',B).forEach(b=>b.classList.toggle('on',b.textContent===f))};
+ B.innerHTML='<div class="chips"></div><div id="dm-tl"></div>';$('.chips',B).innerHTML=['All','Income','Spending'].map(c=>`<button>${c}</button>`).join('');
+ const r=()=>{$('#dm-tl').innerHTML=T.filter(t=>f==='All'||(f==='Income'?t[2]>0:t[2]<0)).map(t=>`<div class="tx"><span>${t[0]}<small>${t[1]}</small></span><b class="${t[2]>0?'up':'dn'}">${t[2]>0?'+':'−'}${inr(Math.abs(t[2]))}</b></div>`).join('');$$('.chips button',B).forEach(b=>b.classList.toggle('on',b.textContent===f))};
  B.onclick=e=>{if(e.target.closest('.chips')&&e.target.tagName==='BUTTON'){f=e.target.textContent;r()}};r()}
-else{B.innerHTML='<div class="pf"><div class="donut" id="gx"></div><div><b>Card used: <span id="gu"></span> of ₹2L</b><p id="gs" class="lead" style="margin:6px 0"></p><input type="range" id="gr" min="0" max="200000" step="5000" value="40000"></div></div>';
- const u=()=>{const v=+$('#gr').value,p=v/2000,c=p<30?'#10b981':p<60?'#fbbf24':'#f87171';$('#gx').style.background=`conic-gradient(${c} ${p}%,var(--bg2) 0)`;$('#gu').textContent=inr(v)+' ('+p.toFixed(0)+'%)';$('#gs').textContent=p<30?'Healthy. Keep usage under 30%.':p<60?'Watch it. Try paying part of it early.':'High. Pay this down soon to protect your score.'};$('#gr').oninput=u;u()}}
-function show(i){cur=i;if(i>4)return extra(i);$$('#dtabs button').forEach((b,k)=>b.classList.toggle('on',k===i));const B=$('#dbody');B.onclick=null;B.innerHTML=views[i]();
- if(i===0){const draw=k=>{$('#bars').innerHTML=months[k].map((m,j)=>`<div><i style="height:0" data-h="${m[0]}"></i>M${j+1}</div>`).join('');requestAnimationFrame(()=>requestAnimationFrame(()=>$$('#bars i').forEach(e=>e.style.height=e.dataset.h*1.9+'px')))};draw('3M');
+else{B.innerHTML='<div class="pf"><div class="donut" id="dm-gx"></div><div><b>Card used: <span id="dm-gu"></span> of ₹2L</b><p id="dm-gs" class="lead" style="margin:6px 0"></p><input type="range" id="dm-gr" min="0" max="200000" step="5000" value="40000"></div></div>';
+ const u=()=>{const v=+$('#dm-gr').value,p=v/2000,c=p<30?'#10b981':p<60?'#fbbf24':'#f87171';$('#dm-gx').style.background=`conic-gradient(${c} ${p}%,var(--bg2) 0)`;$('#dm-gu').textContent=inr(v)+' ('+p.toFixed(0)+'%)';$('#dm-gs').textContent=p<30?'Healthy. Keep usage under 30%.':p<60?'Watch it. Try paying part of it early.':'High. Pay this down soon to protect your score.'};$('#dm-gr').oninput=u;u()}}
+function show(i,B){cur=i;if(i>4)return extra(i,B);B.onclick=null;B.innerHTML=views[i]();
+ if(i===0){const draw=k=>{$('#dm-bars').innerHTML=months[k].map((m,j)=>`<div><i style="height:0" data-h="${m[0]}"></i>M${j+1}</div>`).join('');requestAnimationFrame(()=>requestAnimationFrame(()=>$$('#dm-bars i').forEach(e=>e.style.height=e.dataset.h*1.9+'px')))};draw('3M');
   B.onclick=e=>{if(e.target.dataset.r){$$('.seg button',B).forEach(b=>b.classList.toggle('on',b===e.target));draw(e.target.dataset.r)}}}
- if(i===1){const lim=budgets.map(b=>b[1]);$('#bud').innerHTML=budgets.map((b,k)=>`<div class="row2"><div class="t"><span>${b[0]}</span><span><b class="bs"></b> of ${inr(lim[k])}</span></div><div class="track"><i class="bt"></i></div><input type="range" min="0" max="${Math.round(lim[k]*1.4)}" step="100" value="${b[2]}"><small class="bm" style="color:var(--mu)"></small></div>`).join('');
-  const rows=$$('#bud .row2');const up=k=>{const r=rows[k],v=+$('input',r).value,l=lim[k],p=v/l*100;$('.bs',r).textContent=inr(v);const t=$('.bt',r);t.style.width=Math.min(p,100)+'%';t.style.background=p>100?'var(--bad)':p>85?'var(--warn)':'var(--em)';$('.bm',r).textContent=p>100?'Over budget by '+inr(v-l):p>85?'Close to the limit, '+inr(l-v)+' left':inr(l-v)+' left this month'};
+ if(i===1){const lim=budgets.map(b=>b[1]);$('#dm-bud').innerHTML=budgets.map((b,k)=>`<div class="row2"><div class="t"><span>${b[0]}</span><span><b class="bs"></b> of ${inr(lim[k])}</span></div><div class="track"><i class="bt"></i></div><input type="range" min="0" max="${Math.round(lim[k]*1.4)}" step="100" value="${b[2]}"><small class="bm" style="color:var(--mu)"></small></div>`).join('');
+  const rows=$$('#dm-bud .row2');const up=k=>{const r=rows[k],v=+$('input',r).value,l=lim[k],p=v/l*100;$('.bs',r).textContent=inr(v);const t=$('.bt',r);t.style.width=Math.min(p,100)+'%';t.style.background=p>100?'var(--bad)':p>85?'var(--warn)':'var(--em)';$('.bm',r).textContent=p>100?'Over budget by '+inr(v-l):p>85?'Close to the limit, '+inr(l-v)+' left':inr(l-v)+' left this month'};
   rows.forEach((r,k)=>{$('input',r).oninput=()=>up(k);up(k)})}
- if(i===2){let sel=-1;const go=()=>{let a=0;$('#dn').style.background='conic-gradient('+assets.map((s,k)=>{const x=`${s[2]}${sel>=0&&sel!==k?'55':''} ${a}% ${a+s[1]}%`;a+=s[1];return x}).join(',')+')';
-   $('#lg').innerHTML=assets.map((s,k)=>`<button data-k="${k}" class="${sel===k?'on':''}"><s style="background:${s[2]}"></s>${s[0]}<em>${s[1]}%</em></button>`).join('')};go();
-  $('#lg').onclick=e=>{const b=e.target.closest('button');if(b){sel=sel===+b.dataset.k?-1:+b.dataset.k;go()}};
-  const st=()=>{const d=+$('#st').value;$('#sv').textContent=d;const beta=[1,.8,.2,.4,1.6,0],loss=assets.reduce((s,a,k)=>s+a[1]*beta[k]*d/100,0);$('#so').textContent='Estimated portfolio drop: '+loss.toFixed(1)+'% (about '+inr(Math.round(2480000*loss/100))+')'};$('#st').oninput=st;st()}
- if(i===3){const c=()=>{const P=+$('#a').value,r=+$('#r').value/1200,n=+$('#y').value*12,e=P*r*Math.pow(1+r,n)/(Math.pow(1+r,n)-1);$('#em').textContent='₹'+Math.round(e).toLocaleString('en-IN');$('#ti').textContent=inr(Math.round(e*n-P));$('#la').textContent=inr(P);$('#ra').textContent=r*1200+'%';$('#ya').textContent=$('#y').value+' yrs'};$$('#dbody input').forEach(x=>x.oninput=c);c()}
- if(i===4){$('#cp').innerHTML=Object.keys(qa).map(q=>`<button>${q}</button>`).join('');$('#cp').onclick=e=>{if(e.target.tagName!=='BUTTON')return;const ch=$('#ch');ch.insertAdjacentHTML('beforeend',`<div class="m u">${e.target.textContent}</div>`);const m=document.createElement('div');m.className='m';m.textContent='…';ch.append(m);ch.scrollTop=1e5;setTimeout(()=>{m.textContent=qa[e.target.textContent];ch.scrollTop=1e5},700)}}}
-show(0);
+ if(i===2){let sel=-1;const go=()=>{let a=0;$('#dm-dn').style.background='conic-gradient('+assets.map((s,k)=>{const x=`${s[2]}${sel>=0&&sel!==k?'55':''} ${a}% ${a+s[1]}%`;a+=s[1];return x}).join(',')+')';
+   $('#dm-lg').innerHTML=assets.map((s,k)=>`<button data-k="${k}" class="${sel===k?'on':''}"><s style="background:${s[2]}"></s>${s[0]}<em>${s[1]}%</em></button>`).join('')};go();
+  $('#dm-lg').onclick=e=>{const b=e.target.closest('button');if(b){sel=sel===+b.dataset.k?-1:+b.dataset.k;go()}};
+  const st=()=>{const d=+$('#dm-st').value;$('#dm-sv').textContent=d;const beta=[1,.8,.2,.4,1.6,0],loss=assets.reduce((s,a,k)=>s+a[1]*beta[k]*d/100,0);$('#dm-so').textContent='Estimated portfolio drop: '+loss.toFixed(1)+'% (about '+inr(Math.round(2480000*loss/100))+')'};$('#dm-st').oninput=st;st()}
+ if(i===3){const c=()=>{const P=+$('#dm-a').value,r=+$('#dm-r').value/1200,n=+$('#dm-y').value*12,e=P*r*Math.pow(1+r,n)/(Math.pow(1+r,n)-1);$('#dm-em').textContent='₹'+Math.round(e).toLocaleString('en-IN');$('#dm-ti').textContent=inr(Math.round(e*n-P));$('#dm-la').textContent=inr(P);$('#dm-ra').textContent=r*1200+'%';$('#dm-ya').textContent=$('#dm-y').value+' yrs'};$$('input',B).forEach(x=>x.oninput=c);c()}
+ if(i===4){$('#dm-cp').innerHTML=Object.keys(qa).map(q=>`<button>${q}</button>`).join('');$('#dm-cp').onclick=e=>{if(e.target.tagName!=='BUTTON')return;const ch=$('#dm-ch');ch.insertAdjacentHTML('beforeend',`<div class="m u">${e.target.textContent}</div>`);const m=document.createElement('div');m.className='m';m.textContent='…';ch.append(m);ch.scrollTop=1e5;setTimeout(()=>{m.textContent=qa[e.target.textContent];ch.scrollTop=1e5},700)}}}
 
 /* Features */
 const IC={tx:'M7 7h13M7 7l3-3M7 7l3 3M17 17H4M17 17l-3-3M17 17l-3 3',loan:'M3 10l9-6 9 6M5 10v8M9 10v8M15 10v8M19 10v8M3 20h18',card:'M3 6h18v12H3zM3 10h18M7 15h4',target:'M12 3a9 9 0 100 18 9 9 0 000-18zM12 8a4 4 0 100 8 4 4 0 000-8zM12 12h.01',alert:'M12 3l10 18H2zM12 10v5M12 18h.01',ai:'M12 3l2 6 6 2-6 2-2 6-2-6-6-2 6-2zM19 3v4M17 5h4',chart:'M3 20h18M6 16v-5M11 16V6M16 16v-8',pulse:'M2 12h5l3-8 4 16 3-8h5',tax:'M6 3h12v18l-3-2-3 2-3-2-3 2zM9 8h6M9 12h6',trend:'M3 17l6-6 4 4 8-9M15 6h6v6',shield:'M12 3l8 3v6c0 5-3.5 8-8 9-4.5-1-8-4-8-9V6z',doc:'M7 3h8l4 4v14H7zM15 3v4h4M10 13h6M10 17h6'};
@@ -892,7 +1085,7 @@ const FD=[
  el.onclick=e=>{const t=e.target;if(t.classList.contains('vw'))return openReport($$('.chips .on',el).map(b=>b.textContent));if(t.closest('.chips')&&t.tagName==='BUTTON')t.classList.toggle('on');if(t.classList.contains('gen')){const n=$$('.chips .on',el).length,p=$('.pg',el),st=$('.st',el);if(!n){st.textContent='Select at least one section.';return}p.style.transition='none';p.style.width='0';void p.offsetWidth;p.style.transition='width 1.1s';p.style.width='100%';st.textContent='Building report...';setTimeout(()=>st.innerHTML='Report ready: '+(n+1)+' pages, '+n+' sections. <button class="btn sm vw">View report</button>',1150)}}}]];
 function openReport(sel){const has=n=>sel.includes(n),mo=['Jun','Jul','Aug','Sep','Oct','Nov'],d=new Date().toLocaleDateString('en-IN',{day:'numeric',month:'long',year:'numeric'});
  const TX=[['Salary','Income',85000],['Rent','Housing',-22000],['Groceries','Food',-4200],['Dividend','Income',3100],['Flight tickets','Travel',-9800],['Electricity','Bills',-2100],['Freelance','Income',18000]],HD=[['Nifty 50 ETF',420000,12.4],['Flexi-cap fund',310000,9.1],['Sovereign gold',260000,15.6],['Reliance',180000,-2.3],['Bitcoin',90000,31.2],['Bond fund',150000,6.8]];
- let h=`<div class="rh"><svg width="38" height="38"><use href="#lg"/></svg><div><b>FinanceOS report</b><small>Generated ${d}</small></div></div>`;
+ let h=`<div class="rh"><svg width="38" height="38"><use href="#fos-logo"/></svg><div><b>FinanceOS report</b><small>Generated ${d}</small></div></div>`;
  if(has('Summary'))h+=`<h4>Summary</h4><div class="rk"><div><small>Net worth</small><b>₹24.8L</b></div><div><small>Income</small><b>₹1.1L</b></div><div><small>Spent</small><b>₹67K</b></div><div><small>Saved</small><b>39%</b></div></div>`;
  if(has('Charts'))h+=`<h4>Income and spending, last 6 months</h4><div class="rb">${months['6M'].map((m,k)=>`<div><span><i style="height:${m[0]*1.6}px"></i><i style="height:${m[1]*1.6}px;background:#94a3b8"></i></span>${mo[k]}</div>`).join('')}</div><small class="rl"><b style="background:#10b981"></b> Income <b style="background:#94a3b8"></b> Spending</small><h4>Asset allocation</h4>${assets.map(a=>`<div class="ra"><span>${a[0]}</span><i><u style="width:${a[1]*2.4}%;background:${a[2]}"></u></i><b>${a[1]}%</b></div>`).join('')}`;
  if(has('Transactions'))h+=`<h4>Recent transactions</h4><table>${TX.map(t=>`<tr><td>${t[0]}</td><td>${t[1]}</td><td style="text-align:right;color:${t[2]>0?'#059669':'#dc2626'}">${t[2]>0?'+':'−'}${inr(Math.abs(t[2]))}</td></tr>`).join('')}</table>`;
@@ -913,10 +1106,130 @@ $('#inapp').innerHTML=FD.map(f=>`<button>${f[1]}</button>`).join('');$('#inapp')
 
 /* Pricing: monthly prices below drive everything; yearly = 10 x monthly (2 months free) */
 const P=[['Starter',299,['Dashboard and transactions','Basic budgets','1 device']],['Pro',599,['Everything in Starter','Portfolio OS, all asset classes','Fin AI and alerts','PDF export'],1],['Custom',null,['White-label branding','Custom modules','Priced to your business needs']]];
-let bill='m',sel=1;const fm=n=>'₹'+n.toLocaleString('en-IN');
-const pr=()=>{const m=bill==='m';$('#pgrid').innerHTML=P.map((p,k)=>{const c=p[1]===null;return `<div class="card price ${k===sel?'hot':''}" data-k="${k}"><h3>${p[0]}</h3><div class="n">${c?'Custom':fm(m?p[1]:p[1]*10)}<small style="font:400 .9rem 'DM Sans';color:var(--mu)">${c?'':m?' /month':' /year'}</small></div>${!c&&!m?`<p class="up" style="margin:0">First 2 months free <s style="color:var(--mu)">${fm(p[1]*12)}</s></p>`:'<p style="margin:0">&nbsp;</p>'}<ul>${p[2].map(x=>`<li>${x}</li>`).join('')}</ul><a class="btn ${k===sel?'':'o'}" href="${c?'#contact':'#apk'}" data-buy="${c?'':p[0]}">${c?'Talk to us':'Choose '+p[0]}</a></div>`}).join('')};pr();
-$('#pgrid').onclick=e=>{const by=e.target.closest('[data-buy]');if(by&&by.dataset.buy){e.preventDefault();openCart('pick',by.dataset.buy,bill);return}const c=e.target.closest('.price');if(c&&!e.target.closest('a')){sel=+c.dataset.k;pr()}};
-$('#p-pricing .seg').onclick=e=>{if(e.target.dataset.b){bill=e.target.dataset.b;$$('#p-pricing .seg button').forEach(b=>b.classList.toggle('on',b===e.target));pr()}};
+let bill='m',sel=1,pdShow=false;const fm=n=>'₹'+n.toLocaleString('en-IN');
+const pr=()=>{const m=bill==='m';$('#pgrid').innerHTML=P.map((p,k)=>{const c=p[1]===null;return `<div class="card price ${k===sel?'hot':''}${k===sel&&pdShow?' shown':''}" data-k="${k}" tabindex="0" aria-controls="pdetail" aria-expanded="${k===sel&&pdShow}"><h3>${p[0]}</h3><div class="n">${c?'Custom':fm(m?p[1]:p[1]*10)}<small style="font:400 .9rem 'DM Sans';color:var(--mu)">${c?'':m?' /month':' /year'}</small></div>${!c&&!m?`<p class="up" style="margin:0">First 2 months free <s style="color:var(--mu)">${fm(p[1]*12)}</s></p>`:'<p style="margin:0">&nbsp;</p>'}<ul>${p[2].map(x=>`<li>${x}</li>`).join('')}</ul><a class="btn ${k===sel?'':'o'}" href="${c?'#contact':'#apk'}" data-buy="${c?'':p[0]}">${c?'Talk to us':'Choose '+p[0]}</a></div>`}).join('')};pr();
+$('#pgrid').onclick=e=>{const by=e.target.closest('[data-buy]');if(by&&by.dataset.buy){e.preventDefault();openCart('pick',by.dataset.buy,bill);return}const c=e.target.closest('.price');if(c&&!e.target.closest('a')){sel=+c.dataset.k;pdShow=true;pr();pdr(true);$('#pdetail').scrollIntoView({behavior:'smooth',block:'nearest'})}};
+$('#pgrid').onkeydown=e=>{if((e.key==='Enter'||e.key===' ')&&e.target.classList.contains('price')){e.preventDefault();e.target.click()}};
+$('#p-pricing .seg').onclick=e=>{if(e.target.dataset.b){bill=e.target.dataset.b;$$('#p-pricing .seg button').forEach(b=>b.classList.toggle('on',b===e.target));pr();if(pdShow)pdr(false)}};
+
+/* ═════ Info page: draggable, infinitely looping stack of feature cards ═════ */
+(function(){
+const stage=$('#stkStage'),stk=$('#stk');if(!stage)return;
+const N=tabs.length,mod=i=>((i%N)+N)%N,clamp=(v,a,b)=>Math.max(a,Math.min(b,v));
+const reduce=matchMedia('(prefers-reduced-motion:reduce)').matches;
+const META=[['chart','Dashboard','Your net worth at a glance'],['target','Budgets','Limits that warn you early'],['trend','Portfolio','Everything you own, valued'],['loan','EMI','Plan any loan in seconds'],['ai','Fin AI','Ask in plain words'],['tx','Transactions','Every rupee, logged'],['card','Credit','Keep card usage healthy']];
+const emiOf=(P,r,y)=>{r=r/1200;const n=y*12;return P*r*Math.pow(1+r,n)/(Math.pow(1+r,n)-1)};
+const ARW='<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg>';
+const PV=[
+ ()=>`<div class="pv-k"><div><small>Net worth</small><b>₹24.8L</b></div><div><small>Saved</small><b>39%</b></div></div><div class="pv-bars">${[58,72,55,80,66,92].map(h=>`<i style="height:${h}%"></i>`).join('')}</div>`,
+ ()=>budgets.slice(0,3).map(b=>{const p=Math.min(100,b[2]/b[1]*100);return `<div class="pv-r"><span>${b[0]}</span><em>${Math.round(p)}%</em></div><div class="track"><i style="width:${p}%;background:${p>85?'var(--warn)':'var(--em)'}"></i></div>`}).join(''),
+ ()=>{let a=0;const cg=assets.map(s=>{const x=`${s[2]} ${a}% ${a+s[1]}%`;a+=s[1];return x}).join(',');return `<div class="pv-pf"><div class="donut" style="background:conic-gradient(${cg})"></div><div>${assets.slice(0,5).map(s=>`<p><s style="background:${s[2]}"></s>${s[0]}<em>${s[1]}%</em></p>`).join('')}</div></div>`},
+ ()=>`<div class="pv-big"><small>Monthly EMI</small><b>₹${Math.round(emiOf(1500000,9,15)).toLocaleString('en-IN')}</b><span>₹15L loan · 9% · 15 years</span></div><div class="track"><i style="width:62%"></i></div><div class="track"><i style="width:45%"></i></div>`,
+ ()=>`<div class="pv-chat"><div class="m">Hi, I’m Fin AI. Ask me about your money.</div><div class="m u" style="align-self:flex-end">Where did I overspend?</div><div class="m">Shopping is at 94% of its limit with 12 days left.</div></div>`,
+ ()=>[['Salary','Income','+₹85,000','up'],['Rent','Housing','−₹22,000','dn'],['Groceries','Food','−₹4,200','dn'],['Dividend','Income','+₹3,100','up']].map(t=>`<div class="pv-tx"><span>${t[0]}<small>${t[1]}</small></span><b class="${t[3]}">${t[2]}</b></div>`).join(''),
+ ()=>`<div class="pv-ring"><div class="donut" style="background:conic-gradient(#10b981 20%,rgba(255,255,255,.16) 0)"></div><p><b>₹40,000 of ₹2L</b>20% used. Healthy. Keep usage under 30%.</p></div>`
+];
+const cards=META.map((m,i)=>{const c=document.createElement('div');c.className='stk-card';c.dataset.i=i;c.setAttribute('aria-label',m[1]+'. '+m[2]);
+ c.innerHTML=`<div class="sc-face">${'<div class="sc-h">'+ico(m[0])+`<div><b>${m[1]}</b><small>${m[2]}</small></div><span class="sc-n">${String(i+1).padStart(2,'0')}</span></div>`}<div class="sc-pv">${PV[i]()}</div><div class="sc-cta"><span>Tap to open and try it</span>${ARW}</div></div><div class="sc-shade"></div>`;
+ stage.append(c);return c});
+const dots=$('#stkDots');dots.innerHTML=META.map((m,i)=>`<button data-i="${i}" aria-label="Show ${m[1]}"></button>`).join('');
+
+let W=0,cw=300,ch=360,pos=3,tgt=3,spread=reduce?1:.1,open=-1,openH=440,lastFront=-1,raf=0,lastT=0,down=null,live=null,ro=null,tt=0,wt=0;
+const trans=()=>{stk.classList.add('trans');clearTimeout(tt);tt=setTimeout(()=>stk.classList.remove('trans'),700)};
+const front=()=>mod(Math.round(pos));
+function geo(){const w=stage.clientWidth;if(!w)return false;const first=!W;W=w;cw=Math.round(W<560?W*.72:Math.min(390,W*.55));ch=Math.round(clamp(cw*1.02,340,384));if(first&&!reduce){const t0=performance.now();(function s(t){const k=Math.min(1,(t-t0)/900);spread=.1+.9*(1-Math.pow(1-k,3));layout();if(k<1)requestAnimationFrame(s)})(t0)}return true}
+function layout(){if(!W)return;const o=open>=0,f=front();
+ cards.forEach((c,i)=>{let d=((i-pos)%N+N)%N;if(d>N/2)d-=N;const a=Math.abs(d),s=d<0?-1:1;let x,y=0,z,ry=0,sc,op,w,h,top;
+  if(o){const l=Math.min(a,3);w=W;h=openH;top=44;x=a<.02?0:s*l*9;y=-l*14-h*l*.02;sc=1-l*.04;z=-l*30;op=1}
+  else{w=cw;h=ch;top=18;const e=Math.min(a,1)*cw*.36+clamp(a-1,0,1)*cw*.14+clamp(a-2,0,1.5)*cw*.1;x=s*e*spread;z=-a*70;ry=-clamp(d,-1.25,1.25)*20*spread;sc=1-a*.07;op=clamp((3.4-a)/.55,0,1)}
+  const k=w+'|'+h+'|'+top;if(c._k!==k){c._k=k;c.style.width=w+'px';c.style.height=h+'px';c.style.marginLeft=(-w/2)+'px';c.style.top=top+'px'}
+  c.style.transform=`translate3d(${x.toFixed(1)}px,${y}px,${z.toFixed(1)}px) rotateY(${ry.toFixed(2)}deg) scale(${sc.toFixed(3)})`;
+  c.style.opacity=op.toFixed(2);c.style.zIndex=100-Math.round(a*10);c.style.pointerEvents=o&&i!==f?'none':'';
+  c.lastChild.style.opacity=a<.02?0:(o?Math.min(.7,.3+a*.12):Math.min(.62,a*.2)).toFixed(2);
+  if(i===f&&!c.classList.contains('front'))c.classList.add('front');else if(i!==f&&c.classList.contains('front'))c.classList.remove('front')});
+ stage.style.height=(o?openH+44+14:ch+36)+'px';
+ if(f!==lastFront){lastFront=f;$$('button',dots).forEach((b,i)=>b.classList.toggle('on',i===f))}}
+function tick(t){const dt=Math.min(.05,(t-(lastT||t))/1000);lastT=t;const diff=tgt-pos;
+ if(Math.abs(diff)<.0006||reduce){pos=tgt;layout();raf=0;lastT=0;return}
+ pos+=diff*(1-Math.exp(-dt*10));layout();raf=requestAnimationFrame(tick)}
+const go=t=>{tgt=t;if(!raf){lastT=0;raf=requestAnimationFrame(tick)}};
+const shortest=i=>{let d=((i-pos)%N+N)%N;if(d>N/2)d-=N;return Math.round(pos+d)};
+
+/* drag / swipe */
+const GAP=()=>cw*.42;
+stage.addEventListener('pointerdown',e=>{if(open>=0||(e.pointerType==='mouse'&&e.button!==0))return;
+ down={x:e.clientX,id:e.pointerId,pos0:pos,moved:0,cap:false,lx:e.clientX,lt:performance.now(),v:0};tgt=pos;if(raf){cancelAnimationFrame(raf);raf=0}});
+stage.addEventListener('pointermove',e=>{if(!down||e.pointerId!==down.id)return;const dx=e.clientX-down.x;down.moved=Math.max(down.moved,Math.abs(dx));
+ if(!down.cap&&Math.abs(dx)>6){down.cap=true;stage.classList.add('grab');try{stage.setPointerCapture(e.pointerId)}catch(_){}}
+ if(!down.cap)return;pos=down.pos0-dx/GAP();tgt=pos;const now=performance.now(),dt=now-down.lt;
+ if(dt>0){down.v=down.v*.6+(-(e.clientX-down.lx)/GAP()/(dt/1000))*.4}down.lx=e.clientX;down.lt=now;layout()});
+const release=(e,cancel)=>{if(!down||e.pointerId!==down.id)return;const d=down;down=null;stage.classList.remove('grab');
+ if(d.moved<6&&!cancel){const c=e.target.closest&&e.target.closest('.stk-card');if(c){const i=+c.dataset.i;if(i===front())openCard(i);else go(shortest(i))}else go(Math.round(pos));return}
+ const moving=performance.now()-d.lt<120;go(Math.round(pos+(moving?clamp(d.v*.22,-3,3):0)))};
+stage.addEventListener('pointerup',e=>release(e,false));
+stage.addEventListener('pointercancel',e=>release(e,true));
+stage.addEventListener('wheel',e=>{if(open>=0)return;const dx=e.shiftKey&&!e.deltaX?e.deltaY:e.deltaX;if(Math.abs(dx)<=Math.abs(e.deltaY)&&!e.shiftKey)return;e.preventDefault();
+ if(raf){cancelAnimationFrame(raf);raf=0}pos+=dx/(GAP()*1.6);tgt=pos;layout();clearTimeout(wt);wt=setTimeout(()=>go(Math.round(pos)),130)},{passive:false});
+stage.addEventListener('keydown',e=>{if(open>=0)return;
+ if(e.key==='ArrowLeft'){e.preventDefault();go(Math.round(tgt)-1)}else if(e.key==='ArrowRight'){e.preventDefault();go(Math.round(tgt)+1)}
+ else if(e.key==='Enter'||e.key===' '){e.preventDefault();openCard(front())}});
+$('#stkPrev').onclick=()=>go(Math.round(tgt)-1);$('#stkNext').onclick=()=>go(Math.round(tgt)+1);
+dots.onclick=e=>{const b=e.target.closest('button');if(b)go(shortest(+b.dataset.i))};
+
+/* open = the whole stack gathers behind the front card, which becomes the live, interactive demo */
+function mount(i){const c=cards[i],m=META[i];live=document.createElement('div');live.className='sc-live';live.style.width=W+'px';
+ live.innerHTML=`<div class="sc-lh">${ico(m[0])}<div class="sc-lt"><b>${m[1]}</b><small>${m[2]}. Try it, everything here is live.</small></div><div class="sc-lc"><button data-a="prev" aria-label="Previous feature"><svg viewBox="0 0 24 24"><path d="M15 6l-6 6 6 6"/></svg></button><button data-a="next" aria-label="Next feature"><svg viewBox="0 0 24 24"><path d="M9 6l6 6-6 6"/></svg></button><button data-a="close" class="x"><svg viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"/></svg><span>Back to stack</span></button></div></div><div class="sc-lb"></div>`;
+ c.insertBefore(live,c.lastChild);show(i,$('.sc-lb',live));
+ live.onclick=e=>{const b=e.target.closest('[data-a]');if(!b)return;const a=b.dataset.a;if(a==='close')closeCard();else step(a==='next'?1:-1)};
+ if(ro)ro.disconnect();ro=new ResizeObserver(()=>{if(!live)return;const h=Math.ceil(live.offsetHeight);if(h&&Math.abs(h-openH)>1){openH=h;trans();layout()}});ro.observe(live);
+ openH=Math.max(360,Math.ceil(live.offsetHeight))}
+function unmount(){if(ro){ro.disconnect();ro=null}if(live){live.remove();live=null}}
+function openCard(i){if(open>=0)return;pos=tgt=Math.round(pos);open=mod(i);stk.classList.add('is-open');trans();mount(open);layout();
+ stage.setAttribute('aria-live','polite');setTimeout(()=>{const b=$('[data-a=close]',stage);if(b)b.focus({preventScroll:true});
+  if(matchMedia('(max-width:1024px)').matches)stk.scrollIntoView({behavior:'smooth',block:'nearest'})},120)}
+function closeCard(){if(open<0)return;unmount();open=-1;stk.classList.remove('is-open');pos=tgt=Math.round(pos);trans();layout();stage.removeAttribute('aria-live');stage.focus({preventScroll:true})}
+function step(dlt){if(open<0)return;unmount();pos=tgt=Math.round(pos)+dlt;open=mod(pos);trans();mount(open);layout()}
+addEventListener('keydown',e=>{if(e.key==='Escape'&&open>=0&&!document.querySelector('.dro,.rv'))closeCard()});
+new ResizeObserver(()=>{if(geo()){if(live)live.style.width=W+'px';layout()}}).observe(stage);
+geo();layout();
+})();
+
+/* ═════ Pricing: click a plan to see everything in it ═════ */
+const PD={
+ Starter:{lead:'The essentials for tracking everyday money on one device.',soon:true,groups:[
+  ['chart','Dashboard',['Net worth, income, spending and savings rate at a glance','3-month and 6-month spending charts','Month and year views']],
+  ['tx','Transactions',['Log income and spending with categories','Search and filter by income or spending']],
+  ['target','Basic budgets',['Set a monthly limit for each category','Progress bars that turn amber near the limit and red when you go over','See exactly how much is left this month']],
+  ['loan','Loans and EMI',['Track every loan and what is left to pay','EMI calculator for amount, rate and tenure','Try a part-payment and see the balance drop']],
+  ['card','Credit card tracker',['Watch utilization against your card limit','Clear Healthy, Watch and High ranges']],
+  ['shield','Notes and cover',['Keep insurance renewals and money notes next to everything else','Renewal reminders marked Soon when they are close']],
+  ['pulse','Privacy and device',['Works on 1 device','Device-only (Manual JSON) mode, nothing uploaded','App Lock and Privacy Screen that hides your numbers when you look away']]],
+  more:['Portfolio OS with 20+ asset classes','Stress test and Tax view','Fin AI and unusual-spend alerts','Smart budgets that learn from your history','PDF reports','Encrypted cloud sync across all your devices']},
+ Pro:{lead:'The full FinanceOS and Portfolio OS: everything you own, every device, plus Fin AI.',groups:[
+  ['check','Everything in Starter',['Dashboard, transactions, budgets, loans and EMI, credit tracker, notes and cover','App Lock, Privacy Screen and Manual JSON mode']],
+  ['trend','Portfolio OS',['Stocks, funds, gold, silver, property, bonds, crypto, deposits, ETFs, REITs and more, 20+ asset classes','Allocation and returns, with holdings you can sort by value or return','Retirement and international assets','Net worth that updates as you log things']],
+  ['pulse','Stress test',['Drop the market by up to 50% and see the hit to your portfolio','Asset-by-asset impact, in % and rupees']],
+  ['tax','Tax view',['Gains and estimated tax in one place','Long-term and short-term views side by side']],
+  ['ai','Fin AI',['Ask in plain words and get answers from your own numbers','Where you overspent, how your portfolio is doing, whether you can afford a loan']],
+  ['alert','Alerts and smart budgets',['Unusual-spend alerts for payments far above your normal','Big payments to a new payee flagged','Suggested limits from your 3-month average, with pace warnings']],
+  ['doc','PDF export',['Clean reports with charts and tables','Choose Summary, Charts, Transactions and Portfolio sections']],
+  ['shield','Every device, always current',['Encrypted cloud sync across phone, tablet and PC','Records locked to your account at the database level','Switch to device-only whenever you like']]]},
+ Custom:{lead:'A branded version of FinanceOS for your business, shaped around how you work.',groups:[
+  ['target','White-label branding',['Your name, logo and colours','Your own domain']],
+  ['chart','Custom modules',['Screens and calculators built for your use case','Fields and reports that match your process']],
+  ['shield','Everything in Pro',['All Portfolio OS, Fin AI and PDF export features','Priced to your business needs, talk to us for a quote']]]}
+};
+const CHK='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.6 4.6L19 7.4"/></svg>';
+function pdr(animate){const box=$('#pdetail');if(!pdShow){box.innerHTML='';box.className='card pdp';return}
+ const p=P[sel],nm=p[0],d=PD[nm],c=p[1]===null,m=bill==='m';
+ const icon=k=>k==='check'?`<span class="ico">${CHK}</span>`:ico(k);
+ box.innerHTML=`<div class="pdp-h"><div><span class="tag">${nm} plan</span><h3>${c?'What you can have with Custom':'What you get with '+nm}</h3><p class="lead" style="margin:8px 0 0">${d.lead}</p></div>${c?'':`<div class="pdp-pr"><b>${fm(m?p[1]:p[1]*10)}</b><small>${m?'per month':'per year, first 2 months free'}</small></div>`}</div>
+ ${d.soon?'<div class="pdp-soon"><b>Coming soon.</b><span>Starter is not on sale yet. Pro is available today and includes everything below.</span></div>':''}
+ <div class="pdp-g">${d.groups.map(g=>`<div class="pdp-grp"><h4>${icon(g[0])}${g[1]}</h4><ul>${g[2].map(x=>`<li>${x}</li>`).join('')}</ul></div>`).join('')}${d.more?`<div class="pdp-grp dim"><h4><span class="ico" style="background:rgba(255,255,255,.12);color:#c6ecdc">+</span>Added in Pro</h4><ul>${d.more.map(x=>`<li>${x}</li>`).join('')}</ul></div>`:''}</div>
+ <div class="pdp-cta">${c?'<a class="btn" href="#contact">Talk to us</a>':d.soon?'<button class="btn" data-pdbuy="Pro">Get Pro now</button>':`<button class="btn" data-pdbuy="${nm}">Choose ${nm}</button>`}${!c&&nm==='Pro'?'<button class="btn o" data-pdsee="Starter">See what Starter covers</button>':''}${d.soon?'<button class="btn o" data-pdsee="Pro">See everything in Pro</button>':''}</div>`;
+ box.className='card pdp'+(animate?' in':'');}
+document.addEventListener('click',e=>{const b=e.target.closest('[data-pdbuy],[data-pdsee]');if(!b)return;
+ if(b.dataset.pdbuy){openCart('pick',b.dataset.pdbuy,bill)}else{sel=P.findIndex(p=>p[0]===b.dataset.pdsee);pr();pdr(true);$('#pdetail').scrollIntoView({behavior:'smooth',block:'nearest'})}});
 
 /* FAQ */
 const Q=[['Getting started','Is there a free trial?','Yes. Contact us for a walkthrough and you can try FinanceOS with your own numbers.'],['Getting started','Can I use it on my phone?','Yes. Open the site on your phone and install it from the Get the app page. It then opens like a normal app.'],['Getting started','Do I need to link my bank?','No. You add entries yourself, so you control exactly what the app knows.'],['Getting started','Which currencies work?','The app is built around the Indian rupee. The International assets screen handles holdings in other currencies.'],['Getting started','How long does setup take?','Most people are looking at their dashboard within a few minutes of signing in.'],
@@ -930,38 +1243,121 @@ $('#fqc').onclick=e=>{if(e.target.tagName==='BUTTON'){qc=e.target.textContent;fr
 
 /* APK + contact */
 const APP='https://chrismc1998.github.io/FinanceOS/';
-function installModal(){const ua=navigator.userAgent,ios=/iphone|ipad|ipod/i.test(ua)||(navigator.platform==='MacIntel'&&navigator.maxTouchPoints>1),and=/android/i.test(ua),tap=ios||and?'Tap':'Click';
- const dev=ios?'iPhone or iPad':and?'Android phone or tablet':'computer';
- const st=ios?['Tap Open FinanceOS below. Use Safari on iPhone and iPad.','Tap the Share button.','Choose Add to Home Screen, then Add.']:[tap+' Open FinanceOS below.',tap+' the Install button that appears at the bottom of the app.','Confirm, and FinanceOS is added to your '+(and?'home screen':'desktop and app list')+'.'];
- const o=document.createElement('div');o.className='rv';o.style.alignItems='center';
- o.innerHTML=`<div class="card" role="dialog" aria-label="Install FinanceOS" style="width:min(520px,100%);padding:28px"><h3>Install FinanceOS on your ${dev}</h3><ol class="steps">${st.map(x=>`<li>${x}</li>`).join('')}</ol><div class="nx"><a class="btn" href="${APP}?install=1" target="_blank" rel="noopener">Open FinanceOS</a><button class="btn o rx">Not now</button></div><p class="lead" style="font-size:.85rem">Works on Android, iPhone, iPad, Windows, Mac and Linux.</p></div>`;
- const x=()=>{o.remove();removeEventListener('keydown',k)},k=e=>{if(e.key==='Escape')x()};o.onclick=e=>{if(e.target===o||e.target.classList.contains('rx'))x()};addEventListener('keydown',k);document.body.append(o);$('.btn',o).focus()}
-const cart={items:[],order:null};
+const cart={items:[],order:null,cust:{name:'',email:'',phone:'',a1:'',a2:'',city:'',state:'',pin:''},card:{num:'',name:'',exp:'',cvv:''},upi:'',method:'card'};
 const cq=()=>cart.items.reduce((a,i)=>a+i.q,0),unit=b=>b==='m'?P[1][1]:P[1][1]*10,lp=i=>unit(i.b)*i.q,tot=a=>a.reduce((n,i)=>n+lp(i),0);
 function cartBadge(){const b=$('#cartb'),n=cq();b.classList.toggle('has',n>0||!!cart.order);$('b',b).textContent=cart.order?'✓':n}
-function openCart(mode,pre,bl){let m=cart.order?'done':mode||'cart',sp=pre==='Pro'?'Pro':null,sb=bl||'m';
- const o=document.createElement('div');o.className='dro';o.innerHTML='<div class="drw" role="dialog" aria-label="Checkout"></div>';const w=o.firstChild;
- const x=()=>{o.remove();removeEventListener('keydown',k)},k=e=>{if(e.key==='Escape')x()};
- const hd=t=>`<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px"><h3>${t}</h3><button class="btn o sm rx">Close</button></div>`,
- per=b=>b==='m'?'Monthly':'Yearly';
- const draw=()=>{
-  if(m==='done'){const r=cart.order;w.innerHTML=hd('Order placed')+`<p class="lead">Thank you. Your order <b>${r.id}</b> is confirmed. No payment was taken.</p><div class="card" style="margin:18px 0">${r.items.map(i=>`<div class="tx"><span>FinanceOS Pro<small>${per(i.b)}, ${i.q} account${i.q>1?'s':''}</small></span><b>${fm(lp(i))}</b></div>`).join('')}<div class="tx"><span>Total</span><b>${fm(r.total)}</b></div></div><button class="btn" id="go">Install app now</button>`}
-  else if(m==='pick'){w.innerHTML=hd('Choose your version')+`<button class="op" disabled><span><b>Starter</b><small class="oos">Out of stock for now</small></span><b>${fm(P[0][1])}/mo</b></button><button class="op ${sp==='Pro'?'on':''}" data-p="Pro"><span><b>Pro</b><small>Portfolio OS, Fin AI, alerts, PDF export</small></span><b>${fm(P[1][1])}/mo</b></button><div class="seg" style="margin-top:14px"><button data-b="m" class="${sb==='m'?'on':''}">Monthly</button><button data-b="y" class="${sb==='y'?'on':''}">Yearly (2 months free)</button></div><div class="tx"><span>Price</span><b>${sp?fm(unit(sb))+(sb==='m'?' /month':' /year'):'Select a version'}</b></div><button class="btn" id="add" ${sp?'':'disabled'} style="width:100%;margin-top:16px">Add to cart</button>`}
-  else w.innerHTML=hd('Your cart')+(cart.items.length?cart.items.map((i,n)=>`<div class="card" style="margin-bottom:10px"><div class="tx" style="border:0;padding:0"><span><b>FinanceOS Pro</b><small>${per(i.b)}, ${fm(unit(i.b))} per account</small></span><b>${fm(lp(i))}</b></div><div class="nx" style="margin-top:10px"><div class="qty"><button data-q="-1" data-k="${n}" aria-label="Fewer accounts">−</button><b>${i.q}</b><button data-q="1" data-k="${n}" aria-label="More accounts">+</button></div><button class="btn o sm" data-r="${n}">Remove</button></div></div>`).join('')+`<div class="tx"><span>Total</span><b>${fm(tot(cart.items))}</b></div><button class="btn o" id="more" style="width:100%;margin-top:12px">Add another version</button><button class="btn" id="po" style="width:100%;margin-top:10px">Place order</button><p class="lead" style="font-size:.85rem">Payments are not live yet. Placing an order is free and unlocks the app install.</p>`:`<p class="lead">Your cart is empty. Choose a version to add it here.</p><button class="btn" id="more" style="margin-top:14px">Choose a version</button>`)};
- o.onclick=e=>{const t=e.target,p=t.closest('[data-p]'),bb=t.closest('[data-b]'),qb=t.closest('[data-q]'),rb=t.closest('[data-r]');
+const STATES=['Andhra Pradesh','Arunachal Pradesh','Assam','Bihar','Chhattisgarh','Goa','Gujarat','Haryana','Himachal Pradesh','Jharkhand','Karnataka','Kerala','Madhya Pradesh','Maharashtra','Manipur','Meghalaya','Mizoram','Nagaland','Odisha','Punjab','Rajasthan','Sikkim','Tamil Nadu','Telangana','Tripura','Uttar Pradesh','Uttarakhand','West Bengal','Andaman and Nicobar Islands','Chandigarh','Dadra and Nagar Haveli and Daman and Diu','Delhi','Jammu and Kashmir','Ladakh','Lakshadweep','Puducherry'];
+const esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const luhn=n=>{let s=0,d=false;for(let i=n.length-1;i>=0;i--){let x=+n[i];if(d){x*=2;if(x>9)x-=9}s+=x;d=!d}return s%10===0};
+const tenDigits=v=>v.replace(/\D/g,'').replace(/^(91|0)(?=\d{10}$)/,'');
+const VAL={
+ name:v=>v.trim().length>=2,email:v=>/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(v.trim()),phone:v=>/^[6-9]\d{9}$/.test(tenDigits(v)),
+ a1:v=>v.trim().length>=5,city:v=>v.trim().length>=2,state:v=>!!v,pin:v=>/^[1-9]\d{5}$/.test(v.trim()),
+ cnum:v=>{const d=v.replace(/\s/g,'');return /^\d{13,19}$/.test(d)&&luhn(d)},cname:v=>v.trim().length>=2,
+ cexp:v=>{const m=v.match(/^(\d{2})\s*\/\s*(\d{2})$/);if(!m)return false;const mo=+m[1],yr=2000+ +m[2],n=new Date();return mo>=1&&mo<=12&&(yr>n.getFullYear()||(yr===n.getFullYear()&&mo>=n.getMonth()+1))},
+ ccvv:v=>/^\d{3,4}$/.test(v),upi:v=>/^[a-zA-Z0-9._-]{2,}@[a-zA-Z]{2,}$/.test(v.trim())
+};
+const MSG={name:'Enter your full name',email:'Enter a valid email address',phone:'Enter a 10-digit mobile number',a1:'Enter your address',city:'Enter your city',state:'Choose your state',pin:'Enter a 6-digit PIN code',cnum:'Enter a valid card number',cname:'Enter the name on the card',cexp:'Enter a valid expiry, MM / YY',ccvv:'Enter the 3 or 4 digit CVV',upi:'Enter a valid UPI ID, like name@bank'};
+const I={
+ card:'<svg viewBox="0 0 24 24"><rect x="2.5" y="5" width="19" height="14" rx="2.5"/><path d="M2.5 10h19M6.5 15h4"/></svg>',
+ upi:'<svg viewBox="0 0 24 24"><path d="M4 8l4-4h12l-4 4zM20 16l-4 4H4l4-4zM8 8l-4 8M20 8l-4 8"/></svg>',
+ qr:'<svg viewBox="0 0 24 24"><rect x="3.5" y="3.5" width="6" height="6" rx="1"/><rect x="14.5" y="3.5" width="6" height="6" rx="1"/><rect x="3.5" y="14.5" width="6" height="6" rx="1"/><path d="M14.5 14.5h2v2M20.5 14.5v0M14.5 20.5h6M18.5 17.5v3"/></svg>',
+ info:'<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 11v5M12 8h.01"/></svg>',
+ ok:'<svg viewBox="0 0 24 24"><path d="M5 12.5l4.6 4.6L19 7.4"/></svg>'
+};
+function qrSvg(seed){const n=25,cell=8,rnd=(()=>{let s=seed>>>0||1;return()=>(s=(s*1664525+1013904223)>>>0)/4294967296})();let r='';
+ const fin=(x,y)=>`<rect x="${x*cell}" y="${y*cell}" width="${7*cell}" height="${7*cell}" fill="#000"/><rect x="${(x+1)*cell}" y="${(y+1)*cell}" width="${5*cell}" height="${5*cell}" fill="#fff"/><rect x="${(x+2)*cell}" y="${(y+2)*cell}" width="${3*cell}" height="${3*cell}" fill="#000"/>`;
+ const inF=(x,y)=>(x<8&&y<8)||(x>=n-8&&y<8)||(x<8&&y>=n-8);
+ for(let y=0;y<n;y++)for(let x=0;x<n;x++){if(inF(x,y))continue;if(rnd()>.52)r+=`<rect x="${x*cell}" y="${y*cell}" width="${cell}" height="${cell}" fill="#000"/>`}
+ return `<svg viewBox="0 0 ${n*cell} ${n*cell}" role="img" aria-label="Sample QR code, not a live payment" shape-rendering="crispEdges">${r}${fin(0,0)}${fin(n-7,0)}${fin(0,n-7)}</svg>`}
+function installBlock(){const ua=navigator.userAgent,ios=/iphone|ipad|ipod/i.test(ua)||(navigator.platform==='MacIntel'&&navigator.maxTouchPoints>1),and=/android/i.test(ua),tap=ios||and?'Tap':'Click';
+ const dev=ios?'iPhone or iPad':and?'Android phone or tablet':'computer';
+ const st=ios?['Tap Open FinanceOS below. Use Safari on iPhone and iPad.','Tap the Share button.','Choose Add to Home Screen, then Add.']:[tap+' Open FinanceOS below.',tap+' the Install button that appears at the bottom of the app.','Confirm, and FinanceOS is added to your '+(and?'home screen':'desktop and app list')+'.'];
+ return `<div class="inst-s"><h4>Install FinanceOS on your ${dev}</h4><ol class="steps">${st.map(x=>`<li>${x}</li>`).join('')}</ol><div class="nx"><a class="btn" href="${APP}?install=1" target="_blank" rel="noopener">Open FinanceOS</a></div><p class="lead" style="font-size:.82rem;margin:8px 0 0">Works on Android, iPhone, iPad, Windows, Mac and Linux.</p></div>`}
+
+function openCart(mode,pre,bl){let m=cart.order?'done':mode||'cart',sp=pre==='Pro'?'Pro':null,sb=bl||'m',tm=0,qi=0,qseed=Math.floor(Math.random()*1e9),agree=false;
+ const prevOv=document.documentElement.style.overflow;
+ const o=document.createElement('div');o.className='dro';o.innerHTML='<div class="drw" role="dialog" aria-modal="true" aria-label="Checkout" tabindex="-1"></div>';const w=o.firstChild;
+ const stop=()=>{clearTimeout(tm);clearInterval(qi)};
+ const x=()=>{stop();o.remove();document.documentElement.style.overflow=prevOv;removeEventListener('keydown',k)},k=e=>{if(e.key==='Escape')x()};
+ const hd=t=>`<div style="display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:14px"><h3>${t}</h3><button class="btn o sm rx">Close</button></div>`,per=b=>b==='m'?'Monthly':'Yearly';
+ const steps=cur=>{const S=['Cart','Details','Payment'];return `<ol class="cks" aria-label="Checkout progress">${S.map((s,n)=>`<li class="${n<cur?'done':n===cur?'on':''}"><i>${n<cur?'✓':n+1}</i><span>${s}</span></li>`).join('')}</ol>`};
+ const summary=(open)=>`<div class="card ck-sum"><details ${open?'open':''}><summary>Order summary &middot; ${cq()} item${cq()>1?'s':''}</summary>${cart.items.map(i=>`<div class="tx"><span>FinanceOS Pro<small>${per(i.b)}, ${i.q} account${i.q>1?'s':''}</small></span><b>${fm(lp(i))}</b></div>`).join('')}</details><div class="tx"><span>Total</span><b>${fm(tot(cart.items))}</b></div></div>`;
+ const fld=(id,label,inner,full)=>`<div class="fld ${full?'full':''}" data-fld="${id}"><label for="ck-${id}">${label}</label>${inner}<small class="fe">${MSG[id]||''}</small></div>`;
+ const inp=(id,attrs,val)=>`<input class="si" id="ck-${id}" data-f="${id}" value="${esc(val||'')}" ${attrs}>`;
+ const C=cart.cust;
+ const demoNote=`<div class="demo-note">${I.info}<span><b>Demo checkout.</b> No money is charged, and card or UPI details are never stored or sent anywhere.</span></div>`;
+ const payBody=()=>{
+  if(cart.method==='card'){const raw=cart.card.num.replace(/\s/g,'');const shown=(raw+'••••••••••••••••').slice(0,16).replace(/(.{4})/g,'$1 ').trim();
+   return `<div class="cardviz"><span class="chip"></span><b id="cv-n">${shown}</b><small><span id="cv-h">${esc(cart.card.name||'Name on card')}</span><span id="cv-e">${esc(cart.card.exp||'MM / YY')}</span></small></div>
+   <div class="ckf">${fld('cnum','Card number',inp('cnum','inputmode="numeric" autocomplete="cc-number" maxlength="23" placeholder="1234 5678 9012 3456"',cart.card.num),1)}
+   ${fld('cname','Name on card',inp('cname','autocomplete="cc-name" maxlength="60" placeholder="As printed on the card"',cart.card.name),1)}
+   ${fld('cexp','Expiry',inp('cexp','inputmode="numeric" autocomplete="cc-exp" maxlength="7" placeholder="MM / YY"',cart.card.exp))}
+   ${fld('ccvv','CVV',inp('ccvv','type="password" inputmode="numeric" autocomplete="cc-csc" maxlength="4" placeholder="•••"',cart.card.cvv))}</div>`}
+  if(cart.method==='upi')return `<div class="ckf">${fld('upi','UPI ID',inp('upi','autocomplete="off" autocapitalize="off" spellcheck="false" placeholder="name@bank"',cart.upi),1)}</div><p class="lead" style="font-size:.86rem;margin:10px 0 0">You will get a payment request in your UPI app. Approve it to finish.</p>`;
+  return `<div class="qrbox">${qrSvg(qseed)}<b>${fm(tot(cart.items))}</b><p>Scan with any UPI app to pay. This code expires in <span class="qrt" id="qrt">5:00</span></p><button class="btn o sm" data-a="qrnew">Refresh code</button></div>`};
+ const draw=()=>{stop();
+  if(m==='done'){const r=cart.order;w.innerHTML=hd('Order confirmed')+`<div class="okmark">${I.ok}</div><h3 style="text-align:center">Thank you, ${esc(r.cust.name.split(' ')[0])}.</h3><p class="lead" style="text-align:center;margin:8px auto 0">Your order <b>${r.id}</b> is confirmed. Paid by ${r.method}. No money was charged in this demo.</p>
+   <div class="card" style="margin:18px 0 0">${r.items.map(i=>`<div class="tx"><span>FinanceOS Pro<small>${per(i.b)}, ${i.q} account${i.q>1?'s':''}</small></span><b>${fm(lp(i))}</b></div>`).join('')}<div class="tx"><span>Total</span><b>${fm(r.total)}</b></div><div class="tx"><span>Billed to<small>${esc(r.cust.email)} &middot; ${esc(r.cust.city)}</small></span><b>${esc(r.cust.name)}</b></div></div>${installBlock()}<div class="ck-act"><button class="btn" data-a="x">Done</button></div>`;return}
+  if(m==='proc'){w.innerHTML=hd('Processing')+`<div class="proc"><div class="spin"></div><h3 id="pt">Contacting your bank</h3><p class="lead" style="margin:8px auto 0">Please do not close this panel.</p></div>`;
+   tm=setTimeout(()=>{const t=$('#pt',w);if(t)t.textContent='Confirming payment'},900);
+   tm=setTimeout(()=>{const lab=cart.method==='card'?'card ending '+cart.card.num.replace(/\D/g,'').slice(-4):cart.method==='upi'?'UPI':'QR code';
+    cart.order={id:'FOS-'+Math.floor(100000+Math.random()*900000),items:cart.items.map(i=>({...i})),total:tot(cart.items),cust:{name:C.name.trim(),email:C.email.trim(),city:C.city.trim()},method:lab};
+    cart.items=[];cart.card={num:'',name:'',exp:'',cvv:''};cart.upi='';m='done';cartBadge();draw()},1900);return}
+  if(m==='pick'){w.innerHTML=hd('Choose your version')+`<button class="op" disabled><span><b>Starter</b><small class="oos">Out of stock for now</small></span><b>${fm(P[0][1])}/mo</b></button><button class="op ${sp==='Pro'?'on':''}" data-p="Pro"><span><b>Pro</b><small>Portfolio OS, Fin AI, alerts, PDF export</small></span><b>${fm(P[1][1])}/mo</b></button><div class="seg" style="margin-top:14px"><button data-b="m" class="${sb==='m'?'on':''}">Monthly</button><button data-b="y" class="${sb==='y'?'on':''}">Yearly (2 months free)</button></div><div class="tx"><span>Price</span><b>${sp?fm(unit(sb))+(sb==='m'?' /month':' /year'):'Select a version'}</b></div><button class="btn" id="add" ${sp?'':'disabled'} style="width:100%;margin-top:16px">Add to cart</button>`;return}
+  if(m==='info'){w.innerHTML=hd('Your details')+steps(1)+summary(false)+`<div class="ckf">
+   ${fld('name','Full name',inp('name','autocomplete="name" maxlength="80" placeholder="Your full name"',C.name),1)}
+   ${fld('email','Email address',inp('email','type="email" autocomplete="email" maxlength="120" placeholder="you@example.com"',C.email),1)}
+   ${fld('phone','Mobile number',`<div class="pfx"><span>+91</span>${inp('phone','type="tel" inputmode="numeric" autocomplete="tel-national" maxlength="14" placeholder="98765 43210"',C.phone)}</div>`,1)}
+   ${fld('a1','Address line 1',inp('a1','autocomplete="address-line1" maxlength="120" placeholder="House no., building, street"',C.a1),1)}
+   <div class="fld full"><label for="ck-a2">Address line 2 <span style="font-weight:400;opacity:.8">(optional)</span></label>${inp('a2','autocomplete="address-line2" maxlength="120" placeholder="Area, landmark"',C.a2)}</div>
+   ${fld('city','City',inp('city','autocomplete="address-level2" maxlength="60" placeholder="City"',C.city))}
+   ${fld('pin','PIN code',inp('pin','inputmode="numeric" autocomplete="postal-code" maxlength="6" placeholder="600001"',C.pin))}
+   ${fld('state','State',`<select class="si" id="ck-state" data-f="state" autocomplete="address-level1"><option value="">Choose your state</option>${STATES.map(s=>`<option ${C.state===s?'selected':''}>${s}</option>`).join('')}</select>`)}
+   <div class="fld"><label for="ck-country">Country</label><input class="si" id="ck-country" value="India" readonly tabindex="-1"></div></div>
+   <div class="ck-act"><button class="btn o" data-a="toCart">Back</button><button class="btn" data-a="toPay">Continue to payment</button></div>`;return}
+  if(m==='pay'){w.innerHTML=hd('Payment')+steps(2)+summary(false)+`<div class="pm" role="tablist" aria-label="Payment method"><button role="tab" data-pm="card" class="${cart.method==='card'?'on':''}">${I.card}Card</button><button role="tab" data-pm="upi" class="${cart.method==='upi'?'on':''}">${I.upi}UPI</button><button role="tab" data-pm="qr" class="${cart.method==='qr'?'on':''}">${I.qr}QR code</button></div><div class="pm-body">${payBody()}</div>
+   <div class="fld ag ${''}" data-fld="agree"><label class="ck-agree"><input type="checkbox" data-agree ${agree?'checked':''}><span>I agree to the <a href="#terms" data-nav>Terms &amp; Conditions</a> and <a href="#legal-privacy" data-nav>Privacy Policy</a>.</span></label><small class="fe">Please accept to continue</small></div>
+   <div class="ck-act"><button class="btn o" data-a="toInfo">Back</button><button class="btn" data-a="pay">${cart.method==='qr'?'I have paid':'Pay '+fm(tot(cart.items))}</button></div>${demoNote}`;
+   if(cart.method==='qr'){let s=300;const t=$('#qrt',w);qi=setInterval(()=>{s--;if(s<=0){clearInterval(qi);if(t)t.textContent='expired'}else if(t)t.textContent=Math.floor(s/60)+':'+String(s%60).padStart(2,'0')},1000)}
+   return}
+  w.innerHTML=hd('Your cart')+(cart.items.length?steps(0)+cart.items.map((i,n)=>`<div class="card" style="margin-bottom:10px"><div class="tx" style="border:0;padding:0"><span><b>FinanceOS Pro</b><small>${per(i.b)}, ${fm(unit(i.b))} per account</small></span><b>${fm(lp(i))}</b></div><div class="nx" style="margin-top:10px"><div class="qty"><button data-q="-1" data-k="${n}" aria-label="Fewer accounts">−</button><b>${i.q}</b><button data-q="1" data-k="${n}" aria-label="More accounts">+</button></div><button class="btn o sm" data-r="${n}">Remove</button></div></div>`).join('')+`<div class="tx"><span>Total</span><b>${fm(tot(cart.items))}</b></div><button class="btn o" id="more" style="width:100%;margin-top:12px">Add another version</button><button class="btn" data-a="toInfo" style="width:100%;margin-top:10px">Continue to details</button>${demoNote}`:`<p class="lead">Your cart is empty. Choose a version to add it here.</p><button class="btn" id="more" style="margin-top:14px">Choose a version</button>`)};
+ const mark=(id,bad)=>{const f=$(`[data-fld="${id}"]`,w);if(f)f.classList.toggle('err',bad);return bad};
+ const check=ids=>{let first=null;ids.forEach(id=>{const v=id==='cnum'?cart.card.num:id==='cname'?cart.card.name:id==='cexp'?cart.card.exp:id==='ccvv'?cart.card.cvv:id==='upi'?cart.upi:C[id];if(mark(id,!VAL[id](v||''))&&!first)first=id});if(first){const el=$('#ck-'+first,w);if(el)el.focus()}return !first};
+ o.addEventListener('input',e=>{const t=e.target,f=t.dataset&&t.dataset.f;if(!f)return;let v=t.value;
+  if(f==='cnum'){v=v.replace(/\D/g,'').slice(0,19).replace(/(.{4})/g,'$1 ').trim();t.value=v;cart.card.num=v;const n=$('#cv-n',w);if(n)n.textContent=(v.replace(/\s/g,'')+'••••••••••••••••').slice(0,16).replace(/(.{4})/g,'$1 ').trim()}
+  else if(f==='cexp'){let d=v.replace(/\D/g,'').slice(0,4);v=d.length>2?d.slice(0,2)+' / '+d.slice(2):d;t.value=v;cart.card.exp=v;const n=$('#cv-e',w);if(n)n.textContent=v||'MM / YY'}
+  else if(f==='cname'){cart.card.name=v;const n=$('#cv-h',w);if(n)n.textContent=v||'Name on card'}
+  else if(f==='ccvv'){v=v.replace(/\D/g,'').slice(0,4);t.value=v;cart.card.cvv=v}
+  else if(f==='upi')cart.upi=v;
+  else if(f==='phone'||f==='pin'){v=v.replace(/[^\d\s+]/g,'');if(f==='pin')v=v.replace(/\D/g,'');t.value=v;C[f]=v}
+  else C[f]=v;
+  const fl=t.closest('.fld');if(fl&&fl.classList.contains('err')&&VAL[f]&&VAL[f](v))fl.classList.remove('err')});
+ o.addEventListener('change',e=>{if(e.target.dataset&&e.target.dataset.f==='state'){C.state=e.target.value;mark('state',!C.state)}if(e.target.hasAttribute&&e.target.hasAttribute('data-agree')){agree=e.target.checked;const f=$('[data-fld="agree"]',w);if(f&&agree)f.classList.remove('err')}});
+ o.onclick=e=>{const t=e.target,p=t.closest('[data-p]'),bb=t.closest('[data-b]'),qb=t.closest('[data-q]'),rb=t.closest('[data-r]'),ab=t.closest('[data-a]'),pm=t.closest('[data-pm]');
   if(t===o||t.classList.contains('rx'))return x();
+  if(t.closest('[data-nav]'))return x();
+  if(pm){cart.method=pm.dataset.pm;qseed=Math.floor(Math.random()*1e9);draw();return}
+  if(ab){const a=ab.dataset.a;
+   if(a==='x')return x();
+   if(a==='qrnew'){qseed=Math.floor(Math.random()*1e9);draw();return}
+   if(a==='toCart')m='cart';
+   else if(a==='toInfo')m=cart.items.length?'info':'cart';
+   else if(a==='toPay'){if(!check(['name','email','phone','a1','city','pin','state']))return;m='pay'}
+   else if(a==='pay'){const ids=cart.method==='card'?['cnum','cname','cexp','ccvv']:cart.method==='upi'?['upi']:[];const ok=check(ids);
+    if(!agree){const f=$('[data-fld="agree"]',w);f.classList.add('err');if(ok)f.scrollIntoView({block:'center',behavior:'smooth'});return}
+    if(!ok)return;m='proc'}
+   draw();w.scrollTop=0;return}
   if(p)sp='Pro';else if(bb)sb=bb.dataset.b;
   else if(t.id==='add'){const f=cart.items.find(i=>i.b===sb);if(f)f.q=Math.min(10,f.q+1);else cart.items.push({b:sb,q:1});m='cart'}
   else if(qb){const i=cart.items[+qb.dataset.k];i.q=Math.max(1,Math.min(10,i.q+ +qb.dataset.q))}
   else if(rb)cart.items.splice(+rb.dataset.r,1);
   else if(t.id==='more'){m='pick';sp=null}
-  else if(t.id==='po'){cart.order={id:'FOS-'+Math.floor(100000+Math.random()*900000),items:cart.items.map(i=>({...i})),total:tot(cart.items)};cart.items=[];m='done'}
-  else if(t.id==='go'){x();installModal();return}
   else return;
   cartBadge();draw()};
- addEventListener('keydown',k);draw();document.body.append(o)}
+ addEventListener('keydown',k);document.documentElement.style.overflow='hidden';draw();document.body.append(o);w.focus({preventScroll:true})}
 cartBadge();$('#cartb').onclick=()=>openCart('cart');
-$('#inst').onclick=()=>cart.order?installModal():openCart('pick');
+$('#inst').onclick=()=>openCart(cart.order?'done':'pick');
 $('#apkb').onclick=()=>toast('APK download coming soon');
 const EMAIL='hello@financeos.example';
 const mail=(a,b)=>`mailto:${EMAIL}?subject=${encodeURIComponent(a)}&body=${encodeURIComponent(b)}`;
@@ -1047,7 +1443,7 @@ route();
       var c = document.createElement('div'); c.setAttribute('aria-hidden', 'true');
       c.style.cssText = 'position:fixed;left:' + s.left + 'px;top:' + s.top + 'px;width:' + s.width + 'px;height:' + s.height +
         'px;z-index:210;pointer-events:none;transform-origin:0 0;will-change:transform;filter:drop-shadow(0 6px 18px rgba(32,205,181,.4))';
-      c.innerHTML = '<svg viewBox="0 0 64 64" width="100%" height="100%"><use href="#lg"/></svg>';
+      c.innerHTML = '<svg viewBox="0 0 64 64" width="100%" height="100%"><use href="#fos-logo"/></svg>';
       document.body.appendChild(c);
       logo.style.visibility = 'hidden';
       var glow = ov.querySelectorAll('.ia-glow,.ia-ring'); glow.forEach(function (g) { g.style.visibility = 'hidden'; });
