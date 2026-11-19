@@ -440,6 +440,76 @@ html.intro-on{overflow:hidden}
 @media(max-width:360px){.links a.l{font-size:.6rem}.links a.l svg{width:20px;height:20px}}
 @media(max-height:480px) and (orientation:landscape){.links a.l{flex-direction:row;gap:6px;min-height:44px;font-size:.7rem}.links a.l svg{width:18px;height:18px}body{padding-bottom:calc(60px + env(safe-area-inset-bottom,0px))}}
 </style>
+<style id="pv-icon-fx">
+/* ── Privacy page: animated icons (everything respects reduced-motion through the global rule) ── */
+#p-privacy .pvic{position:relative;overflow:hidden}
+#p-privacy .pvic svg *{transform-box:fill-box;transform-origin:center}
+
+/* hero shield + lock: a small radiant glow */
+.shield::before,.shield::after{content:"";position:absolute;inset:14%;border-radius:50%;border:2px solid rgba(110,231,183,.55);opacity:0;pointer-events:none;animation:shRing 3.2s ease-out infinite}
+.shield::after{animation-delay:1.6s}
+.shield svg{animation:shGlow 3.2s ease-in-out infinite}
+.shield svg rect{animation:shLock 3.2s ease-in-out infinite}
+@keyframes shGlow{0%,100%{filter:drop-shadow(0 0 4px rgba(110,231,183,.45)) drop-shadow(0 8px 22px rgba(52,211,153,.4))}50%{filter:drop-shadow(0 0 12px rgba(167,243,208,.95)) drop-shadow(0 8px 34px rgba(52,211,153,.75))}}
+@keyframes shLock{0%,100%{opacity:.88}50%{opacity:1}}
+@keyframes shRing{0%{transform:scale(.7);opacity:.6}100%{transform:scale(1.45);opacity:0}}
+
+/* phone: buzzes, screen bar blinks */
+.ic-phone svg{animation:icBuzz 3.4s ease-in-out infinite}
+.ic-phone svg path{animation:icBlink 1.7s ease-in-out infinite}
+@keyframes icBuzz{0%,62%,100%{transform:rotate(0) translateY(0)}66%{transform:rotate(-9deg)}70%{transform:rotate(9deg)}74%{transform:rotate(-7deg)}78%{transform:rotate(7deg)}82%{transform:rotate(-3deg)}88%{transform:rotate(0)}}
+@keyframes icBlink{0%,100%{opacity:1}50%{opacity:.25}}
+
+/* cloud: floats, arrow keeps downloading */
+.ic-cloud svg{animation:icFloat 3.2s ease-in-out infinite}
+.ic-cloud svg path:nth-child(2){animation:icDown 1.5s ease-in-out infinite}
+@keyframes icFloat{0%,100%{transform:translateY(1.5px)}50%{transform:translateY(-2.5px)}}
+@keyframes icDown{0%{transform:translateY(-3px);opacity:0}35%{opacity:1}80%{transform:translateY(2px);opacity:1}100%{transform:translateY(3px);opacity:0}}
+
+/* other devices: the two screens take turns */
+.ic-devs svg rect:nth-child(1){animation:icTurn 2.4s ease-in-out infinite}
+.ic-devs svg rect:nth-child(2){animation:icTurn 2.4s ease-in-out infinite 1.2s}
+@keyframes icTurn{0%,100%{transform:scale(1);opacity:.8}50%{transform:scale(1.16);opacity:1}}
+
+/* lock: the shackle clicks shut */
+.ic-lock svg path{animation:icShackle 2.8s ease-in-out infinite}
+.ic-lock svg rect{animation:icClick 2.8s ease-in-out infinite}
+@keyframes icShackle{0%,12%{transform:translateY(-3.2px)}30%,100%{transform:translateY(0)}}
+@keyframes icClick{0%,26%{transform:scale(1)}34%{transform:scale(1.1)}44%,100%{transform:scale(1)}}
+
+/* database: a light runs through the layers */
+.ic-db svg ellipse{animation:icLayer 2.2s ease-in-out infinite}
+.ic-db svg path{animation:icFade 2.2s ease-in-out infinite .5s}
+@keyframes icLayer{0%,100%{transform:translateY(0)}50%{transform:translateY(-1.6px)}}
+@keyframes icFade{0%,100%{opacity:.45}50%{opacity:1}}
+
+/* crossed eye: it blinks and the slash redraws */
+.ic-eye svg path:nth-child(1),.ic-eye svg circle{animation:icBlinkEye 4s ease-in-out infinite}
+.ic-eye svg path:nth-child(3){stroke-dasharray:24;animation:icSlash 4s ease-in-out infinite}
+@keyframes icBlinkEye{0%,40%,52%,100%{transform:scaleY(1)}46%{transform:scaleY(.12)}}
+@keyframes icSlash{0%{stroke-dashoffset:24}20%,70%{stroke-dashoffset:0}100%{stroke-dashoffset:-24}}
+
+/* key: turns in the lock */
+.ic-key svg{transform-origin:33% 62%;animation:icKey 3s ease-in-out infinite}
+@keyframes icKey{0%,100%{transform:rotate(0)}25%{transform:rotate(-24deg)}50%{transform:rotate(14deg)}75%{transform:rotate(-6deg)}}
+
+/* fingerprint: a scan line sweeps across */
+.ic-finger::after{content:"";position:absolute;left:6px;right:6px;top:6px;height:2px;border-radius:2px;background:linear-gradient(90deg,transparent,#a7f3d0,transparent);box-shadow:0 0 8px #6ee7b7;animation:icScan 2.2s ease-in-out infinite}
+.ic-finger svg{animation:icPulseIc 2.2s ease-in-out infinite}
+@keyframes icScan{0%{transform:translateY(0);opacity:0}15%{opacity:1}85%{opacity:1}100%{transform:translateY(34px);opacity:0}}
+@keyframes icPulseIc{0%,100%{transform:scale(1)}50%{transform:scale(1.07)}}
+
+/* sync toggle: the switch slides and lights up */
+.ic-toggle svg circle{animation:icSlide 2.6s ease-in-out infinite}
+.ic-toggle svg rect{animation:icTrack 2.6s ease-in-out infinite}
+@keyframes icSlide{0%,25%{transform:translateX(0)}50%,75%{transform:translateX(-8px)}100%{transform:translateX(0)}}
+@keyframes icTrack{0%,25%,100%{fill:rgba(110,231,183,.32)}50%,75%{fill:rgba(110,231,183,0)}}
+
+/* PIN: the dots fill in one by one */
+.ic-pin svg .d1,.ic-pin svg .d2,.ic-pin svg .d3{stroke-width:2.6;animation:icDot 2.4s ease-in-out infinite}
+.ic-pin svg .d2{animation-delay:.3s}.ic-pin svg .d3{animation-delay:.6s}
+@keyframes icDot{0%,15%{opacity:.2;transform:scale(.7)}30%,70%{opacity:1;transform:scale(1.5)}100%{opacity:.2;transform:scale(.7)}}
+</style>
 <style id="privacy-page">
 .pvchips{display:flex;flex-wrap:wrap;gap:8px;margin-top:18px}
 .pvchips span{font-size:.8rem;font-weight:600;padding:6px 12px;border-radius:99px;background:rgba(0,0,0,.5);border:1px solid var(--edge-em);color:#6ee7b7}
@@ -648,6 +718,12 @@ html.intro-on{overflow:hidden}
 @media(hover:none){.stk-nav{width:46px;height:46px}.stk-dots button{width:11px;height:11px}.stk-dots button.on{width:28px}}
 @media(max-width:480px){.sc-lh{padding:14px 14px 8px;flex-wrap:wrap}.sc-lc{flex:1 0 100%;justify-content:flex-end}.sc-lb{padding:4px 14px 18px}.sc-lc button.x span{display:inline}}
 
+/* phones and small tablets: no green glow or drop shadow under the stack */
+@media(max-width:800px){
+  .stkglow::before{display:none}
+  .stk-card,.stk-card.front{box-shadow:inset 0 1px 0 rgba(255,255,255,.14)}
+  .stk-card.front{box-shadow:inset 0 1px 0 rgba(255,255,255,.2),0 0 0 1px rgba(52,211,153,.4)}
+}
 @media(prefers-color-scheme:light){
   :root:not([data-theme="dark"]) .stk-card{background:linear-gradient(160deg,#ffffff 0%,#e6faf0 62%,#d3f5e5 100%);border-color:rgba(6,95,70,.28);box-shadow:inset 0 1px 0 #fff,0 16px 40px rgba(6,95,70,.2)}
   :root:not([data-theme="dark"]) .stk-card.front{border-color:#059669;box-shadow:inset 0 1px 0 #fff,0 0 0 1px rgba(5,150,105,.45),0 24px 56px rgba(6,95,70,.28)}
@@ -656,6 +732,10 @@ html.intro-on{overflow:hidden}
   :root:not([data-theme="dark"]) .pv-k div,:root:not([data-theme="dark"]) .pv-tx{background:rgba(6,95,70,.06);border-color:rgba(6,95,70,.16)}
   :root:not([data-theme="dark"]) .sc-cta,:root:not([data-theme="dark"]) .sc-lc button,:root:not([data-theme="dark"]) .stk-nav{background:#052018;color:#6ee7b7}
   :root:not([data-theme="dark"]) .pv-big b{color:#047857}
+}
+@media(max-width:800px) and (prefers-color-scheme:light){
+  :root:not([data-theme="dark"]) .stk-card{box-shadow:inset 0 1px 0 #fff}
+  :root:not([data-theme="dark"]) .stk-card.front{box-shadow:inset 0 1px 0 #fff,0 0 0 1px rgba(5,150,105,.45)}
 }
 
 /* ═══════════════════════════════════════════════════════════════════
@@ -794,7 +874,7 @@ html.intro-on{overflow:hidden}
 <h1>All your money and investments in one place.</h1>
 <p>FinanceOS tracks your everyday money. Portfolio OS tracks everything you own. Together they show your real net worth, and Fin AI answers questions about it in plain language.</p>
 <div class="row"><a class="btn" href="#apk">Get the app</a><a class="btn o" href="#privacy">Privacy &amp; security</a><a class="btn o" href="#features">See all features</a></div><div class="pvchips"><span>Encrypted cloud</span><span>On-device JSON mode</span><span>Face ID &amp; PC Lock</span></div></div>
-<div class="glow"><div class="stk" id="stk"><div class="stk-stage" id="stkStage" tabindex="0" role="group" aria-roledescription="carousel" aria-label="FinanceOS features. Drag sideways or use the arrow keys, press Enter to open."></div><div class="stk-bar"><button class="stk-nav" id="stkPrev" aria-label="Previous feature"><svg viewBox="0 0 24 24"><path d="M15 6l-6 6 6 6"/></svg></button><div class="stk-dots" id="stkDots"></div><button class="stk-nav" id="stkNext" aria-label="Next feature"><svg viewBox="0 0 24 24"><path d="M9 6l6 6-6 6"/></svg></button><p class="stk-hint">Drag or swipe sideways. Tap the front card to try it live.</p></div></div></div></div>
+<div class="glow stkglow"><div class="stk" id="stk"><div class="stk-stage" id="stkStage" tabindex="0" role="group" aria-roledescription="carousel" aria-label="FinanceOS features. Drag sideways or use the arrow keys, press Enter to open."></div><div class="stk-bar"><button class="stk-nav" id="stkPrev" aria-label="Previous feature"><svg viewBox="0 0 24 24"><path d="M15 6l-6 6 6 6"/></svg></button><div class="stk-dots" id="stkDots"></div><button class="stk-nav" id="stkNext" aria-label="Next feature"><svg viewBox="0 0 24 24"><path d="M9 6l6 6-6 6"/></svg></button><p class="stk-hint">Drag or swipe sideways. Tap the front card to try it live.</p></div></div></div></div>
 <div class="stats"><div><strong>40+</strong><span>screens in one app</span></div><div><strong>20+</strong><span>asset classes tracked</span></div><div><strong>1</strong><span>net worth, always current</span></div></div>
 <div class="pvband"><span class="tag">Privacy first</span><h2>Built around your privacy</h2><p class="lead">Your finances are personal. Keep them on your own device, or sync them to an encrypted cloud account. You decide, and you can switch any time.</p>
 <div class="g3"><div class="card blk"><div class="pvic"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="6" y="2" width="12" height="20" rx="2.6"/><path d="M11 18h2"/></svg></div><h3>On your device</h3><p>Manual JSON mode keeps everything local. Nothing is uploaded, and you back up with a file you control.</p></div>
@@ -815,27 +895,27 @@ html.intro-on{overflow:hidden}
 
 <div class="pv-sec" id="pv-modes"><h2>Two ways to store your data. You choose.</h2><p class="lead">Pick the mode that fits you in Settings. You can change your mind later.</p>
 <div class="split pvmodes">
-<div class="card blk mode"><span class="pvbadge">Maximum privacy</span><div class="pvic"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="6" y="2" width="12" height="20" rx="2.6"/><path d="M11 18h2"/></svg></div><h3>Manual JSON &middot; on your device</h3><p>Your data lives only on your phone or PC. Nothing is sent to the cloud.</p>
+<div class="card blk mode"><span class="pvbadge">Maximum privacy</span><div class="pvic ic-phone"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="6" y="2" width="12" height="20" rx="2.6"/><path d="M11 18h2"/></svg></div><h3>Manual JSON &middot; on your device</h3><p>Your data lives only on your phone or PC. Nothing is sent to the cloud.</p>
 <ul><li>Nothing uploaded, ever, in this mode</li><li>Works fully offline</li><li>Back up and move devices with a JSON file you export yourself</li><li>Logging out clears the device, so download a backup first</li></ul></div>
-<div class="card mode"><span class="pvbadge em">Every device, always current</span><div class="pvic em"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 18a4.5 4.5 0 01-.6-8.96A6 6 0 0118 9.5 4.3 4.3 0 0117.5 18z"/><path d="M12 11v5m-2-2l2 2 2-2"/></svg></div><h3>Cloud sync &middot; encrypted</h3><p>Your data syncs to your own account, so your phone, tablet and PC always agree.</p>
+<div class="card mode"><span class="pvbadge em">Every device, always current</span><div class="pvic em ic-cloud"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 18a4.5 4.5 0 01-.6-8.96A6 6 0 0118 9.5 4.3 4.3 0 0117.5 18z"/><path d="M12 11v5m-2-2l2 2 2-2"/></svg></div><h3>Cloud sync &middot; encrypted</h3><p>Your data syncs to your own account, so your phone, tablet and PC always agree.</p>
 <ul><li>Encrypted in transit with HTTPS/TLS</li><li>Records locked to your account at the database level</li><li>Changes saved straight away, other devices catch up within about a minute</li><li>Switch to device-only whenever you like</li></ul></div></div>
 
 <div class="card pvflow"><div class="pvfh"><h3>See how your data travels</h3><div class="seg" id="pvseg" style="margin:0"><button class="on" data-m="cloud">In the cloud</button><button data-m="dev">On my device</button></div></div><div class="flow" id="pvflow"></div><p class="lead" id="pvcap" style="margin:16px 0 0;font-size:.95rem"></p></div></div>
 
 <div class="pv-sec" id="pv-cloud"><h2>How the cloud keeps you safe</h2><p class="lead">When you choose cloud sync, these safeguards protect your data and your sign-in.</p>
 <div class="g3 pvgrid">
-<div class="card blk"><div class="pvic"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="5" y="11" width="14" height="10" rx="2.4"/><path d="M8 11V8a4 4 0 018 0v3"/></svg></div><h3>Encrypted in transit</h3><p>Everything sent between your device and the cloud travels over HTTPS/TLS, so it cannot be read on the way.</p></div>
-<div class="card blk"><div class="pvic"><svg viewBox="0 0 24 24" aria-hidden="true"><ellipse cx="12" cy="6" rx="8" ry="3"/><path d="M4 6v6c0 1.7 3.6 3 8 3s8-1.3 8-3V6M4 12v6c0 1.7 3.6 3 8 3s8-1.3 8-3v-6"/></svg></div><h3>Encrypted at rest</h3><p>Synced records are held in a managed cloud database that encrypts stored data.</p></div>
-<div class="card blk"><div class="pvic"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M2 12s3.6-7 10-7 10 7 10 7-3.6 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/><path d="M4 4l16 16"/></svg></div><h3>Your records, only yours</h3><p>Row-level access control scopes every record to your account. No other FinanceOS user can query, see or export your data.</p></div>
-<div class="card blk"><div class="pvic"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="8" cy="15" r="4"/><path d="M11 12l9-9m-3 3l3 3m-6-0l2 2"/></svg></div><h3>Passwords we never see</h3><p>Sign-in runs on a dedicated auth service with email confirmation. Your password is hashed, never stored or shown by FinanceOS. Forgot it? A single-use reset link does the job.</p></div>
-<div class="card blk"><div class="pvic"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 11v3.5c0 2-.6 3.6-1.6 5M8 14.5c0 2.3-.5 4-1.5 5.5M16 12v2.5c0 2-.3 3.7-1 5M5.5 11.2A6.5 6.5 0 0112 5.5a6.5 6.5 0 016.5 5.7M9 8.8A4 4 0 0116 11"/></svg></div><h3>Passkeys, if you want them</h3><p>Sign in with Face ID or fingerprint using your device&rsquo;s own security. Your fingerprint or face never leaves the device and is never sent to us.</p></div>
-<div class="card blk"><div class="pvic"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="2" y="7" width="20" height="10" rx="5"/><circle cx="16" cy="12" r="2.6"/></svg></div><h3>Sync is your call</h3><p>Turn automatic sync off, or stay in Manual JSON mode. Your theme, layouts, app lock and biometrics always stay on each device.</p></div></div></div>
+<div class="card blk"><div class="pvic ic-lock"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="5" y="11" width="14" height="10" rx="2.4"/><path d="M8 11V8a4 4 0 018 0v3"/></svg></div><h3>Encrypted in transit</h3><p>Everything sent between your device and the cloud travels over HTTPS/TLS, so it cannot be read on the way.</p></div>
+<div class="card blk"><div class="pvic ic-db"><svg viewBox="0 0 24 24" aria-hidden="true"><ellipse cx="12" cy="6" rx="8" ry="3"/><path d="M4 6v6c0 1.7 3.6 3 8 3s8-1.3 8-3V6M4 12v6c0 1.7 3.6 3 8 3s8-1.3 8-3v-6"/></svg></div><h3>Encrypted at rest</h3><p>Synced records are held in a managed cloud database that encrypts stored data.</p></div>
+<div class="card blk"><div class="pvic ic-eye"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M2 12s3.6-7 10-7 10 7 10 7-3.6 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/><path d="M4 4l16 16"/></svg></div><h3>Your records, only yours</h3><p>Row-level access control scopes every record to your account. No other FinanceOS user can query, see or export your data.</p></div>
+<div class="card blk"><div class="pvic ic-key"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="8" cy="15" r="4"/><path d="M11 12l9-9m-3 3l3 3m-6-0l2 2"/></svg></div><h3>Passwords we never see</h3><p>Sign-in runs on a dedicated auth service with email confirmation. Your password is hashed, never stored or shown by FinanceOS. Forgot it? A single-use reset link does the job.</p></div>
+<div class="card blk"><div class="pvic ic-finger"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 11v3.5c0 2-.6 3.6-1.6 5M8 14.5c0 2.3-.5 4-1.5 5.5M16 12v2.5c0 2-.3 3.7-1 5M5.5 11.2A6.5 6.5 0 0112 5.5a6.5 6.5 0 016.5 5.7M9 8.8A4 4 0 0116 11"/></svg></div><h3>Passkeys, if you want them</h3><p>Sign in with Face ID or fingerprint using your device&rsquo;s own security. Your fingerprint or face never leaves the device and is never sent to us.</p></div>
+<div class="card blk"><div class="pvic ic-toggle"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="2" y="7" width="20" height="10" rx="5"/><circle cx="16" cy="12" r="2.6"/></svg></div><h3>Sync is your call</h3><p>Turn automatic sync off, or stay in Manual JSON mode. Your theme, layouts, app lock and biometrics always stay on each device.</p></div></div></div>
 
 <div class="pv-sec" id="pv-device"><h2>Locks that live on your device</h2><p class="lead">Even if someone picks up your phone or sits at your PC, your numbers stay hidden.</p>
 <div class="g3 pvgrid">
-<div class="card blk"><div class="pvic"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 11v3.5c0 2-.6 3.6-1.6 5M8 14.5c0 2.3-.5 4-1.5 5.5M16 12v2.5c0 2-.3 3.7-1 5M5.5 11.2A6.5 6.5 0 0112 5.5a6.5 6.5 0 016.5 5.7M9 8.8A4 4 0 0116 11"/></svg></div><h3>App Lock</h3><p>Face ID, fingerprint or passkey on phones, and a PC Lock passkey on desktop. Your PC passkey is kept only as a salted hash, never in plain text.</p></div>
-<div class="card blk"><div class="pvic"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M2 12s3.6-7 10-7 10 7 10 7-3.6 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/><path d="M4 4l16 16"/></svg></div><h3>Privacy Screen</h3><p>The moment you click away, switch apps, minimise or open recent apps, a solid cover hides every amount. It lifts when you come back, or asks you to unlock after a delay you choose.</p></div>
-<div class="card blk"><div class="pvic"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="3"/><path d="M7 12h.01M12 12h.01M17 12h.01"/></svg></div><h3>Extra PIN for sensitive controls</h3><p>Admin controls sit behind a separate PIN, stored only as a salted PBKDF2 hash. Five wrong tries lock it for 30 seconds.</p></div></div></div>
+<div class="card blk"><div class="pvic ic-finger"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 11v3.5c0 2-.6 3.6-1.6 5M8 14.5c0 2.3-.5 4-1.5 5.5M16 12v2.5c0 2-.3 3.7-1 5M5.5 11.2A6.5 6.5 0 0112 5.5a6.5 6.5 0 016.5 5.7M9 8.8A4 4 0 0116 11"/></svg></div><h3>App Lock</h3><p>Face ID, fingerprint or passkey on phones, and a PC Lock passkey on desktop. Your PC passkey is kept only as a salted hash, never in plain text.</p></div>
+<div class="card blk"><div class="pvic ic-eye"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M2 12s3.6-7 10-7 10 7 10 7-3.6 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/><path d="M4 4l16 16"/></svg></div><h3>Privacy Screen</h3><p>The moment you click away, switch apps, minimise or open recent apps, a solid cover hides every amount. It lifts when you come back, or asks you to unlock after a delay you choose.</p></div>
+<div class="card blk"><div class="pvic ic-pin"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="3"/><path class="d1" d="M7 12h.01"/><path class="d2" d="M12 12h.01"/><path class="d3" d="M17 12h.01"/></svg></div><h3>Extra PIN for sensitive controls</h3><p>Admin controls sit behind a separate PIN, stored only as a salted PBKDF2 hash. Five wrong tries lock it for 30 seconds.</p></div></div></div>
 
 <div class="pv-sec"><h2>Device or cloud, side by side</h2>
 <div class="card pvtab"><div class="tw"><table class="tb"><thead><tr><th></th><th>Manual JSON</th><th>Cloud sync</th></tr></thead><tbody>
@@ -991,7 +1071,7 @@ html.intro-on{overflow:hidden}
 </div></div></div></section>
 
 </main>
-<footer><div class="wrap fw"><span>© 2026 MC Enterprise. All rights reserved.</span><span>Data shown on this site is for visual purposes only.</span><span class="legal-footlinks"><a href="#legal-privacy">Privacy Policy</a><a href="#terms">Terms &amp; Conditions</a></span></div></footer>
+<footer><div class="wrap fw"><span>© 2026 MC Enterprise. All rights reserved.</span><span class="legal-footlinks"><a href="#legal-privacy">Privacy Policy</a><a href="#terms">Terms &amp; Conditions</a></span></div></footer>
 <div class="toast" id="toast"></div>
 
 <script>
@@ -1090,7 +1170,7 @@ function openReport(sel){const has=n=>sel.includes(n),mo=['Jun','Jul','Aug','Sep
  if(has('Charts'))h+=`<h4>Income and spending, last 6 months</h4><div class="rb">${months['6M'].map((m,k)=>`<div><span><i style="height:${m[0]*1.6}px"></i><i style="height:${m[1]*1.6}px;background:#94a3b8"></i></span>${mo[k]}</div>`).join('')}</div><small class="rl"><b style="background:#10b981"></b> Income <b style="background:#94a3b8"></b> Spending</small><h4>Asset allocation</h4>${assets.map(a=>`<div class="ra"><span>${a[0]}</span><i><u style="width:${a[1]*2.4}%;background:${a[2]}"></u></i><b>${a[1]}%</b></div>`).join('')}`;
  if(has('Transactions'))h+=`<h4>Recent transactions</h4><table>${TX.map(t=>`<tr><td>${t[0]}</td><td>${t[1]}</td><td style="text-align:right;color:${t[2]>0?'#059669':'#dc2626'}">${t[2]>0?'+':'−'}${inr(Math.abs(t[2]))}</td></tr>`).join('')}</table>`;
  if(has('Portfolio'))h+=`<h4>Portfolio holdings</h4><table><tr><th>Holding</th><th>Value</th><th style="text-align:right">Return</th></tr>${HD.map(x=>`<tr><td>${x[0]}</td><td>${inr(x[1])}</td><td style="text-align:right;color:${x[2]>0?'#059669':'#dc2626'}">${x[2]>0?'+':''}${x[2]}%</td></tr>`).join('')}</table>`;
- h+='<p class="rf">Data shown is for visual purposes only. © 2026 MC Enterprise.</p>';
+ h+='<p class="rf">© 2026 MC Enterprise.</p>';
  const o=document.createElement('div');o.className='rv';o.innerHTML=`<div class="pap" role="dialog" aria-label="Report preview"><button class="btn sm rx">Close preview</button>${h}</div>`;
  const x=()=>{o.remove();removeEventListener('keydown',k)},k=e=>{if(e.key==='Escape')x()};o.onclick=e=>{if(e.target===o||e.target.classList.contains('rx'))x()};addEventListener('keydown',k);document.body.append(o);$('.rx',o).focus()}
 const fx=$('#fx'),fg=$('#fgrid'),fp=$('#fpanel');const mob=()=>matchMedia('(max-width:900px)').matches;
@@ -1137,11 +1217,14 @@ const dots=$('#stkDots');dots.innerHTML=META.map((m,i)=>`<button data-i="${i}" a
 let W=0,cw=300,ch=360,pos=3,tgt=3,spread=reduce?1:.1,open=-1,openH=440,lastFront=-1,raf=0,lastT=0,down=null,live=null,ro=null,tt=0,wt=0;
 const trans=()=>{stk.classList.add('trans');clearTimeout(tt);tt=setTimeout(()=>stk.classList.remove('trans'),700)};
 const front=()=>mod(Math.round(pos));
-function geo(){const w=stage.clientWidth;if(!w)return false;const first=!W;W=w;cw=Math.round(W<560?W*.72:Math.min(390,W*.55));ch=Math.round(clamp(cw*1.02,340,384));if(first&&!reduce){const t0=performance.now();(function s(t){const k=Math.min(1,(t-t0)/900);spread=.1+.9*(1-Math.pow(1-k,3));layout();if(k<1)requestAnimationFrame(s)})(t0)}return true}
+function geo(){const w=stage.clientWidth;if(!w)return false;const first=!W;W=w;cw=Math.round(W<560?W*.74:Math.min(390,W*.55));ch=Math.round(clamp(cw*1.02,340,384));if(first&&!reduce){const t0=performance.now();(function s(t){const k=Math.min(1,(t-t0)/900);spread=.1+.9*(1-Math.pow(1-k,3));layout();if(k<1)requestAnimationFrame(s)})(t0)}return true}
 function layout(){if(!W)return;const o=open>=0,f=front();
  cards.forEach((c,i)=>{let d=((i-pos)%N+N)%N;if(d>N/2)d-=N;const a=Math.abs(d),s=d<0?-1:1;let x,y=0,z,ry=0,sc,op,w,h,top;
-  if(o){const l=Math.min(a,3);w=W;h=openH;top=44;x=a<.02?0:s*l*9;y=-l*14-h*l*.02;sc=1-l*.04;z=-l*30;op=1}
-  else{w=cw;h=ch;top=18;const e=Math.min(a,1)*cw*.36+clamp(a-1,0,1)*cw*.14+clamp(a-2,0,1.5)*cw*.1;x=s*e*spread;z=-a*70;ry=-clamp(d,-1.25,1.25)*20*spread;sc=1-a*.07;op=clamp((3.4-a)/.55,0,1)}
+  if(o){const l=Math.min(a,3);w=W;h=openH;top=44;x=0;y=-l*14-h*l*.02;sc=1-l*.04;z=-l*30;op=1}
+  else{w=cw;h=ch;top=18;const e=Math.min(a,1)*cw*.36+clamp(a-1,0,1)*cw*.14+clamp(a-2,0,1.5)*cw*.1;z=-a*70;sc=1-a*.07;op=clamp((3.4-a)/.55,0,1);
+   if(W<560){/* phones: every card stays inside the stage, so nothing is cut off at the left or right edge */
+    const P=1500/(1500+70*a),E=W/2-6-W*.05*clamp(2-a,0,1),lim=Math.max(0,E/P-cw*sc/2);x=s*Math.min(e*spread,lim);ry=-clamp(d,-1.25,1.25)*11*spread}
+   else{x=s*e*spread;ry=-clamp(d,-1.25,1.25)*20*spread}}
   const k=w+'|'+h+'|'+top;if(c._k!==k){c._k=k;c.style.width=w+'px';c.style.height=h+'px';c.style.marginLeft=(-w/2)+'px';c.style.top=top+'px'}
   c.style.transform=`translate3d(${x.toFixed(1)}px,${y}px,${z.toFixed(1)}px) rotateY(${ry.toFixed(2)}deg) scale(${sc.toFixed(3)})`;
   c.style.opacity=op.toFixed(2);c.style.zIndex=100-Math.round(a*10);c.style.pointerEvents=o&&i!==f?'none':'';
@@ -1403,7 +1486,7 @@ function cdraw(){const d=CD[cr],mn=Math.min(...d),mx=Math.max(...d),st=376/(d.le
  sv.onpointerleave=()=>{$('#ch').style.display='none';$('#cd').style.display='none';show(d.length-1)}}
 $('#cr').onclick=e=>{if(e.target.dataset.r){cr=e.target.dataset.r;$$('#cr button').forEach(b=>b.classList.toggle('on',b===e.target));cdraw()}};
 const PVI={phone:'<svg viewBox="0 0 24 24"><rect x="6" y="2" width="12" height="20" rx="2.6"/><path d="M11 18h2"/></svg>',file:'<svg viewBox="0 0 24 24"><path d="M6 2h8l5 5v15H6z"/><path d="M14 2v5h5M9 13h6M9 17h6"/></svg>',cloud:'<svg viewBox="0 0 24 24"><path d="M7 18a4.5 4.5 0 01-.6-8.96A6 6 0 0118 9.5 4.3 4.3 0 0117.5 18z"/><path d="M12 11v5m-2-2l2 2 2-2"/></svg>',devs:'<svg viewBox="0 0 24 24"><rect x="2" y="6" width="14" height="10" rx="2"/><rect x="14" y="9" width="8" height="12" rx="2"/></svg>'};
-const pvn=(ic,t,s,c)=>`<div class="node"><div class="pvic ${c||''}">${PVI[ic]}</div><b>${t}</b><small>${s}</small></div>`;
+const pvn=(ic,t,s,c)=>`<div class="node"><div class="pvic ${c||''} ic-${ic}">${PVI[ic]}</div><b>${t}</b><small>${s}</small></div>`;
 const PVF={cloud:[pvn('phone','Your device','Entries are saved straight away')+'<div class="wire"><em>HTTPS/TLS</em><i></i><i></i></div>'+pvn('cloud','Your private cloud space','Locked to your account at the database level','em')+'<div class="wire"><em>HTTPS/TLS</em><i></i><i></i></div>'+pvn('devs','Your other devices','Catch up within about a minute, instantly when you return'),'Encrypted on the way, locked to you when it arrives, and mirrored to every device you sign in on.'],
 dev:[pvn('phone','Your device','Data lives in the app\u2019s private storage')+'<div class="wire off"><em>No upload</em></div>'+pvn('file','JSON backup file','Exported by you, only when you choose','em'),'No cloud account in the middle. Nothing leaves your device unless you export a file yourself.']};
 const pvf=m=>{$('#pvflow').innerHTML=PVF[m][0];$('#pvcap').textContent=PVF[m][1];$$('#pvseg button').forEach(b=>b.classList.toggle('on',b.dataset.m===m))};
