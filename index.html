@@ -1,6 +1,35 @@
 <!DOCTYPE html>
 <html lang="en"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#022c22">
+<script id="device-detect">
+/* Detects phone / tablet / desktop, touch, orientation and OS, and keeps <html> data attributes + --vh in sync */
+(function(){var d=document.documentElement;
+function mq(q){try{return matchMedia(q).matches}catch(e){return false}}
+function os(){var u=navigator.userAgent||'',p=navigator.platform||'';
+ if(/android/i.test(u))return'android';
+ if(/iPhone|iPad|iPod/i.test(u)||(p==='MacIntel'&&navigator.maxTouchPoints>1))return'ios';
+ if(/Win/i.test(p))return'windows';if(/Mac/i.test(p))return'mac';if(/Linux|X11/i.test(p))return'linux';return'other'}
+var raf=0;
+function apply(){var w=innerWidth,h=innerHeight,s=Math.min(w,h),vv=window.visualViewport,
+ touch=mq('(pointer:coarse)')||(navigator.maxTouchPoints>0&&mq('(hover:none)')),
+ dev=touch?(s<=520?'phone':(s<=900?'tablet':'desktop')):'desktop';
+ d.setAttribute('data-device',dev);
+ d.setAttribute('data-w',w<=640?'s':(w<=1024?'m':'l'));
+ d.setAttribute('data-orient',w>h?'landscape':'portrait');
+ d.setAttribute('data-touch',touch?'1':'0');
+ d.setAttribute('data-os',os());
+ d.setAttribute('data-standalone',(mq('(display-mode: standalone)')||navigator.standalone)?'1':'0');
+ d.style.setProperty('--vh',((vv?vv.height:h)*0.01)+'px');
+ window.__device={device:dev,width:w,height:h,touch:touch,os:os()};
+ try{window.dispatchEvent(new CustomEvent('devicechange',{detail:window.__device}))}catch(e){}}
+function queue(){cancelAnimationFrame(raf);raf=requestAnimationFrame(apply)}
+apply();
+addEventListener('resize',queue,{passive:true});
+addEventListener('orientationchange',function(){setTimeout(apply,250)},{passive:true});
+if(window.visualViewport)visualViewport.addEventListener('resize',queue,{passive:true});
+})();
+</script>
 <title>FinanceOS & Portfolio OS</title>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@500;700;800&family=DM+Sans:wght@400;500;700&display=swap">
 <style>
@@ -946,6 +975,594 @@ html.intro-on{overflow:hidden}
 @keyframes appFill{0%{transform:scaleX(.12)}30%,82%{transform:scaleX(1)}100%{transform:scaleX(.12)}}
 @keyframes appSheen{to{background-position:-200% 0}}
 @media(prefers-reduced-motion:reduce){#p-apk .glow,#p-apk .phone .logo svg,#p-apk .phone .mini i,#p-apk .phone .track i{animation:none!important}}
+
+/* ===== round 3: story, features black accents, pricing, journey, contact, cart ===== */
+.rvl{opacity:0;transform:translateY(22px);transition:opacity .7s,transform .7s cubic-bezier(.2,.8,.2,1)}.rvl.in{opacity:1;transform:none}
+.story{margin-top:64px;display:grid;gap:64px}.sy h2{margin-top:6px}.sy .card h3{margin-bottom:2px}
+.flow3{list-style:none;padding:0;margin:26px 0 0;display:grid;grid-template-columns:repeat(3,1fr);gap:18px;counter-reset:f}
+.flow3 li{position:relative;padding:22px;border:1px solid var(--line);border-radius:16px;background:var(--card)}
+.flow3 li i{display:grid;place-items:center;width:38px;height:38px;border-radius:12px;background:linear-gradient(135deg,var(--em2),var(--em));color:var(--ink);font:800 1rem "Bricolage Grotesque";font-style:normal;margin-bottom:12px;box-shadow:0 6px 18px rgba(16,185,129,.35)}
+.flow3 li p{color:var(--mu);margin-top:6px;font-size:.95rem}
+.flow3 li:not(:last-child)::after{content:"";position:absolute;top:41px;left:calc(100% - 2px);width:22px;height:2px;background:var(--em2);opacity:.6}
+.sy-cta{margin-top:24px;display:flex;justify-content:space-between;align-items:center;gap:20px;flex-wrap:wrap;padding:clamp(22px,3vw,34px)}.sy-cta p{margin:6px 0 0}
+@media(max-width:900px){.flow3{grid-template-columns:1fr}.flow3 li:not(:last-child)::after{display:none}}
+/* features: black accents */
+#p-features .fc,#p-features .fpanel{--tx:#effff8;--mu:#c6ecdc;--bg2:rgba(255,255,255,.07);--card:rgba(255,255,255,.08);--line:rgba(190,255,225,.22);background:linear-gradient(160deg,rgba(0,0,0,.84),rgba(2,28,20,.72));border:1px solid var(--edge-em);color:#effff8;box-shadow:0 10px 30px rgba(0,0,0,.28)}
+#p-features .fc h3,#p-features .fpanel h3{color:#fff}#p-features .fc p,#p-features .fpanel p{color:#c6ecdc}
+#p-features .fc:hover{border-color:var(--em2);box-shadow:0 14px 36px rgba(0,0,0,.4),0 0 24px rgba(16,185,129,.22)}
+#p-features .fc.on{background:linear-gradient(160deg,rgba(0,0,0,.92),rgba(4,60,42,.8));border-color:var(--em2);box-shadow:0 0 0 1px var(--em2),0 0 30px rgba(16,185,129,.3)}
+#p-features .fpanel .btn.o{color:#effff8;border-color:rgba(190,255,225,.3)}
+/* pricing */
+.sv{color:#fff;background:#ef4444;border-radius:99px;padding:2px 9px;font-size:.78rem;margin-left:4px;white-space:nowrap}
+.pwhy{margin-top:56px;display:grid;gap:22px}.pwhy h2{margin-top:4px}
+.pw-math{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:14px}.pw-math .card b{display:block;font:800 1.9rem "Bricolage Grotesque";color:var(--em2);line-height:1.1}.pw-math .card small{color:var(--mu)}
+.pw-math .card.red b{color:#f87171}
+.pw-yr{display:flex;gap:18px;align-items:center;flex-wrap:wrap;padding:clamp(20px,3vw,30px);border:1px solid rgba(239,68,68,.55);background:linear-gradient(135deg,rgba(239,68,68,.16),rgba(0,0,0,.35));border-radius:18px}
+.pw-yr strong{font:800 clamp(2rem,5vw,3.2rem) "Bricolage Grotesque";color:#f87171;line-height:1}.pw-yr p{color:var(--tx);margin:0;flex:1;min-width:220px}.pw-yr s{color:var(--mu)}
+/* journey */
+.jr{list-style:none;padding:0;margin:30px 0 0;display:grid;grid-template-columns:repeat(5,1fr);gap:14px}
+.jr li{position:relative;display:flex;flex-direction:column;align-items:center;text-align:center;gap:8px;padding:0 6px;opacity:.45;transform:translateY(10px);transition:opacity .5s,transform .5s}
+.jr li.done{opacity:1;transform:none}
+.jr li:not(:last-child)::after{content:"";position:absolute;top:33px;left:calc(50% + 40px);width:calc(100% - 66px);height:3px;border-radius:3px;background:var(--line);background-image:linear-gradient(var(--em2),var(--em2));background-repeat:no-repeat;background-size:0 100%;transition:background-size .7s ease}
+.jr li.done:not(:last-child)::after{background-size:100% 100%}
+.jr-n{position:relative;display:grid;place-items:center;width:66px;height:66px;border-radius:20px;border:2px solid var(--line);background:var(--card);color:var(--em2);transition:all .4s}
+.jr-n svg{width:28px;height:28px;fill:none;stroke:currentColor;stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round}
+.jr-n em{position:absolute;top:-9px;right:-9px;width:24px;height:24px;border-radius:50%;display:grid;place-items:center;font:800 .75rem "DM Sans";font-style:normal;background:var(--em);color:var(--ink)}
+.jr li.done .jr-n{border-color:var(--em2);box-shadow:0 0 22px rgba(16,185,129,.3)}
+.jr li.act .jr-n{background:linear-gradient(135deg,var(--em2),var(--em));color:var(--ink);transform:scale(1.12);animation:jrp 1.4s ease-in-out infinite}
+@keyframes jrp{50%{box-shadow:0 0 0 12px rgba(16,185,129,0)}0%{box-shadow:0 0 0 0 rgba(16,185,129,.5)}}
+.jr li b{font:700 1.02rem "Bricolage Grotesque"}.jr li span{color:var(--mu);font-size:.88rem}
+@media(max-width:900px){.jr{grid-template-columns:1fr;gap:0}.jr li{flex-direction:row;flex-wrap:wrap;text-align:left;align-items:center;column-gap:16px;row-gap:2px;padding:0 0 26px}.jr-n{grid-row:span 2;flex:none}.jr li b,.jr li span{flex:1 1 calc(100% - 90px)}.jr li:not(:last-child)::after{top:68px;left:32px;width:3px;height:calc(100% - 68px);background-size:100% 0}.jr li.done:not(:last-child)::after{background-size:100% 100%}}
+/* contact */
+.cwhy{margin-top:24px;padding:clamp(20px,3vw,30px)}.cwhy ul{list-style:none;padding:0;margin:14px 0 18px;display:grid;gap:11px}.cwhy li{display:flex;gap:11px;align-items:flex-start}
+.cwhy li i{flex:none;width:24px;height:24px;border-radius:8px;display:grid;place-items:center;background:var(--em);margin-top:1px}.cwhy li i svg{width:15px;height:15px;fill:none;stroke:#000;stroke-width:3.4;stroke-linecap:round;stroke-linejoin:round}
+/* cart discount */
+.deal{margin:14px 0 4px;padding:16px;border-radius:14px;border:1px solid rgba(239,68,68,.6);background:linear-gradient(135deg,rgba(239,68,68,.18),rgba(239,68,68,.05));animation:dealIn .45s cubic-bezier(.2,.8,.2,1)}
+.deal small{display:block;color:#f87171;font-weight:800;letter-spacing:.08em;text-transform:uppercase;font-size:.72rem}.deal strong{display:block;font:800 2.5rem "Bricolage Grotesque";color:#f87171;line-height:1.05}.deal>span{display:block;color:var(--tx);margin:2px 0 8px;font-size:.92rem}.deal s{color:var(--mu)}
+@keyframes dealIn{from{opacity:0;transform:scale(.96)}}
+.deal-n{width:100%;margin-top:12px;padding:11px 14px;border-radius:12px;border:1px dashed #f87171;background:rgba(239,68,68,.08);color:#f87171;font:700 .92rem "DM Sans";cursor:pointer}
+.tx.dsc,.tx.dsc b{color:#f87171}.tx.tt b{font-size:1.25rem}.sv2{color:#f87171!important;font-weight:700;font-size:.88rem;margin:6px 0 0!important}
+@media(prefers-reduced-motion:reduce){.rvl{opacity:1;transform:none;transition:none}.jr li{opacity:1;transform:none}.jr li.act .jr-n{animation:none}.deal{animation:none}}
+
+/* ===== round 4 ===== */
+.flow3 li{transition:border-color .4s,box-shadow .4s,transform .4s}
+.flow3 li.act{border-color:var(--em2);box-shadow:0 0 30px rgba(16,185,129,.28);transform:translateY(-5px)}
+.flow3 li.act i{animation:jrp 1.4s ease-in-out infinite}
+.mv{margin-top:16px;height:70px;display:flex;align-items:flex-end;gap:8px;flex-wrap:wrap;overflow:hidden}
+.mv1{align-content:flex-end}.mv1 span{padding:5px 12px;border-radius:99px;border:1px solid var(--line);font-size:.8rem;color:var(--mu);opacity:.3;transform:scale(.82)}
+.flow3 li.act .mv1 span{animation:chipIn .5s ease forwards;animation-delay:calc(var(--k)*.4s)}
+@keyframes chipIn{to{opacity:1;transform:none;border-color:var(--em2);color:var(--em2)}}
+.mv2{gap:9px}.mv2 i{flex:1;max-width:30px;height:var(--h);border-radius:6px 6px 0 0;background:linear-gradient(var(--em2),var(--em));transform:scaleY(.12);transform-origin:bottom;opacity:.5}
+.flow3 li.act .mv2 i{animation:barUp .8s cubic-bezier(.2,.8,.2,1) forwards;animation-delay:calc(var(--k)*.14s)}
+@keyframes barUp{to{transform:none;opacity:1}}
+.mv3{flex-direction:column;align-items:flex-start;justify-content:flex-end;gap:6px}.mv3 b{font:500 .82rem "DM Sans";padding:6px 12px;border-radius:14px 14px 14px 4px;background:var(--bg2);color:var(--tx)}
+.mv3 .q{align-self:flex-end;border-radius:14px 14px 4px 14px;background:var(--em);color:var(--ink);font-weight:700}
+.mv3 .t{display:none;gap:4px}.mv3 .t u{width:6px;height:6px;border-radius:50%;background:var(--mu);display:block;animation:blk 1s infinite}.mv3 .t u:nth-child(2){animation-delay:.2s}.mv3 .t u:nth-child(3){animation-delay:.4s}
+@keyframes blk{50%{opacity:.25}}.mv3 .a{opacity:0}
+.flow3 li.act .mv3 .t{display:flex;animation:tOff .1s 1.6s forwards}.flow3 li.act .mv3 .a{animation:ansIn .5s 1.7s forwards}
+.mv3 .q{opacity:.3}.flow3 li.act .mv3 .q{animation:ansIn .4s forwards}
+@keyframes tOff{to{display:none;opacity:0;height:0;padding:0}}@keyframes ansIn{to{opacity:1}}
+/* product visuals */
+.vz{margin-top:20px;padding:14px 16px;border-radius:14px;border:1px solid var(--edge-em);background:linear-gradient(160deg,rgba(0,0,0,.84),rgba(2,28,20,.72));color:#effff8}
+.vzh{display:flex;justify-content:space-between;align-items:center;gap:8px;font-weight:700;font-size:.88rem}.vzh small{color:#c6ecdc;font-weight:500}.vzh span{display:flex;align-items:center;gap:8px}
+.vz .dot{width:8px;height:8px;border-radius:50%;background:#34d399;animation:dotp 1.6s infinite}@keyframes dotp{50%{box-shadow:0 0 0 7px rgba(52,211,153,0)}0%{box-shadow:0 0 0 0 rgba(52,211,153,.6)}}
+.vzl{margin-top:8px;height:200px;overflow:hidden}
+.vzr{display:flex;justify-content:space-between;align-items:center;gap:10px;height:50px;padding:0 2px;border-bottom:1px solid rgba(190,255,225,.14);font-size:.9rem}.vzr small{display:block;color:#c6ecdc;font-size:.72rem;line-height:1.2}
+.vzr b{font-weight:800}.vzr b.p{color:#34d399}.vzr b.n{color:#f87171}.vzr.new{animation:rowIn .55s cubic-bezier(.2,.8,.2,1)}
+@keyframes rowIn{from{opacity:0;transform:translateY(-22px);background:rgba(52,211,153,.25)}}
+.pfv{display:flex;align-items:baseline;gap:10px;margin-top:6px}.pfv b{font:800 1.7rem "Bricolage Grotesque"}.pfv em{font-style:normal;color:#34d399;font-weight:700;font-size:.88rem}
+.pfc{width:100%;height:110px;margin-top:6px;overflow:visible}.pfc .g{stroke:rgba(190,255,225,.14);stroke-width:1;fill:none}
+.pfc .ln{fill:none;stroke:#34d399;stroke-width:3;stroke-linecap:round;stroke-linejoin:round;stroke-dasharray:1;stroke-dashoffset:1;vector-effect:non-scaling-stroke;animation:ptDraw 7s ease-in-out infinite}
+.pfc .ar{opacity:0;animation:ptArea 7s ease-in-out infinite}.pfc .pt{fill:#fff;stroke:#34d399;stroke-width:3;opacity:0;animation:ptDot 7s ease-in-out infinite}
+@keyframes ptDraw{0%{stroke-dashoffset:1}40%,90%{stroke-dashoffset:0}100%{stroke-dashoffset:1}}@keyframes ptArea{0%,20%{opacity:0}45%,90%{opacity:1}100%{opacity:0}}@keyframes ptDot{0%,38%{opacity:0;r:2}42%{opacity:1;r:7}50%,90%{opacity:1;r:4.5}100%{opacity:0}}
+.alb{display:flex;height:10px;gap:3px;margin-top:12px;border-radius:6px;overflow:hidden}.alb i{flex:var(--w) 1 0;transform-origin:left;transform:scaleX(0);animation:segIn 7s ease-in-out infinite;animation-delay:calc(var(--k)*.3s)}
+@keyframes segIn{0%,35%{transform:scaleX(0)}55%,90%{transform:scaleX(1)}100%{transform:scaleX(0)}}
+.alg{display:flex;flex-wrap:wrap;gap:6px 14px;margin-top:8px;font-size:.78rem;color:#c6ecdc}.alg span{display:flex;align-items:center;gap:6px}.alg s{width:9px;height:9px;border-radius:3px}
+@media(prefers-reduced-motion:reduce){.mv1 span,.mv2 i,.mv3 .a,.mv3 .q{opacity:1;transform:none}.mv3 .t{display:none}.pfc .ln{stroke-dashoffset:0;animation:none}.pfc .ar,.pfc .pt{opacity:1;animation:none}.alb i{transform:none;animation:none}.ia .ico,.ia .ico::after,.ia .ico path{animation:none}.vz .dot{animation:none}}
+
+/* inside the app: tree chart */
+.tree{margin-top:26px;display:flex;flex-direction:column;align-items:center}
+.tr-root{display:flex;align-items:center;gap:14px;padding:16px 26px;border-radius:18px;border:1px solid var(--em2);background:linear-gradient(160deg,rgba(0,0,0,.9),rgba(2,40,28,.8));color:#fff;box-shadow:0 0 34px rgba(16,185,129,.3);opacity:0;transform:scale(.85);transition:opacity .5s,transform .6s cubic-bezier(.2,.8,.2,1)}
+.tr-root b{display:block;font:800 1.25rem "Bricolage Grotesque"}.tr-root b em{font-style:normal;color:var(--em2)}.tr-root small{color:#c6ecdc}
+.tr-ln{display:block;background:linear-gradient(var(--em2),var(--em),var(--em2));background-size:100% 200%;animation:trFlow 2.4s linear infinite;border-radius:3px}
+@keyframes trFlow{to{background-position:0 -200%}}
+.tr-stem{width:3px;height:30px;transform:scaleY(0);transform-origin:top;transition:transform .45s .35s ease}
+.tr-cols{position:relative;width:100%;display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:20px;padding-top:30px}
+.tr-cols::before{content:"";position:absolute;top:0;left:12.5%;right:12.5%;height:3px;border-radius:3px;background:var(--em2);transform:scaleX(0);transition:transform .7s .75s ease}
+.tr-col{position:relative}.tr-col::before{content:"";position:absolute;top:-30px;left:50%;width:3px;height:30px;margin-left:-1.5px;background:var(--em2);transform:scaleY(0);transform-origin:top;transition:transform .35s calc(1.4s + var(--c)*.12s) ease}
+.tr-br{display:flex;align-items:center;gap:12px;padding:14px 16px;border-radius:16px;border:1px solid var(--edge-em);background:linear-gradient(160deg,rgba(0,0,0,.88),rgba(2,34,24,.78));color:#fff;opacity:0;transform:translateY(14px) scale(.94);transition:opacity .45s,transform .5s cubic-bezier(.2,.8,.2,1);transition-delay:calc(1.6s + var(--c)*.12s)}
+.tr-br b{display:block;font:700 1.05rem "Bricolage Grotesque";line-height:1.15}.tr-br small{color:#c6ecdc;font-size:.8rem;line-height:1.25;display:block;margin-top:2px}
+.tr-lv{position:relative;list-style:none;padding:0 0 0 22px;margin:14px 0 0 24px;display:grid;gap:10px}
+.tr-sp{position:absolute;left:0;top:-14px;bottom:20px;width:3px;transform:scaleY(0);transform-origin:top;transition:transform .8s calc(1.9s + var(--c)*.12s) ease}
+.tr-lv li{position:relative;opacity:0;transform:translateX(-14px);transition:opacity .4s,transform .5s cubic-bezier(.2,.8,.2,1);transition-delay:calc(2.1s + var(--c)*.12s + var(--k)*.14s)}
+.tr-lv li::before{content:"";position:absolute;left:-22px;top:50%;width:22px;height:3px;margin-top:-1.5px;background:var(--em2);border-radius:3px;transform:scaleX(0);transform-origin:left;transition:transform .3s calc(2.1s + var(--c)*.12s + var(--k)*.14s)}
+.tn{display:flex;align-items:center;gap:11px;width:100%;padding:9px 12px;border-radius:14px;border:1px solid var(--edge-em);background:linear-gradient(160deg,rgba(0,0,0,.84),rgba(2,28,20,.72));color:#effff8;font:600 .93rem "DM Sans";text-align:left;cursor:pointer;transition:transform .2s,border-color .2s,box-shadow .2s}
+.tn:hover{transform:translateX(5px);border-color:var(--em2);box-shadow:0 0 22px rgba(16,185,129,.3)}
+.tree .ico{position:relative;flex:none;width:38px;height:38px;border-radius:12px}.tree .ico svg{width:21px;height:21px}.tree .tr-br .ico{width:46px;height:46px;border-radius:14px}.tree .tr-br .ico svg{width:25px;height:25px}
+.tree.on .tr-root,.tree.on .tr-br,.tree.on .tr-lv li{opacity:1;transform:none}.tree.on .tr-stem,.tree.on .tr-col::before,.tree.on .tr-sp{transform:none}.tree.on .tr-cols::before,.tree.on .tr-lv li::before{transform:none}
+.tree.on .tr-root{animation:rootGlow 3.4s ease-in-out 1s infinite}@keyframes rootGlow{50%{box-shadow:0 0 52px rgba(16,185,129,.5)}}
+@media(max-width:1000px){.tr-cols{grid-template-columns:repeat(2,minmax(0,1fr))}.tr-cols::before{left:25%;right:25%}.tr-col:nth-child(n+3)::before{display:none}.tr-col:nth-child(n+3){margin-top:10px}}
+@media(max-width:600px){.tr-cols{grid-template-columns:1fr;padding-top:0}.tr-cols::before,.tr-col::before{display:none}.tr-col+.tr-col{margin-top:10px}.tr-root{width:100%}}
+@media(prefers-reduced-motion:reduce){.tr-root,.tr-br,.tr-lv li{opacity:1;transform:none;transition:none}.tr-stem,.tr-col::before,.tr-sp,.tr-cols::before,.tr-lv li::before{transform:none;transition:none}.tr-ln{animation:none}.tree.on .tr-root{animation:none}}
+
+/* ===== round 5: pricing black accents + animation, contact tree ===== */
+#p-pricing .seg{display:inline-flex;padding:5px;border-radius:99px;background:linear-gradient(160deg,#000,rgba(2,28,20,.9));border:1px solid var(--edge-em)}
+#p-pricing .seg button{border-color:transparent;color:#c6ecdc;padding:8px 18px;font-weight:600;transition:background .25s,color .25s}#p-pricing .seg button.on{background:linear-gradient(135deg,var(--em2),var(--em));color:var(--ink);border-color:transparent}
+.price .n{animation:pnPop .55s cubic-bezier(.2,.8,.2,1)}@keyframes pnPop{from{opacity:0;transform:translateY(10px) scale(.88)}}
+.price s,.deal s,.tx s,.pw-yr s{position:relative;display:inline-block;text-decoration:none!important}
+.price s::after,.deal s::after,.tx s::after,.pw-yr s::after{content:"";position:absolute;left:-3px;right:-3px;top:54%;height:2.5px;border-radius:2px;background:#ef4444;transform:scaleX(0);transform-origin:left}
+.price s::after,.deal s::after,.tx s::after{animation:strk .6s .35s ease forwards}.pw-yr.in s::after{animation:strk .7s .5s ease forwards}@keyframes strk{to{transform:scaleX(1)}}
+.price .sv{animation:svPop .55s .85s backwards cubic-bezier(.2,.8,.2,1)}@keyframes svPop{from{opacity:0;transform:scale(.4)}}
+.pw-yr{gap:24px 34px;justify-content:space-between;background:linear-gradient(135deg,rgba(239,68,68,.16),rgba(0,0,0,.8))}
+.pw-cmp{display:flex;align-items:center;gap:18px;flex-wrap:wrap}.pw-cmp small,.pw-sv small{display:block;color:#c6ecdc;font-size:.78rem}
+.pw-cmp .was s{font:700 1.7rem "Bricolage Grotesque";color:#c6ecdc}.pw-cmp .now b{font:800 2.3rem "Bricolage Grotesque";color:#fff;line-height:1.1;display:block}
+.pw-cmp .arr{font-style:normal;color:#f87171;font-size:1.6rem}.pw-yr .now,.pw-yr .arr,.pw-yr .pw-sv{opacity:0;transform:translateY(10px);transition:opacity .5s,transform .5s}.pw-yr.in .arr{opacity:1;transform:none;transition-delay:.9s}.pw-yr.in .now{opacity:1;transform:none;transition-delay:1.1s}.pw-yr.in .pw-sv{opacity:1;transform:none;transition-delay:1.5s}
+.pw-sv strong{display:block;font:800 clamp(2rem,4.5vw,3rem) "Bricolage Grotesque";color:#f87171;line-height:1}.pw-sv em{font-style:normal;color:#fff;font-weight:600;font-size:.9rem}
+.pw-yr.in .pw-sv strong{animation:svPulse 2.4s 2s ease-in-out infinite}@keyframes svPulse{50%{text-shadow:0 0 22px rgba(248,113,113,.7)}}
+.jr.c4{grid-template-columns:repeat(4,1fr)}.jr.c4 li{opacity:.75}.jr.c4 li.done{opacity:1}.jr.nn .jr-n em{display:none}
+.jr.nk .jr-n{background:linear-gradient(160deg,#000,rgba(2,34,24,.92));border-color:var(--edge-em)}
+@media(max-width:900px){.jr.c4{grid-template-columns:1fr}}
+/* contact tree */
+.ct{align-items:flex-start;margin-top:24px;--c:0}
+.ct .tr-root{width:100%;padding:14px 18px}.ct .tr-root .ico{width:42px;height:42px;border-radius:13px}.ct .tr-root .ico svg{width:23px;height:23px}
+.ct .tr-stem{margin-left:34px;height:26px;transition-delay:.3s}
+.ct .tr-lv{margin:0 0 0 34px;padding-left:24px;width:calc(100% - 34px)}.ct .tr-sp{top:0;bottom:24px;transition-delay:.55s}
+.ct .tr-lv li{transition-delay:calc(.75s + var(--k)*.16s)}.ct .tr-lv li::before{left:-24px;width:24px;transition-delay:calc(.75s + var(--k)*.16s)}
+.ct .tn{cursor:default;align-items:center;font-size:.9rem;font-weight:600;line-height:1.35;padding:10px 12px}.ct .tn:hover{transform:translateX(4px)}
+.ct-end{display:flex;gap:10px;flex-wrap:wrap}.ct .cta{flex:1 1 130px;justify-content:center;text-decoration:none;background:linear-gradient(135deg,var(--em2),var(--em));color:var(--ink);font-weight:800;border-color:transparent;cursor:pointer}.ct .cta.o{background:linear-gradient(160deg,#000,rgba(2,28,20,.9));color:#fff;border-color:var(--em2)}
+.ct .tr-root{opacity:0}.ct.on .tr-root{opacity:1}
+@media(prefers-reduced-motion:reduce){.pw-yr .now,.pw-yr .arr,.pw-yr .pw-sv{opacity:1;transform:none;transition:none}.price s::after,.deal s::after,.tx s::after,.pw-yr s::after{animation:none;transform:none}.price .n,.price .sv,.pw-yr.in .pw-sv strong{animation:none}.ct .tr-root{opacity:1}}
+
+/* ===== round 6 ===== */
+.flow3 li{border-color:#000}
+.flow3 li.act{border-color:#000;box-shadow:0 0 0 2px #000,0 16px 36px rgba(0,0,0,.5)}
+.split{align-items:stretch}.split>.card{display:flex;flex-direction:column}
+.split .vz{margin-top:auto;display:flex;flex-direction:column;min-height:340px}.split .card>ul+.vz{margin-top:auto}
+.split .vzl{height:auto;flex:1;min-height:250px}
+.split .pfc{flex:1;height:auto;min-height:110px}
+.split .card>ul{margin-bottom:20px}
+.nv{--r:#f87171;gap:18px!important;padding:18px 20px!important;opacity:0;transform:translateX(-30px);filter:blur(6px);transition:opacity .6s,transform .7s cubic-bezier(.2,.8,.2,1),filter .6s;transition-delay:calc(var(--k)*.24s)}
+.nvz.on .nv{opacity:1;transform:none;filter:none}
+.nv strong{display:block;color:#fff;font:700 1.05rem "Bricolage Grotesque"}.nv small{display:block;color:#c6ecdc;font-size:.86rem;margin-top:3px;line-height:1.4}
+.nv-i{position:relative;flex:none;width:60px;height:60px;border-radius:18px;display:grid;place-items:center;background:rgba(255,255,255,.06);border:1px solid rgba(190,255,225,.22)}
+.nv-i .ic{width:28px;height:28px;fill:none;stroke:#c6ecdc;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;transition:opacity .5s,stroke .5s;transition-delay:calc(var(--k)*.24s + 1.2s)}
+.nvz.on .nv-i .ic{opacity:.4}
+.nv-no{position:absolute;inset:0;width:100%;height:100%;fill:none;stroke:var(--r);stroke-width:3;stroke-linecap:round;overflow:visible}
+.nv-no .c,.nv-no .sl{stroke-dasharray:1;stroke-dashoffset:1}
+.nvz.on .nv-no .c{animation:nvDraw .6s calc(var(--k)*.24s + .75s) ease forwards}
+.nvz.on .nv-no .sl{animation:nvDraw .4s calc(var(--k)*.24s + 1.25s) ease forwards}
+.nvz.on .nv-i{animation:nvShake .5s calc(var(--k)*.24s + 1.6s)}
+.nvz.on .nv-no{animation:nvPulse 3s calc(var(--k)*.24s + 2.4s) ease-in-out infinite}
+@keyframes nvDraw{to{stroke-dashoffset:0}}
+@keyframes nvShake{20%{transform:translateX(-5px) rotate(-5deg)}40%{transform:translateX(5px) rotate(5deg)}60%{transform:translateX(-3px)}80%{transform:translateX(2px)}}
+@keyframes nvPulse{50%{filter:drop-shadow(0 0 7px rgba(248,113,113,.8))}}
+@media(prefers-reduced-motion:reduce){.nv{opacity:1;transform:none;filter:none;transition:none}.nv-no .c,.nv-no .sl{stroke-dashoffset:0;animation:none}.nv-i .ic{opacity:.4;transition:none}.nvz.on .nv-i,.nvz.on .nv-no{animation:none}}
+
+/* round 7: equal, compact product panels */
+.split .vz{height:272px;min-height:0;padding:12px 16px}
+.split .vzl{flex:1;height:auto;min-height:0;overflow:hidden;margin-top:6px}
+.split .vzr{height:40px}.split .vzr span{line-height:1.2}.split .vzr small{font-size:.7rem}
+.split .pfv{margin-top:2px}.split .pfv b{font-size:1.5rem}
+.split .pfc{flex:1 1 auto;height:0;min-height:70px;margin-top:4px}
+.split .alb{margin-top:8px}.split .alg{margin-top:6px}
+
+/* round 8: contact right column filler */
+.cnext{display:flex;flex-direction:column;justify-content:center;padding:clamp(20px,3vw,30px)}
+.cnext p{margin:6px 0 16px}
+.cn-l{display:grid;gap:10px}
+.cn-t{display:flex;align-items:center;gap:13px;padding:12px 14px;border-radius:14px;border:1px solid var(--edge-em);background:rgba(255,255,255,.05);color:#fff;text-decoration:none;transition:transform .25s,border-color .25s,box-shadow .25s,background .25s}
+.cn-t:hover{transform:translateX(6px);border-color:var(--em2);background:rgba(52,211,153,.1);box-shadow:0 0 22px rgba(16,185,129,.28)}
+.cn-t i{flex:none;width:40px;height:40px;border-radius:12px;display:grid;place-items:center;background:linear-gradient(135deg,var(--em2),var(--em));animation:icoFl 3.4s ease-in-out infinite;animation-delay:calc(var(--k)*.4s)}
+.cn-t i svg{width:21px;height:21px;fill:none;stroke:#022c1f;stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round}
+.cn-t span{flex:1;min-width:0}.cn-t b{display:block;font:700 .98rem "Bricolage Grotesque";color:#fff}.cn-t small{display:block;color:#c6ecdc;font-size:.8rem;margin-top:1px}
+.cn-t em{font-style:normal;color:var(--em2);font-size:1.2rem;transition:transform .25s}.cn-t:hover em{transform:translateX(4px)}
+@media(min-width:901px){#p-contact .big>.cr{align-self:stretch;grid-template-rows:auto auto 1fr}}
+@media(prefers-reduced-motion:reduce){.cn-t i{animation:none}}
+@keyframes icoFl{50%{transform:translateY(-4px)}}
+
+/* ===== round 9: interactive cloud safeguards ===== */
+.sf{margin-top:26px;padding:clamp(18px,3vw,34px);border-radius:24px;border:1px solid var(--edge-em);background:radial-gradient(120% 90% at 50% 0,rgba(16,185,129,.16),transparent 60%),linear-gradient(160deg,rgba(0,0,0,.9),rgba(2,28,20,.8));color:#effff8;box-shadow:0 24px 60px rgba(0,0,0,.35)}
+.sf-path{position:relative;display:grid;grid-template-columns:repeat(6,minmax(0,1fr))}
+.sf-rail{position:absolute;top:29px;left:calc(100%/12);right:calc(100%/12);height:3px;border-radius:3px;background:rgba(190,255,225,.16)}
+.sf-fill{position:absolute;left:0;top:0;bottom:0;width:var(--p,0%);border-radius:3px;background:linear-gradient(90deg,var(--em),var(--em2));transition:width .8s ease}
+.sf-pk{position:absolute;top:50%;left:var(--p,0%);width:15px;height:15px;margin:-7px 0 0 -7px;border-radius:5px;background:#fff;box-shadow:0 0 16px var(--em2),0 0 0 4px rgba(52,211,153,.25);transition:left .8s cubic-bezier(.5,0,.2,1);animation:pkSpin 3s linear infinite}
+@keyframes pkSpin{to{transform:rotate(90deg)}}
+.sf-n{position:relative;z-index:1;display:flex;flex-direction:column;align-items:center;gap:8px;padding:0 4px;background:none;border:0;color:#c6ecdc;font:inherit;cursor:pointer;text-align:center}
+.sf-n .ci{width:58px;height:58px;border-radius:19px;display:grid;place-items:center;background:#000;border:2px solid rgba(190,255,225,.22);color:var(--em2);transition:all .35s}
+.sf-n .ci svg{width:26px;height:26px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.sf-n small{font-size:.72rem;letter-spacing:.07em;text-transform:uppercase;opacity:.7}.sf-n b{font:700 .95rem "Bricolage Grotesque";line-height:1.15}
+.sf-n:hover .ci{border-color:var(--em2);transform:translateY(-3px)}
+.sf-n.done .ci{border-color:var(--em2)}
+.sf-n.on .ci{background:linear-gradient(135deg,var(--em2),var(--em));color:#022c1f;border-color:transparent;transform:scale(1.12);animation:nodeP 1.8s ease-in-out infinite}
+@keyframes nodeP{0%{box-shadow:0 0 0 0 rgba(52,211,153,.55)}100%{box-shadow:0 0 0 16px rgba(52,211,153,0)}}
+.sf-n.on b,.sf-n.on small{color:#fff;opacity:1}
+.sf-panel{margin-top:30px;display:grid;grid-template-columns:190px 1fr;gap:clamp(18px,3vw,38px);align-items:center;padding:clamp(18px,2.6vw,30px);border-radius:20px;border:1px solid rgba(190,255,225,.16);background:rgba(255,255,255,.04)}
+.sf-orb{position:relative;width:170px;height:170px;margin:auto;display:grid;place-items:center}
+.sf-orb::before,.sf-orb::after{content:"";position:absolute;border-radius:50%;border:2px dashed rgba(52,211,153,.5)}
+.sf-orb::before{inset:0;animation:orbR 14s linear infinite}.sf-orb::after{inset:20px;border-style:solid;border-color:rgba(52,211,153,.25) transparent rgba(52,211,153,.6) transparent;animation:orbR 6s linear infinite reverse}
+@keyframes orbR{to{transform:rotate(360deg)}}
+.sf-orb .core{width:92px;height:92px;border-radius:28px;display:grid;place-items:center;background:linear-gradient(135deg,var(--em2),var(--em));color:#022c1f;box-shadow:0 0 50px rgba(16,185,129,.55);animation:coreF 3.6s ease-in-out infinite}
+.sf-orb .core svg{width:46px;height:46px;fill:none;stroke:currentColor;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round}
+@keyframes coreF{50%{transform:translateY(-6px) scale(1.04)}}
+.sf-tx{min-width:0}.sf-tx .st{display:inline-block;font-size:.76rem;letter-spacing:.08em;text-transform:uppercase;color:var(--em2);font-weight:700}
+.sf-tx h3{color:#fff;font-size:clamp(1.3rem,2.4vw,1.8rem);margin:4px 0 8px}.sf-tx p{color:#c6ecdc;max-width:62ch;margin:0}
+.sf-ch{display:flex;flex-wrap:wrap;gap:8px;margin-top:14px}.sf-ch span{padding:5px 12px;border-radius:99px;border:1px solid rgba(52,211,153,.45);background:rgba(16,185,129,.1);color:#d1fae5;font-size:.82rem;font-weight:600}
+.sf-dm{margin-top:16px;display:grid;gap:8px;max-width:560px}
+.sf-r{display:flex;align-items:center;gap:10px;padding:9px 13px;border-radius:12px;background:rgba(0,0,0,.55);border:1px solid rgba(190,255,225,.14);font-size:.88rem}
+.sf-r em{font-style:normal;color:#c6ecdc;flex:none;min-width:8.5em}.sf-r code{font:600 .9rem ui-monospace,Menlo,Consolas,monospace;color:#fff;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.sf-r.ok code{color:#34d399}.sf-r.no code{color:#f87171}.sf-r.sc code{color:#34d399;letter-spacing:.06em}
+.sf-sw{display:flex;align-items:center;gap:12px}.sf-sw button{position:relative;width:58px;height:32px;border-radius:99px;border:1px solid rgba(190,255,225,.3);background:#000;cursor:pointer;transition:background .3s}
+.sf-sw button i{position:absolute;top:3px;left:3px;width:24px;height:24px;border-radius:50%;background:#c6ecdc;transition:transform .3s,background .3s}.sf-sw button.on{background:var(--em)}.sf-sw button.on i{transform:translateX(26px);background:#fff}
+.sf-in{animation:sfIn .55s cubic-bezier(.2,.8,.2,1)}@keyframes sfIn{from{opacity:0;transform:translateY(12px)}}
+.sf-prog{height:3px;border-radius:3px;background:rgba(190,255,225,.12);margin-top:22px;overflow:hidden}.sf-prog i{display:block;height:100%;width:0;background:var(--em2)}
+.sf-prog i.run{animation:sfProg 6s linear forwards}.sf.hold .sf-prog i{animation-play-state:paused}
+@keyframes sfProg{to{width:100%}}
+@media(max-width:820px){.sf-path{grid-template-columns:repeat(3,minmax(0,1fr));gap:18px 4px}.sf-rail{display:none}.sf-panel{grid-template-columns:1fr}.sf-orb{width:130px;height:130px}.sf-orb .core{width:74px;height:74px;border-radius:22px}.sf-orb .core svg{width:36px;height:36px}.sf-orb::after{inset:14px}.sf-r{flex-wrap:wrap}.sf-r em{min-width:0}}
+@media(prefers-reduced-motion:reduce){.sf-pk,.sf-orb::before,.sf-orb::after,.sf-orb .core,.sf-n.on .ci,.sf-in{animation:none}.sf-fill,.sf-pk{transition:none}}
+</style>
+
+
+<style id="round-10">
+/* ===== round 10 ===== */
+/* -- contact: green filler card -- */
+@media(min-width:901px){#p-contact .big>.cl{align-self:stretch;display:flex;flex-direction:column}#p-contact .cl>.gq{flex:1 1 auto}#p-contact .big>.cr{align-content:start}}
+.gq{position:relative;overflow:hidden;margin-top:26px;padding:clamp(20px,3vw,32px);display:flex;flex-direction:column;gap:14px;min-height:300px}
+.gq>*{position:relative;z-index:1}
+.gq-orb{position:absolute!important;z-index:0!important;border-radius:50%;background:rgba(255,255,255,.42);filter:blur(30px);pointer-events:none}
+.gq-orb.a{width:200px;height:200px;right:-50px;top:-60px;animation:gqDrift 9s ease-in-out infinite}
+.gq-orb.b{width:170px;height:170px;left:-40px;bottom:-60px;background:rgba(6,95,70,.35);animation:gqDrift 11s -3s ease-in-out infinite reverse}
+@keyframes gqDrift{50%{transform:translate(-34px,26px) scale(1.15)}}
+.gq-h{display:flex;gap:14px;align-items:center}
+.gq-h h3{color:#022c1f;font-size:1.25rem}.gq-h p{margin:2px 0 0;color:#065f46;font-size:.92rem}
+.gq-pl{flex:none;width:48px;height:48px;border-radius:15px;display:grid;place-items:center;background:#fff;color:#059669;box-shadow:0 8px 18px rgba(2,44,31,.25);animation:gqFly 3.6s ease-in-out infinite}
+.gq-pl svg{width:24px;height:24px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+@keyframes gqFly{0%,100%{transform:translate(0,0) rotate(0)}50%{transform:translate(4px,-5px) rotate(-8deg)}}
+.gq-ch{display:flex;flex-wrap:wrap;gap:8px}
+.gq-ch button{border:1px solid rgba(2,44,31,.35);background:rgba(255,255,255,.3);color:#022c1f;font:700 .86rem "DM Sans",sans-serif;padding:7px 14px;border-radius:99px;cursor:pointer;transition:background .2s,transform .2s,box-shadow .2s}
+.gq-ch button:hover{background:rgba(255,255,255,.6)}
+.gq-ch button.on{background:#fff;color:#065f46;transform:translateY(-2px);box-shadow:0 8px 18px rgba(2,44,31,.25)}
+.gq-bub{background:#fff;border-radius:18px 18px 18px 5px;padding:14px 16px;min-height:104px;box-shadow:0 12px 26px rgba(2,44,31,.25)}
+.gq-bub small{display:block;color:#047857;font-weight:800;font-size:.72rem;letter-spacing:.08em;text-transform:uppercase}
+.gq-bub p{margin:6px 0 0;color:#06291e;font-size:.95rem;line-height:1.5}
+.gq-bub p::after{content:"";display:inline-block;width:2px;height:1.05em;margin-left:2px;vertical-align:-2px;background:#059669;animation:gqBl 1s steps(2) infinite}
+@keyframes gqBl{50%{opacity:0}}
+.gq-f{display:flex;gap:12px;align-items:center;flex-wrap:wrap;margin-top:auto}
+.gq-n{flex:1;min-width:160px;font-size:.82rem;color:#065f46}
+.gq-bar{height:4px;border-radius:4px;background:rgba(2,44,31,.18);overflow:hidden}.gq-bar i{display:block;height:100%;width:0;background:#065f46}
+.gq-bar i.run{animation:gqRun var(--gd,5s) linear forwards}@keyframes gqRun{to{width:100%}}
+.gq-flash{outline:2px solid #34d399!important;box-shadow:0 0 0 5px rgba(52,211,153,.35)!important}
+@media(prefers-reduced-motion:reduce){.gq-orb,.gq-pl{animation:none}}
+
+/* -- get the app: black outline that glows -- */
+.card.ac,.card.ac:hover{border:2px solid #000;border-color:#000}
+.card.ac{animation:acGlow 3.2s ease-in-out infinite;box-shadow:0 0 0 1px #000,0 0 12px rgba(52,211,153,.4),0 0 26px rgba(16,185,129,.25)}
+.acg>.ac:nth-child(2){animation-delay:.5s}.acg>.ac:nth-child(3){animation-delay:1s}
+.card.ac.soon h3,.card.ac.soon p{opacity:.8}
+@keyframes acGlow{0%,100%{box-shadow:0 0 0 1px #000,0 0 10px rgba(52,211,153,.35),0 0 22px rgba(16,185,129,.2)}50%{box-shadow:0 0 0 1px #000,0 0 22px rgba(110,255,200,.85),0 0 48px rgba(16,185,129,.5)}}
+@media(prefers-reduced-motion:reduce){.card.ac{box-shadow:0 0 0 1px #000,0 0 18px rgba(110,255,200,.6),0 0 38px rgba(16,185,129,.35)}}
+
+/* -- pricing: modern tiles -- */
+.pw-math{grid-template-columns:repeat(3,minmax(0,1fr));gap:16px;perspective:900px}
+@media(max-width:860px){.pw-math{grid-template-columns:1fr}}
+.pt{--mx:50%;--my:0%;position:relative;overflow:hidden;padding:22px;border-radius:22px;color:#effff8;background:linear-gradient(155deg,rgba(6,78,59,.8),rgba(2,44,34,.74));border:1px solid rgba(110,231,183,.35);box-shadow:0 18px 40px rgba(0,28,20,.35),inset 0 1px 0 rgba(255,255,255,.22);-webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px);transition:transform .25s ease-out,border-color .3s,box-shadow .3s;will-change:transform}
+.pt::before{content:"";position:absolute;inset:0;background:radial-gradient(260px circle at var(--mx) var(--my),rgba(110,255,200,.24),transparent 60%);opacity:0;transition:opacity .3s;pointer-events:none}
+.pt:hover::before{opacity:1}
+.pt:hover{border-color:rgba(110,231,183,.85);box-shadow:0 22px 50px rgba(0,28,20,.45),0 0 34px rgba(52,211,153,.3),inset 0 1px 0 rgba(255,255,255,.3)}
+.pt>*{position:relative}
+.pt-top{display:flex;justify-content:space-between;align-items:center}
+.pt small{color:#c6ecdc;font-size:.82rem;font-weight:700;letter-spacing:.07em;text-transform:uppercase}
+.pt-ic{width:38px;height:38px;border-radius:12px;display:grid;place-items:center;background:linear-gradient(135deg,#34d399,#10b981);animation:icoFl 3.4s ease-in-out infinite}
+.pt-ic svg{width:20px;height:20px;fill:none;stroke:#022c1f;stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round}
+.pt-big{display:block;margin:14px 0 14px;font:800 clamp(2.2rem,4vw,3rem) "Bricolage Grotesque",sans-serif;line-height:1;color:#6ee7b7;letter-spacing:-.02em;text-shadow:0 0 28px rgba(52,211,153,.35)}
+.pt p{color:#c6ecdc;font-size:.92rem;margin:16px 0 0}
+.pt-note{display:block;margin-top:4px;font-size:.75rem;opacity:.75}
+.pt-cal{display:grid;grid-template-columns:repeat(10,1fr);gap:6px}
+.pt-cal i{aspect-ratio:1;border-radius:50%;background:rgba(190,255,225,.14);border:1px solid rgba(190,255,225,.2)}
+.pw-math.go .pt-cal i{animation:ptDot .5s calc(var(--i)*55ms) both ease-out}
+@keyframes ptDot{from{background:rgba(190,255,225,.14);transform:scale(.7)}60%{transform:scale(1.3)}to{background:#34d399;border-color:#6ee7b7;box-shadow:0 0 8px rgba(52,211,153,.7);transform:scale(1)}}
+.pt-bars{display:grid;gap:12px}.pb{display:grid;gap:5px}.pb em{font-style:normal;font-size:.8rem;color:#c6ecdc}
+.pb i{display:block;height:12px;border-radius:99px;width:var(--w);transform-origin:left;background:linear-gradient(90deg,#34d399,#10b981)}
+.pb.me{--w:26%}.pb:not(.me){--w:84%}.pb:not(.me) i{background:linear-gradient(90deg,#94a3b8,#64748b)}
+.pw-math .pb i{transform:scaleX(0)}
+.pw-math.go .pb i{animation:ptBar 1.1s .3s cubic-bezier(.2,.8,.2,1) both}.pw-math.go .pb:not(.me) i{animation-delay:.6s}
+@keyframes ptBar{to{transform:scaleX(1)}}
+.pt-mo{display:grid;grid-template-columns:repeat(6,1fr);gap:6px}
+.pt-mo i{font-style:normal;text-align:center;font:700 .72rem "DM Sans",sans-serif;padding:8px 0;border-radius:9px;background:rgba(190,255,225,.12);border:1px solid rgba(190,255,225,.22);color:#c6ecdc;opacity:.3;transform:translateY(6px)}
+.pt-mo i.fr{background:rgba(248,113,113,.22);border-color:#f87171;color:#fecaca}
+.pw-math.go .pt-mo i{animation:ptMo .4s calc(var(--i)*90ms) both}
+.pw-math.go .pt-mo i.fr{animation:ptMo .4s calc(var(--i)*90ms) both,ptFree 2.2s 1.4s ease-in-out infinite}
+@keyframes ptMo{to{opacity:1;transform:none}}@keyframes ptFree{50%{box-shadow:0 0 16px rgba(248,113,113,.75)}}
+.pt-y{border-color:rgba(248,113,113,.5)}.pt-y .pt-big{color:#f87171;text-shadow:0 0 28px rgba(248,113,113,.4)}.pt-y .pt-ic{background:linear-gradient(135deg,#fca5a5,#ef4444)}
+.pt-y:hover{border-color:#f87171;box-shadow:0 22px 50px rgba(0,28,20,.45),0 0 34px rgba(248,113,113,.3),inset 0 1px 0 rgba(255,255,255,.3)}
+@media(prefers-reduced-motion:reduce){.pt-cal i{background:#34d399;border-color:#6ee7b7}.pw-math .pb i{transform:none}.pt-mo i{opacity:1;transform:none}.pt-ic{animation:none}}
+
+/* -- info: problem cards that explain themselves -- */
+.pbm{align-items:stretch}
+.pcol{--ac:#34d399;--ac2:#6ee7b7;display:flex;flex-direction:column;cursor:pointer;outline:none;transition:opacity .4s}
+.pcol[data-i="1"]{--ac:#fbbf24;--ac2:#fde68a}.pcol[data-i="2"]{--ac:#5eead4;--ac2:#99f6e4}
+.pcol:not(.act){opacity:.55}
+.pcol .card{flex:1;transition:border-color .4s,box-shadow .4s,transform .4s,background .4s}
+.pcol.act .card{transform:translateY(-3px);border-color:var(--ac);background:linear-gradient(160deg,rgba(2,60,44,.95),rgba(4,80,58,.85));box-shadow:0 0 0 1px var(--ac),0 0 34px rgba(52,211,153,.35)}
+.pcol.act .card h3{color:var(--ac2)}
+.parr{position:relative;height:56px;flex:none}
+.parr::before{content:"";position:absolute;left:50%;margin-left:-1.5px;top:0;bottom:12px;width:3px;border-radius:3px;background:rgba(110,231,183,.22)}
+.parr i{position:absolute;left:50%;bottom:2px;width:14px;height:14px;margin-left:-7px;border-right:3px solid rgba(110,231,183,.3);border-bottom:3px solid rgba(110,231,183,.3);transform:rotate(45deg)}
+.parr::after{content:"";position:absolute;left:50%;margin-left:-5px;top:0;width:10px;height:10px;border-radius:50%;background:var(--ac2);box-shadow:0 0 14px var(--ac);opacity:0}
+.pcol.act .parr::before{background:linear-gradient(var(--ac2),var(--ac));transform-origin:top;animation:parGrow .7s ease-out both}
+.pcol.act .parr i{border-color:var(--ac);animation:parHead .3s .55s both}
+.pcol.act .parr::after{animation:parRun 1.4s .75s ease-in infinite}
+@keyframes parGrow{from{transform:scaleY(0)}}
+@keyframes parHead{from{opacity:0;transform:rotate(45deg) translate(-7px,-7px)}}
+@keyframes parRun{0%{top:0;opacity:1}75%{opacity:1}100%{top:36px;opacity:0}}
+.pviz{position:relative;height:196px;flex:none;border-radius:18px;overflow:hidden;border:1px solid rgba(110,231,183,.25);color:#effff8;background:radial-gradient(120% 100% at 50% 0,rgba(16,185,129,.2),transparent 65%),linear-gradient(160deg,rgba(0,0,0,.72),rgba(2,28,20,.66));transition:border-color .4s,box-shadow .4s}
+.pcol.act .pviz{border-color:var(--ac);box-shadow:0 0 0 1px var(--ac),0 16px 36px rgba(0,0,0,.35)}
+.pv-cap{position:absolute;top:12px;left:14px;right:14px;font:700 .7rem "DM Sans",sans-serif;letter-spacing:.08em;text-transform:uppercase;color:var(--ac2);z-index:3}
+/* scattered */
+.pv-sc em{position:absolute;left:var(--lx);top:var(--ly);transform:translate(-50%,-50%);font-style:normal;font:700 .74rem "DM Sans",sans-serif;padding:6px 11px;border-radius:10px;white-space:nowrap;background:rgba(52,211,153,.16);border:1px solid rgba(52,211,153,.55);color:#d1fae5}
+.pcol.act .pv-sc em{animation:scOut .9s calc(var(--k)*.08s) cubic-bezier(.2,.8,.2,1) both,scFl 3.6s calc(1s + var(--k)*.3s) ease-in-out infinite}
+@keyframes scOut{from{left:50%;top:52%;opacity:.4}}
+@keyframes scFl{50%{transform:translate(-50%,-50%) translate(5px,-7px)}}
+.sc-q{position:absolute;left:50%;top:52%;transform:translate(-50%,-50%);font:800 2.6rem "Bricolage Grotesque",sans-serif;color:var(--ac);opacity:.9}
+.pcol.act .sc-q{animation:scQ 1.8s 1s ease-in-out infinite}@keyframes scQ{50%{transform:translate(-50%,-50%) scale(1.25);opacity:.4}}
+/* surprises */
+.su-bill{position:absolute;left:14px;width:46%;padding:6px 11px;border-radius:10px;font:700 .76rem "DM Sans",sans-serif;background:rgba(251,191,36,.16);border:1px solid rgba(251,191,36,.6);color:#fef3c7}
+.b1{top:40px}.b2{top:74px}.b3{top:108px}
+.pcol.act .b1{animation:suD1 6s infinite}.pcol.act .b2{animation:suD2 6s infinite}.pcol.act .b3{animation:suD3 6s infinite}
+@keyframes suD1{0%,6%{transform:translateY(-70px);opacity:0}16%{transform:translateY(0);opacity:1}20%{transform:translateY(-6px)}24%,92%{transform:none;opacity:1}100%{opacity:0}}
+@keyframes suD2{0%,26%{transform:translateY(-100px);opacity:0}36%{transform:translateY(0);opacity:1}40%{transform:translateY(-6px)}44%,92%{transform:none;opacity:1}100%{opacity:0}}
+@keyframes suD3{0%,46%{transform:translateY(-130px);opacity:0}56%{transform:translateY(0);opacity:1}60%{transform:translateY(-6px)}64%,92%{transform:none;opacity:1}100%{opacity:0}}
+.su-lab{position:absolute;left:14px;right:14px;bottom:14px}.su-lab small{display:block;font:700 .68rem "DM Sans",sans-serif;letter-spacing:.08em;text-transform:uppercase;color:#c6ecdc;margin-bottom:5px}
+.su-bal{display:block;height:12px;border-radius:99px;background:rgba(190,255,225,.14);overflow:hidden}
+.su-bal i{display:block;height:100%;width:34%;border-radius:99px;background:linear-gradient(90deg,#34d399,#fbbf24)}
+.pcol.act .su-bal i{animation:suBar 6s infinite}
+@keyframes suBar{0%,14%{width:92%;background:#34d399}24%{width:70%}44%{width:46%;background:#fbbf24}64%{width:22%;background:#f87171}92%{width:22%}100%{width:92%;background:#34d399}}
+.su-bang{position:absolute;top:36px;right:18px;width:46px;height:46px;border-radius:50%;display:grid;place-items:center;font:800 1.6rem "Bricolage Grotesque",sans-serif;background:#f87171;color:#450a0a;opacity:.25}
+.pcol.act .su-bang{animation:suBang 6s infinite}
+@keyframes suBang{0%,56%{opacity:0;transform:scale(.4)}64%{opacity:1;transform:scale(1.25)}70%{transform:scale(1);box-shadow:0 0 0 0 rgba(248,113,113,.7)}84%{box-shadow:0 0 0 18px rgba(248,113,113,0)}92%{opacity:1}100%{opacity:0}}
+/* guesswork */
+.gu-g{position:absolute;left:50%;top:34px;width:78%;max-width:250px;transform:translateX(-50%)}
+.gu-arc{fill:none;stroke:rgba(190,255,225,.22);stroke-width:12;stroke-linecap:round;stroke-dasharray:3 9}
+.gu-nd line{stroke:var(--ac2);stroke-width:4;stroke-linecap:round}.gu-nd circle{fill:var(--ac)}
+.gu-nd{transform-origin:100px 100px;transform:rotate(14deg)}
+.pcol.act .gu-nd{animation:guN 5s ease-in-out infinite}
+@keyframes guN{0%,100%{transform:rotate(-62deg)}12%{transform:rotate(38deg)}24%{transform:rotate(-20deg)}38%{transform:rotate(58deg)}52%{transform:rotate(-48deg)}66%{transform:rotate(14deg)}80%{transform:rotate(-30deg)}}
+.gu-w{position:absolute;left:0;right:0;bottom:12px;height:24px;text-align:center}
+.gu-w span{position:absolute;left:0;right:0;font:800 1.05rem "Bricolage Grotesque",sans-serif;color:var(--ac2);opacity:0}.gu-w span:first-child{opacity:1}
+.pcol.act .gu-w span{animation:guW 3.6s infinite}.pcol.act .gu-w span:nth-child(2){animation-delay:1.2s}.pcol.act .gu-w span:nth-child(3){animation-delay:2.4s}
+@keyframes guW{0%{opacity:0;transform:translateY(6px)}8%,30%{opacity:1;transform:none}38%,100%{opacity:0}}
+@media(max-width:640px){.pviz{height:210px}}
+@media(prefers-reduced-motion:reduce){.pcol{opacity:1!important}.su-bill,.su-bang{opacity:1}.su-bal i{width:34%}}
+</style>
+
+
+<style id="round-11">
+/* ===== round 11 ===== */
+/* contact starter: softer, on-theme */
+.gq-orb{background:rgba(255,255,255,.18)}.gq-orb.b{background:rgba(2,44,31,.3)}
+.gq-ch button{background:rgba(255,255,255,.14);border-color:rgba(2,44,31,.3)}.gq-ch button:hover{background:rgba(255,255,255,.26)}
+.gq-bub{background:#cdeedd;box-shadow:0 12px 26px rgba(2,44,31,.28)}
+.gq-h p,.gq-n{color:#04362a}
+
+/* info: connector replaces arrow */
+.parr{display:none}
+.plink{position:relative;height:72px;flex:none;display:flex;flex-direction:column;align-items:center}
+.pl-l{display:block;flex:1;width:0;border-left:2px dashed rgba(110,231,183,.3);transform-origin:top}
+.pl-n{flex:none;position:relative;width:36px;height:36px;border-radius:50%;display:grid;place-items:center;background:rgba(2,28,20,.92);border:2px solid rgba(110,231,183,.35);color:var(--ac2)}
+.pl-n svg{width:17px;height:17px;fill:none;stroke:currentColor;stroke-width:2.2;stroke-linecap:round}
+.pl-t{position:absolute;left:calc(50% + 28px);top:50%;transform:translateY(-50%);font:700 .68rem "DM Sans",sans-serif;letter-spacing:.08em;text-transform:uppercase;color:var(--ac2);white-space:nowrap;opacity:.35}
+.pcol.act .pl-l{border-left-color:var(--ac);animation:parGrow .45s ease-out both}.pcol.act .pl-l.b{animation-delay:.75s}
+.pcol.act .pl-n{background:var(--ac);border-color:var(--ac);color:#022c1f;animation:plPop .5s .35s both}
+.pcol.act .pl-n::after{content:"";position:absolute;inset:-2px;border-radius:50%;border:2px solid var(--ac);animation:plRip 1.7s 1s ease-out infinite}
+.pcol.act .pl-t{opacity:1;animation:plT .5s .55s both}
+@keyframes plPop{0%{transform:scale(.6)}60%{transform:scale(1.2)}100%{transform:scale(1)}}
+@keyframes plRip{from{transform:scale(1);opacity:.8}to{transform:scale(2);opacity:0}}
+@keyframes plT{from{opacity:0;transform:translate(-8px,-50%)}to{opacity:1;transform:translateY(-50%)}}
+@media(max-width:900px){.pl-t{display:none}}
+/* guesswork: price chart */
+.gu-chart{position:absolute;left:14px;right:14px;top:38px;height:98px;display:flex;align-items:center;justify-content:space-between}
+.gu-chart::before{content:"";position:absolute;inset:0;background:repeating-linear-gradient(to bottom,rgba(190,255,225,.09) 0 1px,transparent 1px 24px)}
+.cd{position:relative;display:block;flex:none;width:10px;height:var(--h)}
+.cd::before{content:"";position:absolute;left:0;right:0;top:20%;bottom:20%;border-radius:3px;background:var(--c)}
+.cd::after{content:"";position:absolute;left:50%;margin-left:-1px;width:2px;top:0;bottom:0;background:var(--c);opacity:.85}
+.cd.g{--c:#34d399}.cd.r{--c:#f87171}
+.pcol.act .cd{animation:cdW calc(2.2s + var(--k)*.28s) ease-in-out infinite}
+@keyframes cdW{0%,100%{transform:translateY(0) scaleY(1)}30%{transform:translateY(-14px) scaleY(1.25)}60%{transform:translateY(10px) scaleY(.7)}}
+.gu-bl{position:absolute;left:0;right:0;top:48px;border-top:2px dashed var(--ac2);opacity:.85}
+.gu-bl::after{content:"budget?";position:absolute;right:0;top:-17px;font:700 .62rem "DM Sans",sans-serif;letter-spacing:.07em;text-transform:uppercase;color:var(--ac2)}
+.pcol.act .gu-bl{animation:guBl 4s ease-in-out infinite}
+@keyframes guBl{0%,100%{transform:translateY(0)}25%{transform:translateY(-28px)}55%{transform:translateY(24px)}80%{transform:translateY(-8px)}}
+.gu-tag{position:absolute;left:50%;top:88px;transform:translate(-50%,-50%);z-index:2;padding:7px 15px;border-radius:12px;background:rgba(2,28,20,.9);border:1px solid var(--ac);font:800 1.1rem "Bricolage Grotesque",sans-serif;color:#effff8;white-space:nowrap;box-shadow:0 8px 20px rgba(0,0,0,.4)}
+.pcol.act .gu-tag span{display:inline-block;animation:guBlur 2.4s ease-in-out infinite}
+@keyframes guBlur{0%,100%{filter:blur(0)}50%{filter:blur(3px)}}
+
+/* pricing: extras */
+.pt-sw{margin-top:12px;border:1px solid #f87171;background:rgba(248,113,113,.14);color:#fecaca;font:700 .85rem "DM Sans",sans-serif;padding:8px 14px;border-radius:10px;cursor:pointer;transition:background .2s,transform .2s}
+.pt-sw:hover{background:rgba(248,113,113,.28);transform:translateY(-1px)}
+.pt-best{display:inline-block;margin-top:10px;padding:4px 11px;border-radius:99px;background:rgba(248,113,113,.2);border:1px solid #f87171;color:#fecaca;font:800 .72rem "DM Sans",sans-serif;letter-spacing:.06em;text-transform:uppercase}
+.pt-cal.y{grid-template-columns:repeat(12,1fr)}
+.pt-sub{display:block;margin:-6px 0 12px;color:#c6ecdc;font-size:.9rem}
+.pb.me.yr{--w:21%}
+.pw-math.swap .pt{animation:ptSwap .55s ease-out}
+@keyframes ptSwap{from{opacity:0;transform:rotateX(-18deg) translateY(10px)}}
+.pwx{display:grid;grid-template-columns:1.15fr .85fr;gap:16px}
+@media(max-width:860px){.pwx{grid-template-columns:1fr}}
+.pwx-c{position:relative;padding:22px;border-radius:22px;color:#effff8;background:linear-gradient(155deg,rgba(6,78,59,.8),rgba(2,44,34,.74));border:1px solid rgba(110,231,183,.35);box-shadow:0 18px 40px rgba(0,28,20,.3),inset 0 1px 0 rgba(255,255,255,.2)}
+.pwx-c h3{margin-top:6px;color:#effff8}.pwx-c p{color:#c6ecdc;font-size:.92rem;margin:6px 0 0}
+.roi-r{display:flex;align-items:center;gap:14px;margin:16px 0 6px}
+.roi-r input{flex:1;accent-color:#34d399;height:28px;cursor:pointer}
+.roi-r output{min-width:5.4em;text-align:right;font:800 1.35rem "Bricolage Grotesque",sans-serif;color:#6ee7b7}
+.roi-b{display:grid;gap:12px;margin-top:12px}.roi-b>div{display:grid;gap:4px}
+.roi-b small{display:flex;justify-content:space-between;color:#c6ecdc;font-size:.8rem;font-weight:700;letter-spacing:.05em;text-transform:uppercase}.roi-b small b{color:#effff8;font-size:.95rem;letter-spacing:0;text-transform:none}
+.rb{display:block;height:12px;border-radius:99px;background:rgba(190,255,225,.12);overflow:hidden}.rb i{display:block;height:100%;width:0;border-radius:99px;background:linear-gradient(90deg,#94a3b8,#64748b);transition:width .6s cubic-bezier(.2,.8,.2,1)}.rb.g i{background:linear-gradient(90deg,#34d399,#10b981)}
+.roi-m{margin-top:14px!important;padding:11px 13px;border-radius:12px;background:rgba(16,185,129,.14);border-left:3px solid #34d399;color:#effff8!important;font-weight:600}
+.roi-m.no{background:rgba(251,191,36,.12);border-left-color:#fbbf24}
+.roi-n{display:block;margin-top:8px;color:#c6ecdc;opacity:.8;font-size:.75rem}
+.mg{position:relative;height:176px;margin-top:14px}
+.mg-l{position:absolute;left:0;top:0;display:grid;gap:7px;width:50%}
+.mg-l span{position:relative;display:block;padding:6px 12px;border-radius:10px;background:rgba(148,163,184,.16);border:1px solid rgba(148,163,184,.45);color:#e2e8f0;font:700 .78rem "DM Sans",sans-serif;white-space:nowrap}
+.mg-p{position:absolute;right:0;top:50%;transform:translateY(-50%);padding:12px 14px;border-radius:14px;background:linear-gradient(135deg,#34d399,#10b981);color:#022c1f;font:800 .95rem "Bricolage Grotesque",sans-serif;text-align:center;box-shadow:0 0 24px rgba(52,211,153,.4)}
+.mg-p small{display:block;font:700 .66rem "DM Sans",sans-serif;letter-spacing:.06em;text-transform:uppercase;opacity:.8}
+.mg.go .mg-l span{animation:mgC 7s calc(var(--k)*.3s) infinite}
+.mg.go .mg-p{animation:mgP 7s 1.2s infinite}
+@keyframes mgC{0%,24%{transform:none;opacity:1;text-decoration:none}32%{text-decoration:line-through;opacity:.6}48%{transform:translateX(90px) scale(.6);opacity:0}92%{transform:none;opacity:0}100%{opacity:1}}
+@keyframes mgP{0%,32%{transform:translateY(-50%) scale(1)}46%{transform:translateY(-50%) scale(1.14);box-shadow:0 0 44px rgba(110,255,200,.8)}60%,100%{transform:translateY(-50%) scale(1)}}
+@media(prefers-reduced-motion:reduce){.mg-l span{opacity:.6;text-decoration:line-through}}
+
+/* referrals */
+#p-referrals .ref-hero h1{position:relative}
+#p-referrals .tw-ghost{visibility:hidden;display:block}
+#p-referrals .tw-live{position:absolute;left:0;top:0;right:0;display:block}
+#p-referrals .tw-live em,#p-referrals .tw-ghost em{font-style:normal;color:var(--em2)}
+#p-referrals .tw-live::after{content:"";display:inline-block;width:3px;height:.9em;margin-left:4px;vertical-align:-.08em;background:var(--em2);animation:gqBl .9s steps(2) infinite}
+#p-referrals .ref-hero .ref-reward{position:relative;overflow:visible}
+#p-referrals .ref-reward{animation:rwRing 2.4s ease-in-out infinite}
+#p-referrals .ref-reward strong{display:inline-block;animation:rwZoom 2.4s ease-in-out infinite}
+@keyframes rwZoom{0%,100%{transform:scale(1)}22%{transform:scale(.86)}58%{transform:scale(1.32);text-shadow:0 0 24px rgba(52,211,153,.8)}80%{transform:scale(1)}}
+@keyframes rwRing{0%,100%{box-shadow:0 0 0 0 rgba(52,211,153,0)}58%{box-shadow:0 0 0 0 rgba(52,211,153,.45),0 0 26px rgba(52,211,153,.3)}90%{box-shadow:0 0 0 14px rgba(52,211,153,0)}}
+#p-referrals .ref-timeline.rt-run .ref-stage{animation:none}
+#p-referrals .ref-timeline.rt-run .ref-stage:not(.act):not(.done){opacity:.45}
+#p-referrals .ref-timeline .ref-stage{transition:opacity .4s,background .4s,border-color .4s}
+#p-referrals .ref-timeline .ref-stage.act{background:rgba(16,185,129,.1);border-color:rgba(52,211,153,.45)}
+#p-referrals .ref-timeline .ref-stage .ref-stage-dot{background:var(--bg2);color:var(--em2);border:1px solid rgba(52,211,153,.38);box-shadow:0 0 0 5px rgba(16,185,129,.06);transition:background .35s,color .35s,box-shadow .35s}
+#p-referrals .ref-timeline .ref-stage.act .ref-stage-dot{animation:rtPulse 1.1s ease-in-out infinite;border-color:var(--em2)}
+#p-referrals .ref-timeline .ref-stage.done .ref-stage-dot{background:linear-gradient(135deg,var(--em2),var(--em));color:var(--ink);border-color:transparent;box-shadow:0 0 20px rgba(16,185,129,.35);animation:rtPop .5s}
+#p-referrals .ref-stage-dot svg{display:none;width:22px;height:22px;fill:none;stroke:currentColor;stroke-width:2.6;stroke-linecap:round;stroke-linejoin:round}
+#p-referrals .ref-stage.done .ref-stage-dot .n{display:none}
+#p-referrals .ref-stage.done .ref-stage-dot svg{display:block}
+#p-referrals .ref-stage.done .ref-stage-dot svg.tk path{stroke-dasharray:30;animation:rtDraw .45s ease-out both}
+#p-referrals .ref-stage:last-child.done .ref-stage-dot{background:linear-gradient(135deg,#fde68a,#f59e0b);color:#451a03;box-shadow:0 0 30px rgba(245,158,11,.55);animation:rtCash 1.4s ease-out}
+#p-referrals .ref-stage:last-child.done .ref-stage-dot svg{stroke-width:2}
+#p-referrals .ref-timeline .ref-stage:not(:last-child)::after{background:rgba(52,211,153,.15)}
+#p-referrals .ref-timeline .ref-stage:not(:last-child)::before{left:30px;top:55px;width:2px;height:43px;border-radius:0;filter:none;background:linear-gradient(#6ee7b7,#34d399);animation:none;transform:scaleY(0);transform-origin:top;transition:transform .5s ease}
+#p-referrals .ref-timeline .ref-stage.done:not(:last-child)::before{transform:scaleY(1)}
+@media(max-width:560px){#p-referrals .ref-timeline .ref-stage:not(:last-child)::before{left:26px;top:51px;height:42px}}
+@keyframes rtPulse{50%{box-shadow:0 0 0 9px rgba(16,185,129,.18)}}
+@keyframes rtPop{0%{transform:scale(.7)}60%{transform:scale(1.2)}100%{transform:scale(1)}}
+@keyframes rtDraw{from{stroke-dashoffset:30}to{stroke-dashoffset:0}}
+@keyframes rtCash{0%{transform:scale(.6) rotate(-12deg)}35%{transform:scale(1.35) rotate(6deg)}60%{transform:scale(1)}100%{box-shadow:0 0 0 22px rgba(245,158,11,0)}}
+@media(prefers-reduced-motion:reduce){#p-referrals .ref-reward,#p-referrals .ref-reward strong{animation:none}}
+</style>
+
+
+<style id="round-12">
+/* ===== round 12 ===== */
+html{-webkit-text-size-adjust:100%;text-size-adjust:100%}
+body{min-height:calc(var(--vh,1vh)*100)}
+html[data-touch="1"]{-webkit-tap-highlight-color:transparent}
+
+/* contact starter: same glass card as "Send a message" */
+.gq-orb{display:none}
+.gq-h h3{color:#effff8}.gq-h p{color:#c6ecdc}
+.gq-pl{background:linear-gradient(135deg,var(--em2),var(--em));color:#022c1f;box-shadow:0 8px 18px rgba(0,28,20,.35)}
+.gq-ch button{background:rgba(255,255,255,.07);border:1px solid var(--g-edge);color:#effff8}
+.gq-ch button:hover{background:rgba(255,255,255,.14)}
+.gq-ch button.on{background:var(--on-fill);border-color:var(--em2);color:#6ee7b7;transform:translateY(-1px);box-shadow:0 0 18px rgba(16,185,129,.3)}
+.gq-bub{background:rgba(255,255,255,.13);border:1px solid rgba(255,255,255,.22);box-shadow:inset 0 1px 0 rgba(255,255,255,.2);-webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px);border-radius:16px 16px 16px 5px}
+.gq-bub small{color:#6ee7b7}.gq-bub p{color:#effff8;margin-top:6px}.gq-bub p::after{background:var(--em2)}
+.gq-n{color:#c6ecdc}
+.gq-bar{background:rgba(255,255,255,.12)}.gq-bar i{background:var(--em2)}
+
+/* stats row */
+.stx{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:16px;margin:48px 0}
+.stx-c{position:relative;overflow:hidden;display:flex;flex-direction:column;gap:8px;padding:20px 18px 18px;min-height:190px;border-radius:20px;color:#effff8;text-decoration:none;background:linear-gradient(155deg,rgba(6,78,59,.8),rgba(2,44,34,.74));border:1px solid rgba(110,231,183,.35);box-shadow:0 14px 34px rgba(0,28,20,.3),inset 0 1px 0 rgba(255,255,255,.2);transition:transform .3s,border-color .3s,box-shadow .3s}
+.stx-c:hover,.stx-c:focus-visible{transform:translateY(-4px);border-color:rgba(110,231,183,.85);box-shadow:0 20px 44px rgba(0,28,20,.4),0 0 30px rgba(52,211,153,.3);outline:none}
+.stx-c::after{content:"\2192";position:absolute;top:14px;right:16px;color:#6ee7b7;opacity:.4;transition:transform .3s,opacity .3s}
+.stx-c:hover::after{opacity:1;transform:translateX(3px)}
+.stx-n{display:flex;align-items:flex-start;font:800 clamp(2.5rem,5vw,3.4rem) "Bricolage Grotesque",sans-serif;line-height:1;height:1em;overflow:hidden;color:#6ee7b7;letter-spacing:-.02em;text-shadow:0 0 26px rgba(52,211,153,.35)}
+.odc{display:inline-block;height:1em;overflow:hidden;width:.62em;text-align:center}
+.odc>span{display:block;transform:translateY(0);transition:transform 1.9s cubic-bezier(.16,.8,.2,1) calc(var(--i)*.14s)}
+.odc i{display:block;height:1em;line-height:1em;font-style:normal}
+.stx.go .odc>span{transform:translateY(calc(var(--d)*-1em))}
+.odx{display:inline-block;transform:scale(0);transform-origin:left 70%;transition:transform .6s 1.5s cubic-bezier(.3,1.7,.5,1)}.stx.go .odx{transform:scale(1)}
+.stx-l{font-weight:700;color:#c6ecdc;font-size:.95rem;line-height:1.3}
+.stx-v{margin-top:auto;padding-top:10px}
+.sx-s{display:grid;grid-template-columns:repeat(8,1fr);gap:4px}
+.sx-s i{aspect-ratio:.62;border-radius:3px;background:rgba(190,255,225,.14);border:1px solid rgba(190,255,225,.2)}
+.stx.go .sx-s i{animation:sxOn 3.4s calc(var(--i)*.09s) infinite}
+@keyframes sxOn{0%,60%,100%{background:rgba(190,255,225,.14);box-shadow:none;transform:none}12%,30%{background:#34d399;border-color:#6ee7b7;box-shadow:0 0 10px rgba(52,211,153,.8);transform:translateY(-2px)}}
+.sx-ch{position:relative;height:32px;overflow:hidden}
+.sx-ch span{position:absolute;left:0;top:0;padding:6px 13px;border-radius:99px;background:rgba(52,211,153,.16);border:1px solid rgba(52,211,153,.55);color:#d1fae5;font:700 .84rem "DM Sans",sans-serif;white-space:nowrap;animation:sxIn .5s cubic-bezier(.2,.8,.2,1)}
+@keyframes sxIn{from{opacity:0;transform:translateY(16px)}}
+
+.sx-tree{position:relative;width:100%;aspect-ratio:200/96;container-type:inline-size;opacity:1;transition:opacity .5s}
+.sx-tree svg{position:absolute;inset:0;width:100%;height:100%;overflow:visible}
+.tb{fill:none;stroke:#34d399;stroke-width:1.6;stroke-linecap:round;stroke-dasharray:1;stroke-dashoffset:0;opacity:.9}
+.tb.tl{stroke:#6ee7b7;stroke-width:1.3;opacity:.75}
+.tf{fill:#a7f3d0;transform-box:fill-box;transform-origin:center}
+.tc{position:absolute;transform:translate(-50%,-50%);padding:.2em .6em;border-radius:99px;background:rgba(52,211,153,.18);border:1px solid rgba(52,211,153,.6);color:#d1fae5;font:700 9px "DM Sans",sans-serif;white-space:nowrap;line-height:1.2}
+@supports(font-size:1cqw){.tc{font-size:max(8px,4.5cqw)}}
+.tc.tr{background:#34d399;border-color:#6ee7b7;color:#022c1f}
+.sx-tree.js .tb{stroke-dashoffset:1;transition:stroke-dashoffset .7s ease-out var(--t)}
+.sx-tree.js .tc{opacity:0;transform:translate(-50%,-50%) scale(.3);transition:opacity .35s var(--t),transform .5s cubic-bezier(.3,1.6,.5,1) var(--t)}
+.sx-tree.js .tf{opacity:0;transform:scale(0);transition:opacity .3s var(--t),transform .5s cubic-bezier(.3,1.7,.5,1) var(--t)}
+.sx-tree.js.grow .tb{stroke-dashoffset:0}
+.sx-tree.js.grow .tc{opacity:1;transform:translate(-50%,-50%) scale(1)}
+.sx-tree.js.grow .tf{opacity:1;transform:scale(1)}
+.sx-tree.js.grow .tf{animation:tfT 2.4s calc(var(--t) + .6s) ease-in-out infinite}
+@keyframes tfT{50%{fill:#34d399;filter:drop-shadow(0 0 3px #34d399)}}
+.sx-tree.js.nt *{transition:none!important;animation:none!important}
+.sx-tree.js.fade{opacity:0}
+@media(prefers-reduced-motion:reduce){.sx-tree.js *{transition:none!important;animation:none!important}}
+@media(max-width:379px){.stx{grid-template-columns:minmax(0,1fr)}.stx-c{min-height:0}}
+.sx-nr{display:flex;align-items:baseline;justify-content:space-between;gap:8px}
+.sx-nr b{font:800 1.2rem "Bricolage Grotesque",sans-serif;color:#fff}.sx-nr em{font-style:normal;font-size:.78rem;font-weight:700;color:#34d399}
+.sx-nr b.tick{animation:sxTick .5s}@keyframes sxTick{from{color:#6ee7b7;transform:translateY(-4px)}}
+.sx-nw svg{display:block;width:100%;height:auto;margin-top:4px}
+.sx-ln{fill:none;stroke:#34d399;stroke-width:2;stroke-linecap:round;stroke-dasharray:1;stroke-dashoffset:1}
+.stx.go .sx-ln{animation:sxDraw 3.6s ease-out infinite}@keyframes sxDraw{0%{stroke-dashoffset:1}55%,100%{stroke-dashoffset:0}}
+.sx-sh{display:flex;align-items:center;gap:10px}
+.sx-sc{position:relative;flex:none;width:40px;height:40px;border-radius:50%;display:grid;place-items:center;background:linear-gradient(135deg,#34d399,#10b981)}
+.sx-sc svg{width:21px;height:21px;fill:none;stroke:#022c1f;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.stx.go .sx-sc::after{content:"";position:absolute;inset:0;border-radius:50%;border:2px solid #34d399;animation:plRip 2s ease-out infinite}
+.sx-sh{display:flex;flex-direction:column;align-items:stretch;gap:9px}
+.sx-sh p+p .sx-sc::after{display:none!important}
+.sx-sh p{margin:0;display:flex;align-items:center;gap:10px}
+.sx-sh .sx-sc{width:22px;height:22px}.sx-sh .sx-sc svg{width:13px;height:13px;stroke-width:2.4}
+.sx-sh small{color:#c6ecdc;font-size:.8rem;line-height:1.3}
+@media(max-width:900px){.stx{grid-template-columns:repeat(2,minmax(0,1fr));gap:14px;margin:36px 0}.stx-c{min-height:200px;padding:18px 16px 16px}}
+
+/* guesswork gauge */
+.gm{position:absolute;left:50%;top:38px;width:min(240px,84%);transform:translateX(-50%);aspect-ratio:200/116;container-type:inline-size}
+.gm-s{display:block;width:100%;height:100%;overflow:visible}
+.gm-a{fill:none;stroke-width:12;stroke-linecap:butt;opacity:.9}.gm-a.r{stroke:#f87171}.gm-a.y{stroke:#fbbf24}.gm-a.g{stroke:#34d399}
+.gm-t line{stroke:rgba(255,255,255,.55);stroke-width:1.6;stroke-linecap:round}
+.gm-x{font:800 8px "DM Sans",sans-serif;letter-spacing:.08em;fill:#c6ecdc}
+.gm-nd{transform-origin:100px 100px;transform:rotate(12deg)}
+.gm-nd line{stroke:#effff8;stroke-width:4;stroke-linecap:round;filter:drop-shadow(0 0 3px rgba(0,0,0,.6))}
+.gm-em{position:absolute;left:50%;top:86.2%;width:2em;height:2em;transform:translate(-50%,-50%);border-radius:50%;background:rgba(2,28,20,.96);border:2px solid var(--ac);font-size:1.25rem;box-shadow:0 4px 14px rgba(0,0,0,.45)}
+@supports(font-size:1cqw){.gm-em{font-size:max(15px,9.5cqw)}}
+.gm-em i{position:absolute;inset:0;display:grid;place-items:center;font-style:normal;line-height:1;opacity:0;font-family:"Apple Color Emoji","Segoe UI Emoji","Noto Color Emoji",sans-serif}
+.gm-em .e2{opacity:1}
+.pcol.act .gm-nd{animation:gmN 9s cubic-bezier(.3,1.4,.5,1) infinite}
+.pcol.act .gm-em .e1{animation:gmE1 9s infinite}.pcol.act .gm-em .e2{animation:gmE2 9s infinite}.pcol.act .gm-em .e3{animation:gmE3 9s infinite}
+@keyframes gmN{0%{transform:rotate(-62deg)}9%{transform:rotate(-62deg)}12.5%{transform:rotate(48deg)}21.5%{transform:rotate(48deg)}25%{transform:rotate(2deg)}34%{transform:rotate(2deg)}37.5%{transform:rotate(62deg)}46.5%{transform:rotate(62deg)}50%{transform:rotate(-40deg)}59%{transform:rotate(-40deg)}62.5%{transform:rotate(12deg)}71.5%{transform:rotate(12deg)}75%{transform:rotate(38deg)}84%{transform:rotate(38deg)}87.5%{transform:rotate(-52deg)}96.5%{transform:rotate(-52deg)}100%{transform:rotate(-62deg)}}@keyframes gmE1{0.0%{opacity:0;transform:scale(0.55)}0.4%{opacity:0;transform:scale(0.55)}1.8%{opacity:1;transform:scale(1)}9.7%{opacity:1;transform:scale(1)}10.5%{opacity:0;transform:scale(0.55)}50.4%{opacity:0;transform:scale(0.55)}51.8%{opacity:1;transform:scale(1)}59.7%{opacity:1;transform:scale(1)}60.5%{opacity:0;transform:scale(0.55)}87.9%{opacity:0;transform:scale(0.55)}89.3%{opacity:1;transform:scale(1)}97.2%{opacity:1;transform:scale(1)}98.0%{opacity:0;transform:scale(0.55)}100.0%{opacity:0;transform:scale(0.55)}}@keyframes gmE2{0.0%{opacity:0;transform:scale(0.55)}25.4%{opacity:0;transform:scale(0.55)}26.8%{opacity:1;transform:scale(1)}34.7%{opacity:1;transform:scale(1)}35.5%{opacity:0;transform:scale(0.55)}62.9%{opacity:0;transform:scale(0.55)}64.3%{opacity:1;transform:scale(1)}72.2%{opacity:1;transform:scale(1)}73.0%{opacity:0;transform:scale(0.55)}100.0%{opacity:0;transform:scale(0.55)}}@keyframes gmE3{0.0%{opacity:0;transform:scale(0.55)}12.9%{opacity:0;transform:scale(0.55)}14.3%{opacity:1;transform:scale(1)}22.2%{opacity:1;transform:scale(1)}23.0%{opacity:0;transform:scale(0.55)}37.9%{opacity:0;transform:scale(0.55)}39.3%{opacity:1;transform:scale(1)}47.2%{opacity:1;transform:scale(1)}48.0%{opacity:0;transform:scale(0.55)}75.4%{opacity:0;transform:scale(0.55)}76.8%{opacity:1;transform:scale(1)}84.7%{opacity:1;transform:scale(1)}85.5%{opacity:0;transform:scale(0.55)}100.0%{opacity:0;transform:scale(0.55)}}
+
+/* ===== phones: roomy, uncramped ===== */
+html[data-w="s"] .wrap{padding-left:max(18px,env(safe-area-inset-left,0px));padding-right:max(18px,env(safe-area-inset-right,0px))}
+html[data-w="s"] h1{font-size:clamp(2rem,9vw,2.6rem);line-height:1.12}
+html[data-w="s"] h2{font-size:clamp(1.5rem,6.6vw,1.9rem);line-height:1.18}
+html[data-w="s"] .lead{line-height:1.65}
+html[data-w="s"] .card{padding:20px}
+html[data-w="s"] .g3,html[data-w="s"] .g2{gap:18px}
+html[data-w="s"] .btn{min-height:48px}
+html[data-w="s"] .hero .row{gap:12px}html[data-w="s"] .hero .row .btn{flex:1 1 100%;justify-content:center}
+html[data-w="s"] .nx{gap:12px}html[data-w="s"] .nx .btn{flex:1 1 140px}
+html[data-w="s"] .chips{gap:10px}
+html[data-w="s"] .chips button,html[data-w="s"] .seg button{min-height:44px}
+html[data-w="s"] .pbm{row-gap:34px}
+html[data-w="s"] .pviz{height:214px}
+html[data-w="s"] .pt,html[data-w="s"] .pwx-c{padding:20px}
+html[data-w="s"] .pw-math,html[data-w="s"] .pwx{gap:16px}
+html[data-w="s"] .stx{gap:12px}
+html[data-w="s"] .stx-n{font-size:clamp(2.2rem,11vw,2.8rem)}
+html[data-w="s"] .stx-l{font-size:.88rem}
+html[data-w="s"] .gq-ch button{min-height:40px}
+html[data-w="s"] .gq-f .btn{flex:1 1 100%}
+html[data-w="s"] .ref-hero{padding:24px 20px}
+html[data-w="s"] footer{padding-bottom:calc(92px + env(safe-area-inset-bottom,0px))}
+html[data-touch="1"] .pt{transform:none!important}
+html[data-device="phone"][data-orient="landscape"] .pviz{height:196px}
+@media(prefers-reduced-motion:reduce){.gm-em .e1,.gm-em .e3{opacity:0}.gm-em .e2{opacity:1}}
 </style>
 
 </head><body>
@@ -972,14 +1589,30 @@ html.intro-on{overflow:hidden}
 <p>FinanceOS tracks your everyday money. Portfolio OS tracks everything you own. Together they show your real net worth, and Fin AI answers questions about it in plain language.</p>
 <div class="row"><a class="btn" href="#apk">Get the app</a><a class="btn o" href="#privacy">Privacy &amp; security</a><a class="btn o" href="#features">See all features</a></div><div class="pvchips"><span>Encrypted cloud</span><span>On-device JSON mode</span><span>Face ID &amp; PC Lock</span></div></div>
 <div class="glow stkglow"><div class="stk" id="stk"><div class="stk-stage" id="stkStage" tabindex="0" role="group" aria-roledescription="carousel" aria-label="FinanceOS features. Drag sideways or use the arrow keys, press Enter to open."></div><div class="stk-bar"><button class="stk-nav" id="stkPrev" aria-label="Previous feature"><svg viewBox="0 0 24 24"><path d="M15 6l-6 6 6 6"/></svg></button><div class="stk-dots" id="stkDots"></div><button class="stk-nav" id="stkNext" aria-label="Next feature"><svg viewBox="0 0 24 24"><path d="M9 6l6 6-6 6"/></svg></button><p class="stk-hint">Drag or swipe sideways. Tap the front card to try it live.</p></div></div></div></div>
-<div class="stats"><div><strong>40+</strong><span>screens in one app</span></div><div><strong>20+</strong><span>asset classes tracked</span></div><div><strong>1</strong><span>net worth, always current</span></div></div>
+<div class="stx" id="stx"><a class="stx-c" href="#features"><b class="stx-n" data-od="40+"></b><span class="stx-l">screens in one app</span><div class="stx-v sx-s" aria-hidden="true"><i style="--i:0"></i><i style="--i:1"></i><i style="--i:2"></i><i style="--i:3"></i><i style="--i:4"></i><i style="--i:5"></i><i style="--i:6"></i><i style="--i:7"></i><i style="--i:8"></i><i style="--i:9"></i><i style="--i:10"></i><i style="--i:11"></i><i style="--i:12"></i><i style="--i:13"></i><i style="--i:14"></i><i style="--i:15"></i></div></a><a class="stx-c" href="#features"><b class="stx-n" data-od="20+"></b><span class="stx-l">asset classes tracked</span><div class="stx-v sx-tree" id="sxTree" aria-hidden="true"><svg viewBox="0 0 200 96"><path class="tb" style="--t:0.70s" pathLength="1" d="M100 15C100 30 36 28 36 41"/><path class="tb tl" style="--t:1.80s" pathLength="1" d="M36 58C36 70 23 70 23 80"/><path class="tb tl" style="--t:1.90s" pathLength="1" d="M36 58C36 70 36 70 36 80"/><path class="tb tl" style="--t:2.00s" pathLength="1" d="M36 58C36 70 49 70 49 80"/><path class="tb" style="--t:0.88s" pathLength="1" d="M100 15C100 30 100 28 100 41"/><path class="tb tl" style="--t:1.98s" pathLength="1" d="M100 58C100 70 87 70 87 80"/><path class="tb tl" style="--t:2.08s" pathLength="1" d="M100 58C100 70 100 70 100 80"/><path class="tb tl" style="--t:2.18s" pathLength="1" d="M100 58C100 70 113 70 113 80"/><path class="tb" style="--t:1.06s" pathLength="1" d="M100 15C100 30 164 28 164 41"/><path class="tb tl" style="--t:2.16s" pathLength="1" d="M164 58C164 70 151 70 151 80"/><path class="tb tl" style="--t:2.26s" pathLength="1" d="M164 58C164 70 164 70 164 80"/><path class="tb tl" style="--t:2.36s" pathLength="1" d="M164 58C164 70 177 70 177 80"/><circle class="tf" style="--t:2.35s;--r:0" cx="23" cy="86" r="3.2"/><circle class="tf" style="--t:2.45s;--r:1" cx="36" cy="86" r="3.2"/><circle class="tf" style="--t:2.55s;--r:2" cx="49" cy="86" r="3.2"/><circle class="tf" style="--t:2.53s;--r:3" cx="87" cy="86" r="3.2"/><circle class="tf" style="--t:2.63s;--r:0" cx="100" cy="86" r="3.2"/><circle class="tf" style="--t:2.73s;--r:1" cx="113" cy="86" r="3.2"/><circle class="tf" style="--t:2.71s;--r:2" cx="151" cy="86" r="3.2"/><circle class="tf" style="--t:2.81s;--r:3" cx="164" cy="86" r="3.2"/><circle class="tf" style="--t:2.91s;--r:0" cx="177" cy="86" r="3.2"/></svg><b class="tc tr" style="left:50%;top:9.4%;--t:0s">Assets</b><b class="tc" style="left:18.0%;top:52.1%;--t:1.45s">Stocks</b><b class="tc" style="left:50.0%;top:52.1%;--t:1.63s">Gold</b><b class="tc" style="left:82.0%;top:52.1%;--t:1.81s">Crypto</b></div></a><a class="stx-c" href="#apk"><b class="stx-n" data-od="1"></b><span class="stx-l">net worth, always current</span><div class="stx-v sx-nw" aria-hidden="true"><div class="sx-nr"><b id="sxNw">&#8377;24.8L</b><em id="sxUp">&#9650; 0.3%</em></div><svg viewBox="0 0 100 26" aria-hidden="true"><path class="sx-ln" pathLength="1" d="M0 22C10 20 16 24 26 16S46 18 56 10S80 12 100 3"/></svg></div></a><a class="stx-c" href="#privacy"><b class="stx-n" data-od="100%"></b><span class="stx-l">safe, secure and private by design</span><div class="stx-v sx-sh" aria-hidden="true"><p><span class="sx-sc"><svg viewBox="0 0 24 24"><path d="M12 3l8 3v6c0 5-3.4 8-8 9-4.6-1-8-4-8-9V6z"/><path d="M9 12l2 2 4-4"/></svg></span><small>Your numbers, your control</small></p><p><span class="sx-sc"><svg viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg></span><small>Encrypted cloud sync</small></p><p><span class="sx-sc"><svg viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg></span><small>App Lock and Privacy Screen</small></p><p><span class="sx-sc"><svg viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg></span><small>We never sell your data</small></p></div></a></div>
+<div class="story">
+<div class="sy rvl"><span class="tag">The problem</span><h2>Money is scattered. That is the real problem.</h2><p class="lead">Your salary lands in one place, your EMIs leave from another, your investments sit in three different apps, and your gold and property live in a drawer or a spreadsheet. No single screen tells you where you actually stand.</p>
+<div class="g3 pbm" id="pbm" style="margin-top:24px">
+<div class="pcol" data-i="0" tabindex="0"><div class="card blk"><h3>Scattered</h3><p>Bank apps, broker apps, fund apps and spreadsheets each show one slice. Nobody shows the whole.</p></div><div class="plink" aria-hidden="true"><span class="pl-l"></span><b class="pl-n"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="6"/><path d="M20 20l-4.2-4.2"/></svg></b><span class="pl-t">See it in action</span><span class="pl-l b"></span></div><div class="pviz pv-sc" aria-hidden="true"><span class="pv-cap">Five places, no full picture</span><b class="sc-q">?</b><em style="--lx:20%;--ly:36%;--k:0">Bank app</em><em style="--lx:80%;--ly:32%;--k:1">Broker app</em><em style="--lx:17%;--ly:70%;--k:2">Fund app</em><em style="--lx:82%;--ly:72%;--k:3">Spreadsheet</em><em style="--lx:50%;--ly:88%;--k:4">Gold</em></div></div>
+<div class="pcol" data-i="1" tabindex="0"><div class="card blk"><h3>Surprises</h3><p>EMIs, card bills and renewals arrive when you are not ready for them.</p></div><div class="plink" aria-hidden="true"><span class="pl-l"></span><b class="pl-n"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="6"/><path d="M20 20l-4.2-4.2"/></svg></b><span class="pl-t">See it in action</span><span class="pl-l b"></span></div><div class="pviz pv-su" aria-hidden="true"><span class="pv-cap">Bills land, balance drops</span><span class="su-bang">!</span><div class="su-bill b1">EMI due</div><div class="su-bill b2">Card bill</div><div class="su-bill b3">Renewal</div><div class="su-lab"><small>Balance</small><span class="su-bal"><i></i></span></div></div></div>
+<div class="pcol" data-i="2" tabindex="0"><div class="card blk"><h3>Guesswork</h3><p>&ldquo;Can I afford this?&rdquo; turns into a feeling instead of a number.</p></div><div class="plink" aria-hidden="true"><span class="pl-l"></span><b class="pl-n"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="6"/><path d="M20 20l-4.2-4.2"/></svg></b><span class="pl-t">See it in action</span><span class="pl-l b"></span></div><div class="pviz pv-gu" aria-hidden="true"><span class="pv-cap">Can I afford this?</span><div class="gm"><svg class="gm-s" viewBox="0 0 200 116"><path class="gm-a r" d="M20 100A80 80 0 0 1 60 30.72"/><path class="gm-a y" d="M60 30.72A80 80 0 0 1 140 30.72"/><path class="gm-a g" d="M140 30.72A80 80 0 0 1 180 100"/><g class="gm-t"><line x1="34.3" y1="82.4" x2="27.6" y2="80.6"/><line x1="47.9" y1="56.3" x2="42.5" y2="51.8"/><line x1="71.3" y1="38.4" x2="68.3" y2="32.0"/><line x1="100.0" y1="32.0" x2="100.0" y2="25.0"/><line x1="128.7" y1="38.4" x2="131.7" y2="32.0"/><line x1="152.1" y1="56.3" x2="157.5" y2="51.8"/><line x1="165.7" y1="82.4" x2="172.4" y2="80.6"/></g><g class="gm-nd"><line x1="100" y1="100" x2="100" y2="34"/></g><text x="20" y="114" class="gm-x">NO</text><text x="180" y="114" class="gm-x" text-anchor="end">YES</text></svg><div class="gm-em"><i class="e1">&#128543;</i><i class="e2">&#128533;</i><i class="e3">&#128516;</i></div></div></div></div>
+</div></div>
+<div class="sy rvl"><span class="tag">The fix</span><h2>One clear picture of your money, managed in one place.</h2><p class="lead"><b>FinanceOS</b> is your everyday financial picture: income, spending, budgets, loans and cards. <b>Portfolio OS</b> is everything you own, valued together: stocks, funds, gold, property and more. <b>Fin AI</b> answers questions about both in plain words.</p>
+<ol class="flow3" id="flow3"><li><i>1</i><h3>Add what you have</h3><p>Enter your income, expenses, loans and holdings yourself. No bank login, ever.</p><div class="mv mv1" aria-hidden="true"><span style="--k:0">Salary</span><span style="--k:1">EMI</span><span style="--k:2">Gold</span><span style="--k:3">SIP</span></div></li><li><i>2</i><h3>See the whole picture</h3><p>One net worth, your budgets, EMIs and allocation, always up to date.</p><div class="mv mv2" aria-hidden="true"><i style="--h:35%;--k:0"></i><i style="--h:52%;--k:1"></i><i style="--h:44%;--k:2"></i><i style="--h:70%;--k:3"></i><i style="--h:60%;--k:4"></i><i style="--h:92%;--k:5"></i></div></li><li><i>3</i><h3>Ask and decide</h3><p>Ask Fin AI &ldquo;can I afford this?&rdquo; and get an answer from your own numbers.</p><div class="mv mv3" aria-hidden="true"><b class="q">Can I afford this?</b><b class="t"><u></u><u></u><u></u></b><b class="a">Yes, you are within budget.</b></div></li></ol></div>
+<div class="sy rvl"><span class="tag">Why people use it</span><h2>Built so you feel in control, not overwhelmed.</h2>
+<div class="g2" style="margin-top:20px"><div class="card"><h3>Know your real net worth</h3><p>Everything you own minus everything you owe, in one number that stays current.</p></div><div class="card"><h3>Never be surprised by a bill</h3><p>Loans, EMIs and credit cards sit in one place, so upcoming payments are never a shock.</p></div><div class="card"><h3>Your data, your rules</h3><p>Keep it only on your device, or sync it to an encrypted account. You choose, and you can switch.</p></div><div class="card"><h3>Made for Indian money</h3><p>Built around the rupee, EMIs, gold, property and the way families here actually save.</p></div></div>
+<div class="sy-cta card blk"><div><h3>Seen enough to be curious?</h3><p>Open the features page and try each feature live, right in your browser. It takes about two minutes.</p></div><div class="nx"><a class="btn" href="#features">Try the features</a><a class="btn o" href="#pricing">See pricing</a></div></div></div>
+</div>
 <div class="pvband"><span class="tag">Privacy first</span><h2>Built around your privacy</h2><p class="lead">Your finances are personal. Keep them on your own device, or sync them to an encrypted cloud account. You decide, and you can switch any time.</p>
 <div class="g3"><div class="card blk"><div class="pvic ic-phone"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="6" y="2" width="12" height="20" rx="2.6"/><path d="M11 18h2"/></svg></div><h3>On your device</h3><p>Manual JSON mode keeps everything local. Nothing is uploaded, and you back up with a file you control.</p></div>
 <div class="card blk"><div class="pvic ic-cloud"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 18a4.5 4.5 0 01-.6-8.96A6 6 0 0118 9.5 4.3 4.3 0 0117.5 18z"/><path d="M12 11v5m-2-2l2 2 2-2"/></svg></div><h3>Encrypted in the cloud</h3><p>Cloud sync travels over HTTPS/TLS and every record is locked to your account at the database level.</p></div>
 <div class="card blk"><div class="pvic ic-finger"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 11v3.5c0 2-.6 3.6-1.6 5M8 14.5c0 2.3-.5 4-1.5 5.5M16 12v2.5c0 2-.3 3.7-1 5M5.5 11.2A6.5 6.5 0 0112 5.5a6.5 6.5 0 016.5 5.7M9 8.8A4 4 0 0116 11"/></svg></div><h3>Locked by you</h3><p>Face ID, fingerprint or PC Lock, plus a Privacy Screen that hides your numbers whenever you look away.</p></div></div>
 <div class="nx"><a class="btn" href="#privacy">Explore privacy and security</a></div></div><h2 style="margin-top:56px">Two products, one login</h2>
-<div class="split"><div class="card"><h3>FinanceOS</h3><p>Your day-to-day money.</p><ul><li>Income, expenses and transactions</li><li>Loans, EMI and credit card tracking</li><li>Budgets that learn from your history</li><li>Fin AI for questions and insights</li></ul></div>
-<div class="card"><h3>Portfolio OS</h3><p>Everything you own, valued together.</p><ul><li>Stocks, funds, gold, property, crypto and more</li><li>Allocation, returns and tax view</li><li>Stress test against market drops</li><li>Retirement and international assets</li></ul></div></div>
+<div class="split"><div class="card"><h3>FinanceOS</h3><p>Your day-to-day money.</p><ul><li>Income, expenses and transactions</li><li>Loans, EMI and credit card tracking</li><li>Budgets that learn from your history</li><li>Fin AI for questions and insights</li></ul><div class="vz" id="vzTx"><div class="vzh"><span><i class="dot"></i>Live entries</span><small id="vzNet"></small></div><div class="vzl" id="vzTl"></div></div></div>
+<div class="card"><h3>Portfolio OS</h3><p>Everything you own, valued together.</p><ul><li>Stocks, funds, gold, property, crypto and more</li><li>Allocation, returns and tax view</li><li>Stress test against market drops</li><li>Retirement and international assets</li></ul><div class="vz"><div class="vzh"><span><i class="dot"></i>Portfolio value</span><small>Sample data</small></div><div class="pfv"><b>&#8377;18.6L</b><em>&#9650; 12.4%</em></div>
+<svg class="pfc" viewBox="0 0 300 110" preserveAspectRatio="none" aria-hidden="true"><defs><linearGradient id="pfg" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#34d399" stop-opacity=".45"/><stop offset="1" stop-color="#34d399" stop-opacity="0"/></linearGradient></defs><path class="g" d="M0 28H300M0 56H300M0 84H300"/><path class="ar" d="M0 92C30 82 45 88 70 64S115 72 140 50S190 54 215 32S265 24 300 10V110H0Z" fill="url(#pfg)"/><path class="ln" pathLength="1" d="M0 92C30 82 45 88 70 64S115 72 140 50S190 54 215 32S265 24 300 10"/><circle class="pt" cx="298" cy="10" r="4.5"/></svg>
+<div class="alb" aria-hidden="true"><i style="--w:42;--k:0;background:#34d399"></i><i style="--w:28;--k:1;background:#60a5fa"></i><i style="--w:18;--k:2;background:#fbbf24"></i><i style="--w:12;--k:3;background:#f472b6"></i></div>
+<div class="alg"><span><s style="background:#34d399"></s>Stocks</span><span><s style="background:#60a5fa"></s>Funds</span><span><s style="background:#fbbf24"></s>Gold</span><span><s style="background:#f472b6"></s>Property</span></div></div></div></div>
 </section>
 
 <section class="page" id="p-privacy">
@@ -1000,13 +1633,8 @@ html.intro-on{overflow:hidden}
 <div class="card pvflow"><div class="pvfh"><h3>See how your data travels</h3><div class="seg" id="pvseg" style="margin:0"><button class="on" data-m="cloud">In the cloud</button><button data-m="dev">On my device</button></div></div><div class="flow" id="pvflow"></div><p class="lead" id="pvcap" style="margin:16px 0 0;font-size:.95rem"></p></div></div>
 
 <div class="pv-sec" id="pv-cloud"><h2>How the cloud keeps you safe</h2><p class="lead">When you choose cloud sync, these safeguards protect your data and your sign-in.</p>
-<div class="g3 pvgrid">
-<div class="card blk"><div class="pvic ic-lock"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="5" y="11" width="14" height="10" rx="2.4"/><path d="M8 11V8a4 4 0 018 0v3"/></svg></div><h3>Encrypted in transit</h3><p>Everything sent between your device and the cloud travels over HTTPS/TLS, so it cannot be read on the way.</p></div>
-<div class="card blk"><div class="pvic ic-db"><svg viewBox="0 0 24 24" aria-hidden="true"><ellipse cx="12" cy="6" rx="8" ry="3"/><path d="M4 6v6c0 1.7 3.6 3 8 3s8-1.3 8-3V6M4 12v6c0 1.7 3.6 3 8 3s8-1.3 8-3v-6"/></svg></div><h3>Encrypted at rest</h3><p>Synced records are held in a managed cloud database that encrypts stored data.</p></div>
-<div class="card blk"><div class="pvic ic-eye"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M2 12s3.6-7 10-7 10 7 10 7-3.6 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/><path d="M4 4l16 16"/></svg></div><h3>Your records, only yours</h3><p>Row-level access control scopes every record to your account. No other FinanceOS user can query, see or export your data.</p></div>
-<div class="card blk"><div class="pvic ic-key"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="8" cy="15" r="4"/><path d="M11 12l9-9m-3 3l3 3m-6-0l2 2"/></svg></div><h3>Passwords we never see</h3><p>Sign-in runs on a dedicated auth service with email confirmation. Your password is hashed, never stored or shown by FinanceOS. Forgot it? A single-use reset link does the job.</p></div>
-<div class="card blk"><div class="pvic ic-finger"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 11v3.5c0 2-.6 3.6-1.6 5M8 14.5c0 2.3-.5 4-1.5 5.5M16 12v2.5c0 2-.3 3.7-1 5M5.5 11.2A6.5 6.5 0 0112 5.5a6.5 6.5 0 016.5 5.7M9 8.8A4 4 0 0116 11"/></svg></div><h3>Passkeys, if you want them</h3><p>Sign in with Face ID or fingerprint using your device&rsquo;s own security. Your fingerprint or face never leaves the device and is never sent to us.</p></div>
-<div class="card blk"><div class="pvic ic-toggle"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="2" y="7" width="20" height="10" rx="5"/><circle cx="16" cy="12" r="2.6"/></svg></div><h3>Sync is your call</h3><p>Turn automatic sync off, or stay in Manual JSON mode. Your theme, layouts, app lock and biometrics always stay on each device.</p></div></div></div>
+<div class="sf" id="sf"></div>
+</div>
 
 <div class="pv-sec" id="pv-device"><h2>Locks that live on your device</h2><p class="lead">Even if someone picks up your phone or sits at your PC, your numbers stay hidden.</p>
 <div class="g3 pvgrid">
@@ -1034,24 +1662,30 @@ html.intro-on{overflow:hidden}
 <section class="page" id="p-pricing"><h2>Simple pricing</h2><p class="lead">Choose monthly or yearly. Yearly plans start with two months free.</p>
 <div class="seg" style="margin-top:20px"><button class="on" data-b="m">Monthly</button><button data-b="y">Yearly (2 months free)</button></div>
 <div class="g3" id="pgrid"></div><section class="card pdp" id="pdetail" aria-live="polite"></section>
-<h3 style="margin-top:56px">Every plan includes</h3><div class="g2" style="margin-top:16px"><div class="card"><h3>Secure sign-in</h3><p>Your account is protected by your login.</p></div><div class="card"><h3>Mobile install</h3><p>Use it like an app on your phone.</p></div><div class="card"><h3>Dark and light looks</h3><p>The app follows your device setting.</p></div><div class="card"><h3>Regular updates</h3><p>New features arrive without reinstalling.</p></div></div></section>
+<div id="pwhy" class="pwhy"></div>
+<h3 style="margin-top:56px">Every plan includes</h3><ol class="jr c4 nk nn" id="jr2"><li><i class="jr-n"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="5" y="11" width="14" height="10" rx="2.4"/><path d="M8 11V8a4 4 0 018 0v3"/></svg></i><b>Secure sign-in</b><span>Your account is protected by your login.</span></li><li><i class="jr-n"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="6" y="2" width="12" height="20" rx="2.6"/><path d="M11 18h2"/></svg></i><b>Mobile install</b><span>Use it like an app on your phone.</span></li><li><i class="jr-n"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 14.5A8 8 0 019.5 4 8 8 0 1020 14.5z"/></svg></i><b>Dark and light looks</b><span>The app follows your device setting.</span></li><li><i class="jr-n"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 11a8 8 0 00-14-4M4 4v4h4M4 13a8 8 0 0014 4M20 20v-4h-4"/></svg></i><b>Regular updates</b><span>New features arrive without reinstalling.</span></li></ol></section>
 
 <section class="page" id="p-apk"><div class="big"><div><span class="tag">Android, iPhone and desktop</span><h1 style="font-size:clamp(2.2rem,5vw,3.8rem)">Take FinanceOS with you.</h1><p class="lead">Install it from your browser in seconds, with no app store needed. It opens full screen, has its own icon on your home screen and works like any other app. Your net worth, budgets and portfolio are one tap away.</p>
 <div class="nx"><button class="btn" id="inst">Install app</button><button class="btn o" id="apkb" disabled>Android APK coming soon</button></div></div>
 <div class="glow"><div class="phone card"><div class="logo" style="font-size:1.3rem"><svg width="36" height="36" aria-hidden="true"><use href="#fos-logo"/></svg>Finance<b>OS</b></div><p class="lead" style="margin:12px 0 0;font-size:.9rem">Net worth</p><h2 class="up" id="appNW">₹24.8L</h2><div class="mini"><i style="height:40%"></i><i style="height:55%"></i><i style="height:48%"></i><i style="height:70%"></i><i style="height:62%"></i><i style="height:90%"></i></div><div class="track"><i style="width:72%"></i></div><small style="color:var(--mu)">72% of your goal</small></div></div></div>
-<h2 style="margin-top:72px">Available now and coming soon</h2><div class="g3"><div class="card"><span class="tag">Available now</span><h3>Install from your browser</h3><p>Open this site on your phone and tap Install. No store, no waiting.</p></div><div class="card" style="opacity:.6"><span class="tag">Coming soon</span><h3>Android APK</h3><p>A direct download for Android phones and tablets.</p></div><div class="card" style="opacity:.6"><span class="tag">Planned</span><h3>Play Store and App Store</h3><p>Store listings with automatic updates.</p></div></div>
-<h2 style="margin-top:72px">Install from your browser in three steps</h2><ol class="steps g3" style="gap:6px 40px"><li>Tap Install app on this page and choose your version at checkout.</li><li>Place your order, then tap Install app now. FinanceOS opens in a new tab.</li><li>Tap Install in the banner. On iPhone, tap Share, then Add to Home Screen.</li></ol>
-<h2 style="margin-top:72px">Inside the app</h2><div class="chips" id="inapp" style="margin-top:16px"></div></section>
+<h2 style="margin-top:72px">Available now and coming soon</h2><div class="g3 acg"><div class="card ac"><span class="tag">Available now</span><h3>Install from your browser</h3><p>Open this site on your phone and tap Install. No store, no waiting.</p></div><div class="card ac soon"><span class="tag">Coming soon</span><h3>Android APK</h3><p>A direct download for Android phones and tablets.</p></div><div class="card ac soon"><span class="tag">Planned</span><h3>Play Store and App Store</h3><p>Store listings with automatic updates.</p></div></div>
+<h2 style="margin-top:72px">Install from your browser in five steps</h2><p class="lead">No app store and no waiting. Here is the whole journey, from choosing a plan to your first dashboard.</p><ol class="jr" id="jr"><li><i class="jr-n"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="9" cy="20" r="1.6"/><circle cx="18" cy="20" r="1.6"/><path d="M3 4h2.5l2.2 11h10.6l2-8H6.5"/></svg><em>1</em></i><b>Choose your version</b><span>Pick Pro, then monthly or yearly. Yearly gives you two months free.</span></li><li><i class="jr-n"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="2.5" y="5" width="19" height="14" rx="2.5"/><path d="M2.5 10h19M6.5 15h4"/></svg><em>2</em></i><b>Place your order</b><span>Add your details and pay by card, UPI or QR, all inside the side panel.</span></li><li><i class="jr-n"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M14 4h6v6M20 4l-9 9M18 14v5a1 1 0 01-1 1H5a1 1 0 01-1-1V7a1 1 0 011-1h5"/></svg><em>3</em></i><b>Open FinanceOS</b><span>Tap Open FinanceOS. The app loads in a new browser tab.</span></li><li><i class="jr-n"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 4v11m-4-4l4 4 4-4M5 20h14"/></svg><em>4</em></i><b>Tap Install</b><span>Tap Install in the banner. On iPhone, tap Share, then Add to Home Screen.</span></li><li><i class="jr-n"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="6" y="2" width="12" height="20" rx="2.6"/><path d="M9.5 12.5l2 2 3.5-4"/></svg><em>5</em></i><b>Launch from your home screen</b><span>FinanceOS now has its own icon and opens full screen like any app.</span></li></ol>
+<h2 style="margin-top:72px">Inside the app</h2><p class="lead">Everything is grouped by what it does, all under one login. Tap any item to try it live.</p><div class="chips" id="inapp" style="margin-top:16px"></div></section>
 
 <section class="page" id="p-faq"><h2>Questions people ask</h2><p class="lead">Can’t find your answer? <a href="#contact" style="color:var(--em2)">Contact us</a>.</p><div class="nx"><input class="si" id="fqs" placeholder="Search questions"><div class="chips" id="fqc" style="margin:0"></div></div><div class="fq" id="faq" style="margin-top:20px"></div></section>
 
-<section class="page" id="p-contact"><div class="big" style="align-items:start"><div>
+<section class="page" id="p-contact"><div class="big" style="align-items:start"><div class="cl">
 <h2>Let’s talk</h2><p class="lead">Questions, a walkthrough, or a branded version for your business? Send us a note and you will hear back within 24 hours.</p>
 <div class="card em" style="margin-top:24px"><small>Email us</small><b id="em"></b><div class="nx" style="margin-top:12px"><a class="btn sm" id="ml" href="#">Write an email</a><button class="btn o sm" id="cp">Copy email</button></div></div>
 <div class="tat"><div class="ring"><b>24h</b><small>reply time</small></div><p class="lead" style="margin:0">Every message gets a reply within 24 hours. Watch how it works below.</p></div>
-<h3 style="margin-top:32px">How it works</h3><div class="pr"><div class="pl"><i id="pf"></i></div><div class="pss" id="pss"></div></div><p class="lead" id="pd" style="min-height:3.2em"></p></div>
-<div style="display:grid;gap:20px"><div class="card chartcard" style="padding:22px"><div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px"><div><small style="color:var(--mu)">Net worth</small><h3 id="cv" style="font-size:1.9rem"></h3><small id="cc"></small></div><div class="seg" id="cr" style="margin:0"><button class="on" data-r="1M">1M</button><button data-r="6M">6M</button><button data-r="1Y">1Y</button></div></div><svg id="cs" viewBox="0 0 400 160" style="width:100%;margin-top:10px;touch-action:pan-y" role="img" aria-label="Net worth trend chart"></svg><div class="kpis" style="margin:12px 0 0"><div class="kpi"><small>Portfolio</small><strong class="up">+12.4%</strong></div><div class="kpi"><small>Savings rate</small><strong>39%</strong></div><div class="kpi"><small>Loans paid</small><strong>₹25K</strong></div></div></div>
-<div class="card" style="padding:clamp(20px,3vw,32px)"><h3>Send a message</h3><div class="f"><input id="cn" placeholder="Your name"><input id="ce" placeholder="Your email"><select id="ct"><option>I’m an individual</option><option>I’m an investor</option><option>I represent a business</option></select><textarea id="cm" rows="5" placeholder="How can we help?"></textarea><button class="btn" id="send">Send message</button></div><p class="lead" style="font-size:.85rem">This opens your email app with your message ready to send to us.</p></div></div></div></section>
+<h3 style="margin-top:32px">How it works</h3><div class="pr"><div class="pl"><i id="pf"></i></div><div class="pss" id="pss"></div></div><p class="lead" id="pd" style="min-height:3.2em"></p><div class="tree ct" id="ctree"></div><div class="card gq rvl" id="gq"><span class="gq-orb a" aria-hidden="true"></span><span class="gq-orb b" aria-hidden="true"></span>
+<div class="gq-h"><span class="gq-pl" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M21 3L3 10.5l7 2.5 2.5 7z"/><path d="M10 13L21 3"/></svg></span><div><h3>Start your message in one tap</h3><p>Pick a topic and we will write the first draft for you.</p></div></div>
+<div class="gq-ch" id="gqCh" role="tablist" aria-label="Message topics"></div>
+<div class="gq-bub" aria-live="polite"><small id="gqTo">Draft message</small><p id="gqTx"></p></div>
+<div class="gq-f"><button class="btn gq-b" id="gqUse" type="button">Use this message</button><span class="gq-n">Fills the form on this page. You can edit it before sending.</span></div>
+<div class="gq-bar" aria-hidden="true"><i id="gqPg"></i></div></div></div>
+<div class="cr" style="display:grid;gap:20px"><div class="card chartcard" style="padding:22px"><div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px"><div><small style="color:var(--mu)">Net worth</small><h3 id="cv" style="font-size:1.9rem"></h3><small id="cc"></small></div><div class="seg" id="cr" style="margin:0"><button class="on" data-r="1M">1M</button><button data-r="6M">6M</button><button data-r="1Y">1Y</button></div></div><svg id="cs" viewBox="0 0 400 160" style="width:100%;margin-top:10px;touch-action:pan-y" role="img" aria-label="Net worth trend chart"></svg><div class="kpis" style="margin:12px 0 0"><div class="kpi"><small>Portfolio</small><strong class="up">+12.4%</strong></div><div class="kpi"><small>Savings rate</small><strong>39%</strong></div><div class="kpi"><small>Loans paid</small><strong>₹25K</strong></div></div></div>
+<div class="card" style="padding:clamp(20px,3vw,32px)"><h3>Send a message</h3><div class="f"><input id="cn" placeholder="Your name"><input id="ce" placeholder="Your email"><select id="ct"><option>I’m an individual</option><option>I’m an investor</option><option>I represent a business</option></select><textarea id="cm" rows="5" placeholder="How can we help?"></textarea><button class="btn" id="send">Send message</button></div><p class="lead" style="font-size:.85rem">This opens your email app with your message ready to send to us.</p></div><div class="card blk cnext rvl"><h3>Not ready to write yet?</h3><p>Get a feel for FinanceOS first. Each of these takes about two minutes.</p><div class="cn-l"><a class="cn-t" href="#features" style="--k:0"><i><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M13 2L4 14h7l-1 8 9-12h-7z"/></svg></i><span><b>Try the features live</b><small>Open any feature and use it right in your browser</small></span><em>&rarr;</em></a><a class="cn-t" href="#faq" style="--k:1"><i><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M9.5 9.5a2.5 2.5 0 114 2c-.9.6-1.5 1.1-1.5 2.2M12 17h.01"/></svg></i><span><b>Read the common questions</b><small>Plans, privacy, setup and how it all works</small></span><em>&rarr;</em></a><a class="cn-t" href="#privacy" style="--k:2"><i><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3l8 3v6c0 5-3.4 8-8 9-4.6-1-8-4-8-9V6z"/><path d="M9 12l2 2 4-4"/></svg></i><span><b>See how your data is protected</b><small>Device-only mode, encryption and app locks</small></span><em>&rarr;</em></a></div></div></div></div></section>
 
 
 <section class="page" id="p-referrals">
@@ -1284,8 +1918,8 @@ $('#inapp').innerHTML=FD.map(f=>`<button>${f[1]}</button>`).join('');$('#inapp')
 /* Pricing: monthly prices below drive everything; yearly = 10 x monthly (2 months free) */
 const P=[['Starter',299,['Dashboard and transactions','Basic budgets','1 device']],['Pro',599,['Everything in Starter','Portfolio OS, all asset classes','Fin AI and alerts','PDF export'],1],['Custom',null,['White-label branding','Custom modules','Priced to your business needs']]];
 let bill='m',sel=1,pdShow=false;const fm=n=>'₹'+n.toLocaleString('en-IN');
-const pr=()=>{const m=bill==='m';$('#pgrid').innerHTML=P.map((p,k)=>{const c=p[1]===null;return `<div class="card price ${k===sel?'hot':''}${k===sel&&pdShow?' shown':''}" data-k="${k}" tabindex="0" aria-controls="pdetail" aria-expanded="${k===sel&&pdShow}"><h3>${p[0]}</h3><div class="n">${c?'Custom':fm(m?p[1]:p[1]*10)}<small style="font:400 .9rem 'DM Sans';color:var(--mu)">${c?'':m?' /month':' /year'}</small></div>${!c&&!m?`<p class="up" style="margin:0">First 2 months free <s style="color:var(--mu)">${fm(p[1]*12)}</s></p>`:'<p style="margin:0">&nbsp;</p>'}<ul>${p[2].map(x=>`<li>${x}</li>`).join('')}</ul><a class="btn ${k===sel?'':'o'}" href="${c?'#contact':'#apk'}" data-buy="${c?'':p[0]}">${c?'Talk to us':'Choose '+p[0]}</a></div>`}).join('')};pr();
-$('#pgrid').onclick=e=>{const by=e.target.closest('[data-buy]');if(by&&by.dataset.buy){e.preventDefault();openCart('pick',by.dataset.buy,bill);return}const c=e.target.closest('.price');if(c&&!e.target.closest('a')){sel=+c.dataset.k;pdShow=true;pr();pdr(true);$('#pdetail').scrollIntoView({behavior:'smooth',block:'nearest'})}};
+const pr=()=>{const m=bill==='m';$('#pgrid').innerHTML=P.map((p,k)=>{const c=p[1]===null;return `<div class="card price ${k===sel?'hot':''}${k===sel&&pdShow?' shown':''}" data-k="${k}" tabindex="0" aria-controls="pdetail" aria-expanded="${k===sel&&pdShow}"><h3>${p[0]}</h3><div class="n">${c?'Custom':fm(m?p[1]:p[1]*10)}<small style="font:400 .9rem 'DM Sans';color:var(--mu)">${c?'':m?' /month':' /year'}</small></div>${!c&&!m?`<p class="up" style="margin:0">First 2 months free <s style="color:var(--mu)">${fm(p[1]*12)}</s> <b class="sv">Save ${fm(p[1]*2)} (17%)</b></p>`:'<p style="margin:0">&nbsp;</p>'}<ul>${p[2].map(x=>`<li>${x}</li>`).join('')}</ul><a class="btn ${k===sel?'':'o'}" href="${c?'#contact':'#apk'}" data-buy="${c?'':p[0]}">${c?'Talk to us':'Choose '+p[0]}</a></div>`}).join('')};pr();
+$('#pgrid').onclick=e=>{const by=e.target.closest('[data-buy]');if(by&&by.dataset.buy){e.preventDefault();openCart('pick',by.dataset.buy,bill);return}const c=e.target.closest('.price');if(c&&!e.target.closest('a')){const kk=+c.dataset.k;if(pdShow&&sel===kk){pdShow=false;pr();pdr(false);return}sel=kk;pdShow=true;pr();pdr(true);$('#pdetail').scrollIntoView({behavior:'smooth',block:'nearest'})}};
 $('#pgrid').onkeydown=e=>{if((e.key==='Enter'||e.key===' ')&&e.target.classList.contains('price')){e.preventDefault();e.target.click()}};
 $('#p-pricing .seg').onclick=e=>{if(e.target.dataset.b){bill=e.target.dataset.b;$$('#p-pricing .seg button').forEach(b=>b.classList.toggle('on',b===e.target));pr();if(pdShow)pdr(false)}};
 
@@ -1415,7 +2049,7 @@ document.addEventListener('click',e=>{const b=e.target.closest('[data-pdbuy],[da
 const Q=[['Getting started','Is there a free trial?','Yes. Contact us for a walkthrough and you can try FinanceOS with your own numbers.'],['Getting started','Can I use it on my phone?','Yes. Open the site on your phone and install it from the Get the app page. It then opens like a normal app.'],['Getting started','Do I need to link my bank?','No. You add entries yourself, so you control exactly what the app knows.'],['Getting started','Which currencies work?','The app is built around the Indian rupee. The International assets screen handles holdings in other currencies.'],['Getting started','How long does setup take?','Most people are looking at their dashboard within a few minutes of signing in.'],
 ['Privacy','Is my data safe?','Your account is protected by sign-in, and we never sell your data.'],['Privacy','Who can see my numbers?','Only you, unless you choose to export or share a report.'],['Privacy','Can I export or delete my data?','You can export reports as PDF, and you can ask us to remove your data at any time.'],['Privacy','Is my data encrypted?','In cloud mode, everything between your device and the cloud travels over HTTPS/TLS, and your records are locked to your account at the database level. In Manual JSON mode nothing is sent to the cloud at all.'],['Privacy','Can I keep my data only on my device?','Yes. Choose Manual JSON tracking in Settings, under Privacy and Updates. Your data stays on the device and you back it up with a JSON file you export yourself. Logging out clears it from the device, so download a backup first.'],['Privacy','Can I switch between cloud and device-only?','Yes, any time in Settings, under Privacy and Updates.'],['Privacy','Do you see my password or my fingerprint?','No. Passwords are hashed by the sign-in service and never shown to anyone. A fingerprint or face scan stays on your device and is never sent to us.'],['Privacy','What if I walk away with the app open?','The Privacy Screen covers everything the moment you click away, switch apps or open recent apps. You can also ask the app to demand Face ID, fingerprint or PC Lock when you come back.'],
 ['Plans','What does the yearly plan include?','You pay for 10 months and get 12. The first two months are free.'],['Plans','Can I switch plans later?','Yes. You can move between Starter and Pro whenever you like.'],['Plans','Can my business get its own branded version?','Yes. The Custom plan covers branding and modules, priced to your needs. Contact us to discuss it.'],
-['Features','What is Fin AI?','An assistant inside the app. You ask in plain words and it answers from your own numbers.'],['Features','What can Portfolio OS track?','Stocks, mutual funds, gold, silver, property, bonds, crypto, deposits, retirement assets, ETFs, REITs and more, about 20 asset classes in all.'],['Features','Can I create reports to share?','Yes. PDF export builds clean reports with charts and tables.'],['Features','What are unusual-spend alerts?','Alerts that flag a payment much larger than your normal, or a big payment to a new payee.']];
+['Features','What is Fin AI?','An assistant inside the app. You ask in plain words and it answers from your own numbers.'],['Features','What can Portfolio OS track?','Stocks, mutual funds, gold, silver, property, bonds, crypto, deposits, retirement assets, ETFs, REITs and more, about 20 asset classes in all.'],['Features','Can I create reports to share?','Yes. PDF export builds clean reports with charts and tables.'],['Features','What are unusual-spend alerts?','Alerts that flag a payment much larger than your normal, or a big payment to a new payee.'],['Getting started','Does it work on desktop as well as on my phone?','Yes. You can install it from your browser on Android, iPhone, iPad, Windows, Mac and Linux.'],['Getting started','Do I need an app store?','No. Install it straight from your browser. It gets its own icon and opens full screen. An Android APK and store listings are planned.'],['Getting started','Does it work offline?','Yes, in both storage modes. In cloud mode it syncs again when you are back online.'],['Privacy','What if I lose my phone?','App Lock and the Privacy Screen keep your numbers hidden. In cloud mode your data is in your account and returns on a new device. In Manual JSON mode, restore from the backup file you exported.'],['Privacy','Is this financial advice?','No. FinanceOS helps you record and understand your own numbers. Its outputs are illustrative, so speak to a qualified adviser before big investment, tax or insurance decisions.'],['Plans','How much does Pro cost?','Pro is ₹599 a month, or ₹5,990 a year, which saves ₹1,198. The Pricing page always shows the current price.'],['Plans','How does ordering work?','Choose your version, add your details and pay by card, UPI or QR in the side panel. This site currently runs a demo checkout, so no money is charged.']];
 let qc='All',qq='';const cats=['All',...new Set(Q.map(x=>x[0]))];
 $('#fqc').innerHTML=cats.map(c=>`<button>${c}</button>`).join('');
 const fr=()=>{$$('#fqc button').forEach(b=>b.classList.toggle('on',b.textContent===qc));$('#faq').innerHTML=Q.filter(x=>(qc==='All'||x[0]===qc)&&(x[1]+x[2]).toLowerCase().includes(qq)).map(x=>`<details><summary>${x[1]}</summary><p>${x[2]}</p></details>`).join('')||'<p class="lead">No questions match. Try fewer words or contact us.</p>'};fr();
@@ -1424,6 +2058,9 @@ $('#fqc').onclick=e=>{if(e.target.tagName==='BUTTON'){qc=e.target.textContent;fr
 /* APK + contact */
 const APP='https://chrismc1998.github.io/FinanceOS/';
 const cart={items:[],order:null,cust:{name:'',email:'',phone:'',a1:'',a2:'',city:'',state:'',pin:''},card:{num:'',name:'',exp:'',cvv:''},upi:'',method:'card'};
+const REG=()=>P[1][1]*12,SAVE=()=>REG()-P[1][1]*10,PCT=()=>Math.round(SAVE()/REG()*100),isv=i=>i.b==='y'?SAVE()*i.q:0,reg=a=>a.reduce((n,i)=>n+(i.b==='y'?REG()*i.q:lp(i)),0),sav=a=>a.reduce((n,i)=>n+isv(i),0);
+const brk=a=>{const v=sav(a);return (v?`<div class="tx"><span>Regular value</span><s style="color:var(--mu)">${fm(reg(a))}</s></div><div class="tx dsc"><span>Yearly discount (${PCT()}% off)</span><b>&minus;${fm(v)}</b></div>`:'')+`<div class="tx tt"><span>${v?'You pay today':'Total'}</span><b>${fm(tot(a))}</b></div>`+(v?`<p class="sv2">You are saving ${fm(v)} with the yearly plan</p>`:'')};
+const deal=(sb,sp)=>!sp?'':sb==='y'?`<div class="deal"><small>Yearly deal</small><strong>Save ${PCT()}%</strong><span>That is ${fm(SAVE())} back in your pocket. 2 months free.</span><div class="tx"><span>12 months at ${fm(P[1][1])}</span><s>${fm(REG())}</s></div><div class="tx"><span>Yearly price (${fm(Math.round(P[1][1]*10/12))}/month)</span><b>${fm(P[1][1]*10)}</b></div></div>`:`<button class="deal-n" data-b="y">Switch to yearly and save ${fm(SAVE())} (${PCT()}% off)</button>`;
 const cq=()=>cart.items.reduce((a,i)=>a+i.q,0),unit=b=>b==='m'?P[1][1]:P[1][1]*10,lp=i=>unit(i.b)*i.q,tot=a=>a.reduce((n,i)=>n+lp(i),0);
 function cartBadge(){const b=$('#cartb'),n=cq();b.classList.toggle('has',n>0||!!cart.order);$('b',b).textContent=cart.order?'✓':n}
 const STATES=['Andhra Pradesh','Arunachal Pradesh','Assam','Bihar','Chhattisgarh','Goa','Gujarat','Haryana','Himachal Pradesh','Jharkhand','Karnataka','Kerala','Madhya Pradesh','Maharashtra','Manipur','Meghalaya','Mizoram','Nagaland','Odisha','Punjab','Rajasthan','Sikkim','Tamil Nadu','Telangana','Tripura','Uttar Pradesh','Uttarakhand','West Bengal','Andaman and Nicobar Islands','Chandigarh','Dadra and Nagar Haveli and Daman and Diu','Delhi','Jammu and Kashmir','Ladakh','Lakshadweep','Puducherry'];
@@ -1462,7 +2099,7 @@ function openCart(mode,pre,bl){let m=cart.order?'done':mode||'cart',sp=pre==='Pr
  const x=()=>{stop();o.remove();document.documentElement.style.overflow=prevOv;removeEventListener('keydown',k)},k=e=>{if(e.key==='Escape')x()};
  const hd=t=>`<div style="display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:14px"><h3>${t}</h3><button class="btn o sm rx">Close</button></div>`,per=b=>b==='m'?'Monthly':'Yearly';
  const steps=cur=>{const S=['Cart','Details','Payment'];return `<ol class="cks" aria-label="Checkout progress">${S.map((s,n)=>`<li class="${n<cur?'done':n===cur?'on':''}"><i>${n<cur?'✓':n+1}</i><span>${s}</span></li>`).join('')}</ol>`};
- const summary=(open)=>`<div class="card ck-sum"><details ${open?'open':''}><summary>Order summary &middot; ${cq()} item${cq()>1?'s':''}</summary>${cart.items.map(i=>`<div class="tx"><span>FinanceOS Pro<small>${per(i.b)}, ${i.q} account${i.q>1?'s':''}</small></span><b>${fm(lp(i))}</b></div>`).join('')}</details><div class="tx"><span>Total</span><b>${fm(tot(cart.items))}</b></div></div>`;
+ const summary=(open)=>`<div class="card ck-sum"><details ${open?'open':''}><summary>Order summary &middot; ${cq()} item${cq()>1?'s':''}</summary>${cart.items.map(i=>`<div class="tx"><span>FinanceOS Pro<small>${per(i.b)}, ${i.q} account${i.q>1?'s':''}</small></span><b>${fm(lp(i))}</b></div>`).join('')}</details>${brk(cart.items)}</div>`;
  const fld=(id,label,inner,full)=>`<div class="fld ${full?'full':''}" data-fld="${id}"><label for="ck-${id}">${label}</label>${inner}<small class="fe">${MSG[id]||''}</small></div>`;
  const inp=(id,attrs,val)=>`<input class="si" id="ck-${id}" data-f="${id}" value="${esc(val||'')}" ${attrs}>`;
  const C=cart.cust;
@@ -1478,13 +2115,13 @@ function openCart(mode,pre,bl){let m=cart.order?'done':mode||'cart',sp=pre==='Pr
   return `<div class="qrbox">${qrSvg(qseed)}<b>${fm(tot(cart.items))}</b><p>Scan with any UPI app to pay. This code expires in <span class="qrt" id="qrt">5:00</span></p><button class="btn o sm" data-a="qrnew">Refresh code</button></div>`};
  const draw=()=>{stop();
   if(m==='done'){const r=cart.order;w.innerHTML=hd('Order confirmed')+`<div class="okmark">${I.ok}</div><h3 style="text-align:center">Thank you, ${esc(r.cust.name.split(' ')[0])}.</h3><p class="lead" style="text-align:center;margin:8px auto 0">Your order <b>${r.id}</b> is confirmed. Paid by ${r.method}. No money was charged in this demo.</p>
-   <div class="card" style="margin:18px 0 0">${r.items.map(i=>`<div class="tx"><span>FinanceOS Pro<small>${per(i.b)}, ${i.q} account${i.q>1?'s':''}</small></span><b>${fm(lp(i))}</b></div>`).join('')}<div class="tx"><span>Total</span><b>${fm(r.total)}</b></div><div class="tx"><span>Billed to<small>${esc(r.cust.email)} &middot; ${esc(r.cust.city)}</small></span><b>${esc(r.cust.name)}</b></div></div>${installBlock()}<div class="ck-act"><button class="btn" data-a="x">Done</button></div>`;return}
+   <div class="card" style="margin:18px 0 0">${r.items.map(i=>`<div class="tx"><span>FinanceOS Pro<small>${per(i.b)}, ${i.q} account${i.q>1?'s':''}</small></span><b>${fm(lp(i))}</b></div>`).join('')}${brk(r.items)}<div class="tx"><span>Billed to<small>${esc(r.cust.email)} &middot; ${esc(r.cust.city)}</small></span><b>${esc(r.cust.name)}</b></div></div>${installBlock()}<div class="ck-act"><button class="btn" data-a="x">Done</button></div>`;return}
   if(m==='proc'){w.innerHTML=hd('Processing')+`<div class="proc"><div class="spin"></div><h3 id="pt">Contacting your bank</h3><p class="lead" style="margin:8px auto 0">Please do not close this panel.</p></div>`;
    tm=setTimeout(()=>{const t=$('#pt',w);if(t)t.textContent='Confirming payment'},900);
    tm=setTimeout(()=>{const lab=cart.method==='card'?'card ending '+cart.card.num.replace(/\D/g,'').slice(-4):cart.method==='upi'?'UPI':'QR code';
     cart.order={id:'FOS-'+Math.floor(100000+Math.random()*900000),items:cart.items.map(i=>({...i})),total:tot(cart.items),cust:{name:C.name.trim(),email:C.email.trim(),city:C.city.trim()},method:lab};
     cart.items=[];cart.card={num:'',name:'',exp:'',cvv:''};cart.upi='';m='done';cartBadge();draw()},1900);return}
-  if(m==='pick'){w.innerHTML=hd('Choose your version')+`<button class="op" disabled><span><b>Starter</b><small class="oos">Out of stock for now</small></span><b>${fm(P[0][1])}/mo</b></button><button class="op ${sp==='Pro'?'on':''}" data-p="Pro"><span><b>Pro</b><small>Portfolio OS, Fin AI, alerts, PDF export</small></span><b>${fm(P[1][1])}/mo</b></button><div class="seg" style="margin-top:14px"><button data-b="m" class="${sb==='m'?'on':''}">Monthly</button><button data-b="y" class="${sb==='y'?'on':''}">Yearly (2 months free)</button></div><div class="tx"><span>Price</span><b>${sp?fm(unit(sb))+(sb==='m'?' /month':' /year'):'Select a version'}</b></div><button class="btn" id="add" ${sp?'':'disabled'} style="width:100%;margin-top:16px">Add to cart</button>`;return}
+  if(m==='pick'){w.innerHTML=hd('Choose your version')+`<button class="op" disabled><span><b>Starter</b><small class="oos">Out of stock for now</small></span><b>${fm(P[0][1])}/mo</b></button><button class="op ${sp==='Pro'?'on':''}" data-p="Pro"><span><b>Pro</b><small>Portfolio OS, Fin AI, alerts, PDF export</small></span><b>${fm(P[1][1])}/mo</b></button><div class="seg" style="margin-top:14px"><button data-b="m" class="${sb==='m'?'on':''}">Monthly</button><button data-b="y" class="${sb==='y'?'on':''}">Yearly (2 months free)</button></div>${deal(sb,sp)}<div class="tx"><span>Price</span><b>${sp?fm(unit(sb))+(sb==='m'?' /month':' /year'):'Select a version'}</b></div><button class="btn" id="add" ${sp?'':'disabled'} style="width:100%;margin-top:16px">Add to cart</button>`;return}
   if(m==='info'){w.innerHTML=hd('Your details')+steps(1)+summary(false)+`<div class="ckf">
    ${fld('name','Full name',inp('name','autocomplete="name" maxlength="80" placeholder="Your full name"',C.name),1)}
    ${fld('email','Email address',inp('email','type="email" autocomplete="email" maxlength="120" placeholder="you@example.com"',C.email),1)}
@@ -1501,7 +2138,7 @@ function openCart(mode,pre,bl){let m=cart.order?'done':mode||'cart',sp=pre==='Pr
    <div class="ck-act"><button class="btn o" data-a="toInfo">Back</button><button class="btn" data-a="pay">${cart.method==='qr'?'I have paid':'Pay '+fm(tot(cart.items))}</button></div>${demoNote}`;
    if(cart.method==='qr'){let s=300;const t=$('#qrt',w);qi=setInterval(()=>{s--;if(s<=0){clearInterval(qi);if(t)t.textContent='expired'}else if(t)t.textContent=Math.floor(s/60)+':'+String(s%60).padStart(2,'0')},1000)}
    return}
-  w.innerHTML=hd('Your cart')+(cart.items.length?steps(0)+cart.items.map((i,n)=>`<div class="card" style="margin-bottom:10px"><div class="tx" style="border:0;padding:0"><span><b>FinanceOS Pro</b><small>${per(i.b)}, ${fm(unit(i.b))} per account</small></span><b>${fm(lp(i))}</b></div><div class="nx" style="margin-top:10px"><div class="qty"><button data-q="-1" data-k="${n}" aria-label="Fewer accounts">−</button><b>${i.q}</b><button data-q="1" data-k="${n}" aria-label="More accounts">+</button></div><button class="btn o sm" data-r="${n}">Remove</button></div></div>`).join('')+`<div class="tx"><span>Total</span><b>${fm(tot(cart.items))}</b></div><button class="btn o" id="more" style="width:100%;margin-top:12px">Add another version</button><button class="btn" data-a="toInfo" style="width:100%;margin-top:10px">Continue to details</button>${demoNote}`:`<p class="lead">Your cart is empty. Choose a version to add it here.</p><button class="btn" id="more" style="margin-top:14px">Choose a version</button>`)};
+  w.innerHTML=hd('Your cart')+(cart.items.length?steps(0)+cart.items.map((i,n)=>`<div class="card" style="margin-bottom:10px"><div class="tx" style="border:0;padding:0"><span><b>FinanceOS Pro</b><small>${per(i.b)}, ${fm(unit(i.b))} per account</small></span><b>${fm(lp(i))}</b></div><div class="nx" style="margin-top:10px"><div class="qty"><button data-q="-1" data-k="${n}" aria-label="Fewer accounts">−</button><b>${i.q}</b><button data-q="1" data-k="${n}" aria-label="More accounts">+</button></div><button class="btn o sm" data-r="${n}">Remove</button></div></div>`).join('')+`${brk(cart.items)}<button class="btn o" id="more" style="width:100%;margin-top:12px">Add another version</button><button class="btn" data-a="toInfo" style="width:100%;margin-top:10px">Continue to details</button>${demoNote}`:`<p class="lead">Your cart is empty. Choose a version to add it here.</p><button class="btn" id="more" style="margin-top:14px">Choose a version</button>`)};
  const mark=(id,bad)=>{const f=$(`[data-fld="${id}"]`,w);if(f)f.classList.toggle('err',bad);return bad};
  const check=ids=>{let first=null;ids.forEach(id=>{const v=id==='cnum'?cart.card.num:id==='cname'?cart.card.name:id==='cexp'?cart.card.exp:id==='ccvv'?cart.card.cvv:id==='upi'?cart.upi:C[id];if(mark(id,!VAL[id](v||''))&&!first)first=id});if(first){const el=$('#ck-'+first,w);if(el)el.focus()}return !first};
  o.addEventListener('input',e=>{const t=e.target,f=t.dataset&&t.dataset.f;if(!f)return;let v=t.value;
@@ -1688,5 +2325,263 @@ const run=()=>{cancelAnimationFrame(raf);const t0=performance.now(),D=1400;
  raf=requestAnimationFrame(step)};
 new IntersectionObserver(es=>es.forEach(e=>{clearInterval(iv);cancelAnimationFrame(raf);if(e.isIntersecting){run();iv=setInterval(run,7000)}else nw.textContent='₹24.8L'}),{threshold:.3}).observe(ph);
 }catch(e){}})();
+</script>
+
+<script>
+/* round 3: reveal on scroll, pricing "why", install journey */
+(function(){try{
+const R=matchMedia('(prefers-reduced-motion:reduce)').matches;
+const io=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting){e.target.classList.add('in');io.unobserve(e.target)}}),{threshold:.12});
+document.querySelectorAll('.rvl').forEach(el=>R?el.classList.add('in'):io.observe(el));
+const jr=document.getElementById('jr');
+if(jr){const L=[...jr.children];let idx=-1,t;const set=n=>{L.forEach((l,k)=>{l.classList.toggle('done',k<=n);l.classList.toggle('act',k===n&&n<L.length-1)})};
+ const tick=()=>{idx++;if(idx>=L.length){clearInterval(t);setTimeout(()=>{L.forEach(l=>l.classList.remove('act'));idx=-1;t=setInterval(tick,1500);set(-1)},3200);return}set(idx)};
+ if(R)set(L.length);else new IntersectionObserver((es,ob)=>{if(es[0].isIntersecting){ob.disconnect();t=setInterval(tick,1400)}},{threshold:.3}).observe(jr)}
+const box=document.getElementById('pwhy');
+if(box&&typeof P!=='undefined'){const draw=()=>{const m=P[1][1],y=m*10,r=m*12,sv=r-y,pc=Math.round(sv/r*100);
+ box.innerHTML=`<div><span class="tag">Why this price</span><h2>Priced for daily use, not for a once-a-year tool.</h2><p class="lead">Pro is ${fm(m)} a month, which is under ${fm(Math.ceil(m/30))} a day. That is the cost of one coffee for a single place that tracks your money, your investments and your loans, and answers your questions about them.</p></div>
+ <div class="pw-math"><div class="pt pt-m"><div class="pt-top"><small>Per month</small><span class="pt-ic"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="5" width="18" height="16" rx="3"/><path d="M3 10h18M8 3v4M16 3v4"/></svg></span></div><b class="pt-big" data-cu="${m}">${fm(m)}</b><div class="pt-cal" aria-hidden="true">${Array.from({length:30},(_,i)=>`<i style="--i:${i}"></i>`).join('')}</div><p>Everything in Pro. Cancel the habit of juggling five apps.</p></div><div class="pt pt-d"><div class="pt-top"><small>Per day</small><span class="pt-ic"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg></span></div><b class="pt-big">under <span data-cu="${Math.ceil(m/30)}">${fm(Math.ceil(m/30))}</span></b><div class="pt-bars" aria-hidden="true"><div class="pb me"><em>FinanceOS Pro</em><i></i></div><div class="pb"><em>A daily chai and snack</em><i></i></div></div><p>Less than a daily chai and snack.<span class="pt-note">Illustrative comparison</span></p></div><div class="pt pt-y"><div class="pt-top"><small>Yearly saving</small><span class="pt-ic"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="8" width="18" height="4" rx="1"/><path d="M12 8v13M5 12v8a1 1 0 001 1h12a1 1 0 001-1v-8M8.5 8a2.5 2.5 0 110-5C11 3 12 8 12 8s1-5 3.5-5a2.5 2.5 0 110 5"/></svg></span></div><b class="pt-big" data-cu="${sv}">${fm(sv)}</b><div class="pt-mo" aria-hidden="true">${Array.from({length:12},(_,i)=>`<i class="${i<2?'fr':''}" style="--i:${i}">${i<2?'Free':i+1}</i>`).join('')}</div><p>Two full months free when you pay yearly.</p></div></div>
+ <div class="pw-yr"><div class="pw-cmp"><span class="was"><small>12 months</small><s>${fm(r)}</s></span><i class="arr">&rarr;</i><span class="now"><small>Yearly, you pay</small><b>${fm(y)}</b></span></div><div class="pw-sv"><small>You save</small><strong data-cu="${sv}">${fm(sv)}</strong><em>${pc}% off &middot; ${fm(Math.round(y/12))} a month</em></div><button class="btn" data-pdbuy="Pro">Get Pro yearly</button></div>
+ <div class="g2"><div class="card"><h3>One simple price</h3><p>No hidden fees, no per-feature add-ons and no paid tiers inside Pro. You get the whole app.</p></div><div class="card"><h3>We never sell your data</h3><p>You pay for the product, so it is never the other way round. Your numbers stay yours.</p></div><div class="card"><h3>Replaces several tools</h3><p>A budget app, a portfolio tracker and a pile of spreadsheets become one login.</p></div><div class="card"><h3>Updates are included</h3><p>New features arrive without reinstalling or paying again.</p></div></div>`};draw()}
+}catch(e){console.error(e)}})();
+</script>
+
+<script>
+/* round 4: flow animation, live entries, inside-the-app icons */
+(function(){try{
+const R=matchMedia('(prefers-reduced-motion:reduce)').matches;
+const fl=document.getElementById('flow3');
+if(fl&&!R){const L=[...fl.children];let n=-1,t;const go=()=>{n=(n+1)%L.length;L.forEach((l,k)=>l.classList.toggle('act',k===n))};
+ new IntersectionObserver(es=>{clearInterval(t);if(es[0].isIntersecting){go();t=setInterval(go,3600)}else L.forEach(l=>l.classList.remove('act'))},{threshold:.35}).observe(fl)}
+const tl=document.getElementById('vzTl'),net=document.getElementById('vzNet');
+if(tl){const D=[['Salary','Income',85000],['Rent','Housing',-22000],['Groceries','Food',-4200],['Dividend','Investing',3100],['Electricity bill','Utilities',-1850],['SIP','Investing',-10000],['Fuel','Travel',-2300],['Freelance','Income',18000]];
+ const f=v=>(v<0?'\u2212':'+')+'\u20B9'+Math.abs(v).toLocaleString('en-IN');let i=0,tot=0,rows=[];
+ const row=(d,nw)=>`<div class="vzr${nw?' new':''}"><span>${d[0]}<small>${d[1]}</small></span><b class="${d[2]<0?'n':'p'}">${f(d[2])}</b></div>`;
+ const paint=nw=>{tl.innerHTML=rows.map((d,k)=>row(d,nw&&k===0)).join('');net.textContent='Net '+f(tot)};
+ const add=nw=>{const d=D[i++%D.length];tot+=d[2];rows.unshift(d);if(rows.length>5)rows.pop();paint(nw)};
+ for(let k=0;k<5;k++)add(false);
+ if(!R){let t;new IntersectionObserver(es=>{clearInterval(t);if(es[0].isIntersecting)t=setInterval(()=>add(true),1900)},{threshold:.3}).observe(tl)}}
+const ia=document.getElementById('inapp');
+if(ia&&typeof FD!=='undefined'&&typeof ico!=='undefined'){
+ const mk=d=>`<span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">${d}</svg></span>`;
+ const X={globe:mk('<circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c3 3 3 15 0 18M12 3c-3 3-3 15 0 18"/>'),umb:mk('<path d="M3 12a9 9 0 0118 0z"/><path d="M12 12v7a2 2 0 004 0"/>'),lock:mk('<rect x="5" y="11" width="14" height="10" rx="2.4"/><path d="M8 11V8a4 4 0 018 0v3"/>'),eye:mk('<path d="M2 12s3.6-7 10-7 10 7 10 7-3.6 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/><path d="M4 4l16 16"/>'),phone:mk('<rect x="6" y="2" width="12" height="20" rx="2.6"/><path d="M11 18h2"/>'),cloud:mk('<path d="M7 18a4.5 4.5 0 01-.6-8.96A6 6 0 0118 9.5 4.3 4.3 0 0117.5 18z"/><path d="M12 11v5m-2-2l2 2 2-2"/>')};
+ const I=k=>X[k]||ico(k);
+ const T=[
+  ['tx','FinanceOS','Your everyday money',[['tx','Transactions'],['loan','Loans and EMI'],['card','Credit tracker'],['target','Smart budgets'],['shield','Insurance and notes']]],
+  ['chart','Portfolio OS','Everything you own',[['chart','Portfolio analytics'],['pulse','Stress test'],['tax','Tax view'],['umb','Retirement','Portfolio analytics'],['globe','International assets','Portfolio analytics']]],
+  ['ai','Fin AI and insights','Answers and alerts',[['ai','Fin AI'],['trend','Net worth'],['alert','Unusual-spend alerts'],['doc','PDF export']]],
+  ['shield','Privacy and control','You decide where data lives',[['lock','App Lock','#privacy'],['eye','Privacy Screen','#privacy'],['phone','Device-only mode','#privacy'],['cloud','Encrypted cloud sync','#privacy']]]];
+ ia.className='';ia.removeAttribute('style');
+ ia.innerHTML=`<div class="tree" id="tree"><div class="tr-root"><svg width="40" height="40" aria-hidden="true"><use href="#fos-logo"/></svg><div><b>Finance<em>OS</em> app</b><small>One login. Everything below is built in.</small></div></div><i class="tr-stem tr-ln"></i><div class="tr-cols">${T.map((c,ci)=>`<div class="tr-col" style="--c:${ci}"><div class="tr-br">${I(c[0])}<div><b>${c[1]}</b><small>${c[2]}</small></div></div><ul class="tr-lv"><i class="tr-sp tr-ln"></i>${c[3].map((l,k)=>`<li style="--k:${k}"><button class="tn" data-n="${l[2]&&l[2][0]!=='#'?l[2]:l[1]}" data-h="${l[2]&&l[2][0]==='#'?l[2]:''}">${I(l[0])}<span>${l[1]}</span></button></li>`).join('')}</ul></div>`).join('')}</div></div>`;
+ const tr=document.getElementById('tree');
+ ia.onclick=e=>{const b=e.target.closest('.tn');if(!b)return;if(b.dataset.h){location.hash=b.dataset.h.slice(1);return}location.hash='features';setTimeout(()=>openF(FD.findIndex(f=>f[1]===b.dataset.n)),50)};
+ if(R)tr.classList.add('on');else new IntersectionObserver(es=>es.forEach(e=>e.target.classList.toggle('on',e.isIntersecting)),{threshold:.15}).observe(tr);
+}
+}catch(e){console.error(e)}})();
+</script>
+
+<script>
+/* round 5: pricing animations, includes journey, contact tree */
+(function(){try{
+const R=matchMedia('(prefers-reduced-motion:reduce)').matches;
+const fmt=n=>'\u20B9'+n.toLocaleString('en-IN');
+const cu=el=>{const to=+el.dataset.cu;if(R){el.textContent=fmt(to);return}const t0=performance.now(),st=t=>{const p=Math.min(1,(t-t0)/1400),e=1-Math.pow(1-p,3);el.textContent=fmt(Math.round(to*e));if(p<1)requestAnimationFrame(st)};requestAnimationFrame(st)};
+const yr=document.querySelector('.pw-yr'),pm=document.querySelector('.pw-math');
+if(yr)R?yr.classList.add('in'):new IntersectionObserver(es=>es.forEach(e=>{e.target.classList.toggle('in',e.isIntersecting);if(e.isIntersecting)e.target.querySelectorAll('[data-cu]').forEach(cu)}),{threshold:.45}).observe(yr);
+if(pm&&!R)new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting)e.target.querySelectorAll('[data-cu]').forEach(cu)}),{threshold:.5}).observe(pm);
+const jr=document.getElementById('jr2');
+if(jr){const L=[...jr.children];let idx=-1,t;const set=n=>L.forEach((l,k)=>{l.classList.toggle('done',k<=n);l.classList.toggle('act',k===n)});
+ const tick=()=>{idx++;if(idx>=L.length){clearInterval(t);setTimeout(()=>{idx=-1;set(-1);t=setInterval(tick,1300)},2800);return}set(idx)};
+ if(R)L.forEach(l=>l.classList.add('done'));else new IntersectionObserver((es,ob)=>{if(es[0].isIntersecting){ob.disconnect();t=setInterval(tick,1300)}},{threshold:.4}).observe(jr)}
+const ct=document.getElementById('ctree');
+if(ct){const mk=d=>`<span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">${d}</svg></span>`;
+ const L=[['<path d="M8 5l11 7-11 7z"/>','A free walkthrough or live demo, so you can see how the dashboard looks and feels before you decide'],['<circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/>','Replies within 24 hours, from a real person'],['<path d="M12 3l8 3v6c0 5-3.4 8-8 9-4.6-1-8-4-8-9V6z"/><path d="M9 12l2 2 4-4"/>','No bank login needed. You add the entries, so you stay in control'],['<path d="M7 18a4.5 4.5 0 01-.6-8.96A6 6 0 0118 9.5 4.3 4.3 0 0117.5 18z"/>','Your data on your device or in an encrypted cloud. You choose'],['<path d="M12 4v11m-4-4l4 4 4-4M5 20h14"/>','Install in seconds from your browser, no app store required'],['<rect x="3" y="7" width="18" height="13" rx="2.5"/><path d="M9 7V5a1 1 0 011-1h4a1 1 0 011 1v2M3 13h18"/>','Need your own branded version? The Custom plan is built for businesses']];
+ ct.innerHTML=`<div class="tr-root">${mk('<path d="M4 5h16v11H9l-5 4z"/><path d="M8 9.5h8M8 12.5h5"/>')}<div><b>Why people get in touch</b><small>What you get when you reach out</small></div></div><i class="tr-stem tr-ln"></i><ul class="tr-lv"><i class="tr-sp tr-ln"></i>${L.map((l,k)=>`<li style="--k:${k}"><div class="tn">${mk(l[0])}<span>${l[1]}</span></div></li>`).join('')}<li style="--k:6"><div class="ct-end"><a class="tn cta" href="#pricing">See pricing</a><a class="tn cta o" href="#apk">Get the app</a></div></li></ul>`;
+ if(R)ct.classList.add('on');else new IntersectionObserver(es=>es.forEach(e=>e.target.classList.toggle('on',e.isIntersecting)),{threshold:.15}).observe(ct)}
+}catch(e){console.error(e)}})();
+</script>
+
+<script>
+/* round 6: "What we never do" animation */
+(function(){try{
+const R=matchMedia('(prefers-reduced-motion:reduce)').matches,box=document.querySelector('.pvnever');if(!box)return;
+const D=[['<circle cx="8" cy="15" r="4"/><path d="M11 12l9-9m-3 3l3 3"/>','See or store your password','Passwords are hashed by the sign-in service and never shown to anyone.'],
+['<path d="M12 11v3.5c0 2-.6 3.6-1.6 5M8 14.5c0 2.3-.5 4-1.5 5.5M16 12v2.5c0 2-.3 3.7-1 5M5.5 11.2A6.5 6.5 0 0112 5.5a6.5 6.5 0 016.5 5.7M9 8.8A4 4 0 0116 11"/>','Receive your fingerprint or face','Biometrics stay on your device and are never sent to us.'],
+['<circle cx="9" cy="8" r="3.2"/><path d="M3 20c0-3.4 2.7-6 6-6s6 2.6 6 6"/><circle cx="17.5" cy="9" r="2.4"/>','Let other users query your records','Every record is locked to your account.'],
+['<path d="M3 10l9-6 9 6M5 10v8M9.5 10v8M14.5 10v8M19 10v8M3 20h18"/>','Ask for your bank login','You add the entries yourself, so no bank password is ever needed.'],
+['<path d="M7 5h10M7 9h10M10 5c4 0 6 2 6 4s-2 4-6 4H7l8 7"/>','Sell your data','Your data is never sold, to anyone.']];
+box.classList.add('nvz');
+box.innerHTML=D.map((d,k)=>`<div class="card blk nv" style="--k:${k}"><div class="nv-i"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true">${d[0]}</svg><svg class="nv-no" viewBox="0 0 60 60" aria-hidden="true"><circle class="c" pathLength="1" cx="30" cy="30" r="27"/><path class="sl" pathLength="1" d="M12 12L48 48"/></svg></div><div><strong>${d[1]}</strong><small>${d[2]}</small></div></div>`).join('');
+if(R)box.classList.add('on');else new IntersectionObserver(es=>es.forEach(e=>e.target.classList.toggle('on',e.isIntersecting)),{threshold:.3}).observe(box);
+}catch(e){console.error(e)}})();
+</script>
+
+<script>
+/* round 9: interactive cloud safeguards */
+(function(){try{
+const host=document.getElementById('sf');if(!host)return;
+const R=matchMedia('(prefers-reduced-motion:reduce)').matches;
+const sv=d=>`<svg viewBox="0 0 24 24" aria-hidden="true">${d}</svg>`;
+const IC={fp:'<path d="M12 11v3.5c0 2-.6 3.6-1.6 5M8 14.5c0 2.3-.5 4-1.5 5.5M16 12v2.5c0 2-.3 3.7-1 5M5.5 11.2A6.5 6.5 0 0112 5.5a6.5 6.5 0 016.5 5.7M9 8.8A4 4 0 0116 11"/>',key:'<circle cx="8" cy="15" r="4"/><path d="M11 12l9-9m-3 3l3 3"/>',lock:'<rect x="5" y="11" width="14" height="10" rx="2.4"/><path d="M8 11V8a4 4 0 018 0v3"/>',db:'<ellipse cx="12" cy="6" rx="8" ry="3"/><path d="M4 6v6c0 1.7 3.6 3 8 3s8-1.3 8-3V6M4 12v6c0 1.7 3.6 3 8 3s8-1.3 8-3v-6"/>',eye:'<path d="M2 12s3.6-7 10-7 10 7 10 7-3.6 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/><path d="M4 4l16 16"/>',tg:'<rect x="2" y="7" width="20" height="10" rx="5"/><circle cx="16" cy="12" r="2.6"/>'};
+const N=[
+{k:'fp',s:'Sign in',n:'Passkeys',t:'Passkeys, if you want them',p:'Sign in with Face ID or fingerprint using your device\u2019s own security. Your fingerprint or face never leaves the device and is never sent to us.',c:['Face ID or fingerprint','Stays on your device','Optional'],d:'fp'},
+{k:'key',s:'Verify',n:'Passwords',t:'Passwords we never see',p:'Sign-in runs on a dedicated auth service with email confirmation. Your password is hashed, never stored or shown by FinanceOS. Forgot it? A single-use reset link does the job.',c:['Hashed, never stored','Email confirmation','Single-use reset link'],d:'pw'},
+{k:'lock',s:'Travel',n:'In transit',t:'Encrypted in transit',p:'Everything sent between your device and the cloud travels over HTTPS/TLS, so it cannot be read on the way.',c:['HTTPS/TLS','Unreadable on the way','Device to cloud'],d:'wire'},
+{k:'db',s:'Store',n:'At rest',t:'Encrypted at rest',p:'Synced records are held in a managed cloud database that encrypts stored data.',c:['Managed cloud database','Stored data is encrypted'],d:'rest'},
+{k:'eye',s:'Access',n:'Only yours',t:'Your records, only yours',p:'Row-level access control scopes every record to your account. No other FinanceOS user can query, see or export your data.',c:['Row-level access control','No one else can query','No one else can export'],d:'rls'},
+{k:'tg',s:'Control',n:'Your call',t:'Sync is your call',p:'Turn automatic sync off, or stay in Manual JSON mode. Your theme, layouts, app lock and biometrics always stay on each device.',c:['Sync off any time','Manual JSON mode','App lock stays on device'],d:'sync'}];
+host.innerHTML=`<div class="sf-path" id="sfp" role="tablist" aria-label="Cloud safeguards"><div class="sf-rail" id="sfr"><i class="sf-fill"></i><b class="sf-pk"></b></div>${N.map((x,i)=>`<button class="sf-n" role="tab" data-i="${i}"><span class="ci">${sv(IC[x.k])}</span><small>${x.s}</small><b>${x.n}</b></button>`).join('')}</div><div class="sf-panel" id="sfpn" aria-live="polite"></div><div class="sf-prog"><i id="sfpg"></i></div>`;
+const btn=[...host.querySelectorAll('.sf-n')],pn=document.getElementById('sfpn'),rl=document.getElementById('sfr'),pg=document.getElementById('sfpg');
+let cur=-1,tm,sc,hold=false,vis=false;const CH='ABCDEFabcdef0123456789#%&*';
+const scr=(el,len)=>{clearInterval(sc);const f=()=>{let o='';for(let i=0;i<len;i++)o+=CH[Math.floor(Math.random()*CH.length)];el.textContent=o};f();if(!R)sc=setInterval(f,110)};
+const demo=(t,box)=>{
+ const row=(c,a,b)=>`<div class="sf-r ${c||''}"><em>${a}</em><code>${b}</code></div>`;
+ if(t==='fp')box.innerHTML=row('ok','Your fingerprint','Stays on this device')+row('no','Sent to FinanceOS','Nothing');
+ else if(t==='pw')box.innerHTML=row('','You type','\u2022\u2022\u2022\u2022\u2022\u2022\u2022\u2022\u2022\u2022')+row('sc','We keep (hash)','<span id="sfx"></span>'),scr(box.querySelector('#sfx'),22);
+ else if(t==='wire')box.innerHTML=row('','On your device','Rent \u2212\u20B922,000')+row('sc','On the wire','<span id="sfx"></span>'),scr(box.querySelector('#sfx'),24);
+ else if(t==='rest')box.innerHTML=row('','You see','Salary +\u20B985,000')+row('sc','In the database','<span id="sfx"></span>'),scr(box.querySelector('#sfx'),24);
+ else if(t==='rls')box.innerHTML=row('ok','You','Your 42 records: open')+row('no','Another user','Access denied');
+ else{box.innerHTML=`<div class="sf-r"><div class="sf-sw"><button class="on" id="sfsw" aria-label="Cloud sync"><i></i></button><em style="min-width:0">Cloud sync</em></div><code id="sfst">On: syncing to your account</code></div>`;
+  const b=box.querySelector('#sfsw'),st=box.querySelector('#sfst');b.onclick=()=>{b.classList.toggle('on');st.textContent=b.classList.contains('on')?'On: syncing to your account':'Off: data stays on this device'}}};
+const show=i=>{cur=i;const x=N[i];clearInterval(sc);
+ btn.forEach((b,k)=>{b.classList.toggle('on',k===i);b.classList.toggle('done',k<i);b.setAttribute('aria-selected',k===i)});
+ rl.style.setProperty('--p',(i/(N.length-1)*100)+'%');
+ pn.innerHTML=`<div class="sf-orb sf-in"><div class="core">${sv(IC[x.k])}</div></div><div class="sf-tx sf-in"><span class="st">Step ${i+1} of ${N.length} &middot; ${x.s}</span><h3>${x.t}</h3><p>${x.p}</p><div class="sf-ch">${x.c.map(c=>`<span>${c}</span>`).join('')}</div><div class="sf-dm" id="sfdm"></div></div>`;
+ demo(x.d,pn.querySelector('#sfdm'));arm()};
+const arm=()=>{clearTimeout(tm);pg.classList.remove('run');void pg.offsetWidth;if(R||hold||!vis)return;pg.classList.add('run');tm=setTimeout(()=>show((cur+1)%N.length),6000)};
+btn.forEach(b=>b.onclick=()=>show(+b.dataset.i));
+host.addEventListener('keydown',e=>{if(e.key==='ArrowRight'||e.key==='ArrowLeft'){const i=(cur+(e.key==='ArrowRight'?1:N.length-1))%N.length;show(i);btn[i].focus()}});
+host.addEventListener('mouseenter',()=>{hold=true;clearTimeout(tm);host.classList.add('hold')});
+host.addEventListener('mouseleave',()=>{hold=false;host.classList.remove('hold');arm()});
+host.addEventListener('focusin',()=>{hold=true;clearTimeout(tm);host.classList.add('hold')});host.addEventListener('focusout',()=>{hold=false;host.classList.remove('hold');arm()});
+show(0);
+new IntersectionObserver(es=>{vis=es[0].isIntersecting;if(vis)arm();else{clearTimeout(tm);clearInterval(sc)}},{threshold:.3}).observe(host);
+}catch(e){console.error(e)}})();
+</script>
+
+<script>
+/* round 10: contact starter, pricing tiles, problem animation */
+(function(){try{
+const R=matchMedia('(prefers-reduced-motion:reduce)').matches;
+/* pricing tiles: replay on scroll + tilt */
+const pm=document.querySelector('.pw-math');
+if(pm){if(R)pm.classList.add('go');else new IntersectionObserver(es=>es.forEach(e=>pm.classList.toggle('go',e.isIntersecting)),{threshold:.35}).observe(pm);
+ pm.addEventListener('pointermove',e=>{const t=e.target.closest('.pt');pm.querySelectorAll('.pt').forEach(o=>{if(o!==t)o.style.transform=''});if(!t)return;const r=t.getBoundingClientRect(),x=(e.clientX-r.left)/r.width,y=(e.clientY-r.top)/r.height;t.style.setProperty('--mx',(x*100)+'%');t.style.setProperty('--my',(y*100)+'%');if(!R&&e.pointerType==='mouse')t.style.transform='rotateX('+((.5-y)*7)+'deg) rotateY('+((x-.5)*9)+'deg) translateY(-4px)'});pm.addEventListener('pointerleave',()=>pm.querySelectorAll('.pt').forEach(o=>{o.style.transform=''}))}
+/* info: problem cards */
+const g=document.getElementById('pbm');
+if(g){const C=[...g.querySelectorAll('.pcol')];let cur=-1,t,hold=false,rs;
+ const set=i=>{cur=i;C.forEach((c,k)=>c.classList.toggle('act',k===i))};
+ const stop=()=>{clearInterval(t)};const go=()=>{stop();t=setInterval(()=>{if(!hold)set((cur+1)%C.length)},5600)};
+ const pin=k=>{hold=true;set(k);clearTimeout(rs);rs=setTimeout(()=>{hold=false},9000)};
+ if(R)C.forEach(c=>c.classList.add('act'));
+ else if(matchMedia('(max-width:640px)').matches){C.forEach(c=>new IntersectionObserver(es=>es.forEach(e=>e.target.classList.toggle('act',e.isIntersecting)),{threshold:.55,rootMargin:'-12% 0px -12% 0px'}).observe(c))}
+ else{C.forEach((c,k)=>{c.addEventListener('mouseenter',()=>pin(k));c.addEventListener('click',()=>pin(k));c.addEventListener('focus',()=>pin(k))});
+  g.addEventListener('mouseleave',()=>{clearTimeout(rs);hold=false});
+  new IntersectionObserver(es=>{if(es[0].isIntersecting){set(0);go()}else{stop();cur=-1;C.forEach(c=>c.classList.remove('act'))}},{threshold:.35}).observe(g)}}
+/* contact: message starter */
+const ch=document.getElementById('gqCh');
+if(ch){const D=[
+ {n:'Book a demo',s:0,m:'Hi FinanceOS team, I would like a free walkthrough of the dashboard. Could we set up a short live demo? Thank you.'},
+ {n:'Pricing',s:0,m:'Hi, I have a question about pricing. Could you tell me what is included in Pro and how the yearly plan works?'},
+ {n:'Custom plan',s:2,m:'Hi, I represent a business and would like to know more about the Custom plan and a branded version of FinanceOS.'},
+ {n:'Privacy',s:0,m:'Hi, I have a question about how my data is stored and protected. Could you explain device-only mode and cloud sync?'},
+ {n:'Investors',s:1,m:'Hi, I am an investor and would like to learn more about FinanceOS and Portfolio OS. Could we arrange a conversation?'}];
+ const tx=document.getElementById('gqTx'),to=document.getElementById('gqTo'),pg=document.getElementById('gqPg'),box=document.getElementById('gq'),use=document.getElementById('gqUse');
+ ch.innerHTML=D.map((d,i)=>'<button type="button" role="tab" data-i="'+i+'">'+d.n+'</button>').join('');
+ const B=[...ch.children];let cur=-1,tm,ty,auto=true,vis=false;const GD=5000;
+ const arm=()=>{clearTimeout(tm);pg.classList.remove('run');void pg.offsetWidth;if(!auto||R||!vis)return;pg.style.setProperty('--gd',GD+'ms');box.style.setProperty('--gd',GD+'ms');pg.classList.add('run');tm=setTimeout(()=>show((cur+1)%D.length),GD)};
+ const show=i=>{cur=i;const d=D[i];B.forEach((b,k)=>{b.classList.toggle('on',k===i);b.setAttribute('aria-selected',k===i)});to.textContent='Draft message \u00b7 '+d.n;clearInterval(ty);
+  if(R){tx.textContent=d.m;arm();return}
+  let n=0;tx.textContent='';pg.classList.remove('run');clearTimeout(tm);ty=setInterval(()=>{n+=2;tx.textContent=d.m.slice(0,n);if(n>=d.m.length){clearInterval(ty);arm()}},22)};
+ B.forEach((b,i)=>b.onclick=()=>{auto=false;show(i)});
+ use.onclick=()=>{const d=D[cur<0?0:cur],m=document.getElementById('cm'),s=document.getElementById('ct');if(!m)return;m.value=d.m;if(s)s.selectedIndex=d.s;m.dispatchEvent(new Event('input',{bubbles:true}));
+  m.scrollIntoView({behavior:R?'auto':'smooth',block:'center'});try{m.focus({preventScroll:true})}catch(e){m.focus()}
+  m.classList.add('gq-flash');setTimeout(()=>m.classList.remove('gq-flash'),1800);const o=use.textContent;use.textContent='Added to the form \u2713';setTimeout(()=>{use.textContent=o},1800)};
+ show(0);
+ new IntersectionObserver(es=>{vis=es[0].isIntersecting;if(vis)arm();else{clearTimeout(tm);pg.classList.remove('run')}},{threshold:.3}).observe(box)}
+}catch(e){console.error(e)}})();
+</script>
+
+<script>
+/* round 11: billing-linked pricing, value anchors, referral animations */
+(function(){try{
+const R=matchMedia('(prefers-reduced-motion:reduce)').matches;
+/* ---- pricing ---- */
+const box=document.getElementById('pwhy');
+if(box&&typeof P!=='undefined'&&typeof fm!=='undefined'){
+ const m=P[1][1],y=m*10,r=m*12,sv=r-y,pc=Math.round(sv/r*100),dM=Math.ceil(m/30),dY=Math.ceil(y/365),mo=Math.round(y/12);
+ const pm=box.querySelector('.pw-math'),lead=box.querySelector('.lead'),leadM=lead?lead.innerHTML:'';
+ const I={cal:'<rect x="3" y="5" width="18" height="16" rx="3"/><path d="M3 10h18M8 3v4M16 3v4"/>',clk:'<circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/>',gift:'<rect x="3" y="8" width="18" height="4" rx="1"/><path d="M12 8v13M5 12v8a1 1 0 001 1h12a1 1 0 001-1v-8M8.5 8a2.5 2.5 0 110-5C11 3 12 8 12 8s1-5 3.5-5a2.5 2.5 0 110 5"/>',yr:'<path d="M4 12a8 8 0 0114-5.3M20 12a8 8 0 01-14 5.3M18 3v4h-4M6 21v-4h4"/>'};
+ const ic=d=>'<span class="pt-ic"><svg viewBox="0 0 24 24" aria-hidden="true">'+d+'</svg></span>';
+ const mons='<div class="pt-mo" aria-hidden="true">'+Array.from({length:12},(_,i)=>'<i class="'+(i<2?'fr':'')+'" style="--i:'+i+'">'+(i<2?'Free':i+1)+'</i>').join('')+'</div>';
+ const tiles=Y=>Y?
+  '<div class="pt pt-m"><div class="pt-top"><small>Per year</small>'+ic(I.yr)+'</div><b class="pt-big" data-cu="'+y+'">'+fm(y)+'</b><span class="pt-sub">That is '+fm(mo)+' a month</span><div class="pt-cal y" aria-hidden="true">'+Array.from({length:12},(_,i)=>'<i style="--i:'+i+'"></i>').join('')+'</div><p>One payment covers all twelve months of Pro. Everything in Pro, billed once.</p></div>'+
+  '<div class="pt pt-d"><div class="pt-top"><small>Per day</small>'+ic(I.clk)+'</div><b class="pt-big">under <span data-cu="'+dY+'">'+fm(dY)+'</span></b><div class="pt-bars" aria-hidden="true"><div class="pb me yr"><em>FinanceOS Pro, yearly</em><i></i></div><div class="pb"><em>A daily chai and snack</em><i></i></div></div><p>Under '+fm(dY)+' a day when you pay yearly.<span class="pt-note">Illustrative comparison</span></p></div>'+
+  '<div class="pt pt-y"><div class="pt-top"><small>You save</small>'+ic(I.gift)+'</div><b class="pt-big" data-cu="'+sv+'">'+fm(sv)+'</b>'+mons+'<p>Two full months free, '+pc+'% off the 12-month price.</p><span class="pt-best">Best value</span></div>'
+ :
+  '<div class="pt pt-m"><div class="pt-top"><small>Per month</small>'+ic(I.cal)+'</div><b class="pt-big" data-cu="'+m+'">'+fm(m)+'</b><div class="pt-cal" aria-hidden="true">'+Array.from({length:30},(_,i)=>'<i style="--i:'+i+'"></i>').join('')+'</div><p>Everything in Pro. Cancel the habit of juggling five apps.</p></div>'+
+  '<div class="pt pt-d"><div class="pt-top"><small>Per day</small>'+ic(I.clk)+'</div><b class="pt-big">under <span data-cu="'+dM+'">'+fm(dM)+'</span></b><div class="pt-bars" aria-hidden="true"><div class="pb me"><em>FinanceOS Pro</em><i></i></div><div class="pb"><em>A daily chai and snack</em><i></i></div></div><p>Less than a daily chai and snack.<span class="pt-note">Illustrative comparison</span></p></div>'+
+  '<div class="pt pt-y"><div class="pt-top"><small>Yearly saving</small>'+ic(I.gift)+'</div><b class="pt-big" data-cu="'+sv+'">'+fm(sv)+'</b>'+mons+'<p>Two full months free when you pay yearly.</p><button class="pt-sw" type="button" data-yr>Switch to yearly</button></div>';
+ const cu=el=>{const to=+el.dataset.cu;if(R){el.textContent=fm(to);return}const t0=performance.now(),st=t=>{const p=Math.min(1,(t-t0)/1200),e=1-Math.pow(1-p,3);el.textContent=fm(Math.round(to*e));if(p<1)requestAnimationFrame(st)};requestAnimationFrame(st)};
+ /* anchors */
+ const yw=box.querySelector('.pw-yr');
+ if(yw)yw.insertAdjacentHTML('afterend',
+  '<div class="pwx"><div class="pwx-c" id="roi"><span class="tag">Would it pay for itself?</span><h3>Try your own number</h3><p>How much do you think slips through the cracks in a year? Think late fees, forgotten renewals and idle cash.</p><div class="roi-r"><input type="range" id="roiS" min="0" max="30000" step="500" value="6000" aria-label="Money that slips away each year"><output id="roiV" for="roiS"></output></div><div class="roi-b"><div><small>Pro costs <b id="roiC"></b></small><span class="rb"><i id="roiCb"></i></span></div><div><small>Your estimate <b id="roiE"></b></small><span class="rb g"><i id="roiEb"></i></span></div></div><p class="roi-m" id="roiM"></p><span class="roi-n">This is your own estimate, not a promise or a guarantee.</span></div>'+
+  '<div class="pwx-c" id="mrg"><span class="tag">One login, not five</span><h3>Replace the pile</h3><p>Everything you juggle today, in one place.</p><div class="mg"><div class="mg-l"><span style="--k:0">Budget app</span><span style="--k:1">Portfolio tracker</span><span style="--k:2">EMI tracker</span><span style="--k:3">Spreadsheets</span><span style="--k:4">Notes app</span></div><div class="mg-p"><small>One login</small>FinanceOS Pro</div></div></div></div>');
+ const rs=document.getElementById('roiS'),paint=()=>{if(!rs)return;const Y=bill==='y',cost=Y?y:r,e=+rs.value,mx=Math.max(cost,e,1);
+  document.getElementById('roiV').textContent=fm(e);document.getElementById('roiC').textContent=fm(cost)+(Y?' a year':' for 12 months');document.getElementById('roiE').textContent=fm(e)+' a year';
+  document.getElementById('roiCb').style.width=(cost/mx*100)+'%';document.getElementById('roiEb').style.width=(e/mx*100)+'%';
+  const mm=document.getElementById('roiM');if(e>=cost){mm.className='roi-m';mm.textContent='Recover just that and Pro pays for itself, with '+fm(e-cost)+' to spare.'}else{mm.className='roi-m no';mm.textContent='You would need to recover '+fm(cost-e)+' more over the year to break even. Catching a missed bill or an unused subscription is a good place to start.'}};
+ if(rs)rs.addEventListener('input',paint);
+ const mg=document.querySelector('#mrg .mg');if(mg){if(R)mg.classList.add('go');else new IntersectionObserver(es=>es.forEach(e=>mg.classList.toggle('go',e.isIntersecting)),{threshold:.4}).observe(mg)}
+ /* linked rendering */
+ let first=true;
+ const sync=()=>{const Y=bill==='y';if(pm){pm.innerHTML=tiles(Y);if(!first&&!R){pm.classList.remove('swap');void pm.offsetWidth;pm.classList.add('swap')}if(pm.classList.contains('go'))pm.querySelectorAll('[data-cu]').forEach(cu)}
+  if(lead)lead.innerHTML=Y?'Pro is '+fm(y)+' a year, which works out to '+fm(mo)+' a month and under '+fm(dY)+' a day. One place that tracks your money, your investments and your loans, and answers your questions about them.':leadM;paint();first=false};
+ const seg=document.querySelector('#p-pricing .seg');
+ if(seg)seg.addEventListener('click',e=>{if(e.target.dataset&&e.target.dataset.b)sync()});
+ if(pm)pm.addEventListener('click',e=>{if(e.target.closest('[data-yr]')){const b=document.querySelector('#p-pricing .seg button[data-b="y"]');if(b)b.click();const g=document.querySelector('#p-pricing .seg');if(g)g.scrollIntoView({behavior:R?'auto':'smooth',block:'center'})}});
+ sync();
+}
+/* ---- referrals ---- */
+const h1=document.querySelector('#p-referrals .ref-hero h1');
+if(h1){const A='Share smarter money management. ',B='Earn \u20B9100.';h1.setAttribute('aria-label',A+B);
+ const html=n=>n<=A.length?A.slice(0,n):A+'<em>'+B.slice(0,n-A.length)+'</em>';
+ h1.innerHTML='<span class="tw-ghost" aria-hidden="true">'+A+'<em>'+B+'</em></span><span class="tw-live" aria-hidden="true"></span>';
+ const lv=h1.querySelector('.tw-live'),N=A.length+B.length;let n=0,t,vis=false;
+ const type=()=>{clearTimeout(t);n=0;const st=()=>{n++;lv.innerHTML=html(n);if(n<N)t=setTimeout(st,58);else t=setTimeout(()=>{if(vis)type()},4200)};lv.innerHTML='';t=setTimeout(st,350)};
+ if(R)lv.innerHTML=html(N);else new IntersectionObserver(es=>{vis=es[0].isIntersecting;if(vis)type();else{clearTimeout(t);lv.innerHTML=html(N)}},{threshold:.2}).observe(h1)}
+const tl=document.querySelector('#p-referrals .ref-timeline');
+if(tl){const S=[...tl.children];
+ const TK='<svg class="tk" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>',CS='<svg class="cs" viewBox="0 0 24 24" aria-hidden="true"><rect x="2.5" y="6" width="19" height="12" rx="2.5"/><circle cx="12" cy="12" r="2.8"/><path d="M6 9.5h.01M18 14.5h.01"/></svg>';
+ S.forEach((li,i)=>{const d=li.querySelector('.ref-stage-dot');d.innerHTML='<span class="n">'+d.textContent.trim()+'</span>'+(i<S.length-1?TK:CS)});
+ const reset=()=>S.forEach(l=>l.classList.remove('act','done'));let t;
+ const run=()=>{clearTimeout(t);tl.classList.add('rt-run');reset();let i=0;const step=()=>{if(i>=S.length){t=setTimeout(()=>{reset();i=0;t=setTimeout(step,700)},3800);return}
+   S[i].classList.add('act');const k=i;t=setTimeout(()=>{S[k].classList.remove('act');S[k].classList.add('done');i++;t=setTimeout(step,250)},k===S.length-1?1600:1250)};step()};
+ if(R)S.forEach(l=>l.classList.add('done'));else new IntersectionObserver(es=>{if(es[0].isIntersecting)run();else{clearTimeout(t);reset();tl.classList.remove('rt-run')}},{threshold:.25}).observe(tl)}
+}catch(e){console.error(e)}})();
+</script>
+
+<script>
+/* round 12: stats row (odometer + live visuals) */
+(function(){try{
+const R=matchMedia('(prefers-reduced-motion:reduce)').matches,st=document.getElementById('stx');
+if(!st)return;
+const COL='0123456789'.repeat(2)+'0';
+st.querySelectorAll('[data-od]').forEach(el=>{const v=el.dataset.od;el.setAttribute('aria-label',v);
+ el.innerHTML=[...v].map((ch,i)=>/\d/.test(ch)?'<span class="odc" aria-hidden="true"><span style="--d:'+((+ch)+10+(ch==='0'?10:0))+';--i:'+i+'">'+[...COL].map(d=>'<i>'+d+'</i>').join('')+'</span></span>':'<span class="odx" aria-hidden="true">'+ch+'</span>').join('')});
+if(R)st.classList.add('go');else new IntersectionObserver(es=>es.forEach(e=>st.classList.toggle('go',e.isIntersecting)),{threshold:.3}).observe(st);
+const tr=document.getElementById('sxTree');
+if(tr){tr.classList.add('js');
+ if(R){tr.classList.add('grow')}
+ else{const run=()=>{tr.classList.add('nt','fade');tr.classList.remove('grow');void tr.offsetWidth;tr.classList.remove('nt');
+   requestAnimationFrame(()=>{tr.classList.remove('fade');requestAnimationFrame(()=>tr.classList.add('grow'))})};
+  let on=false,t=0;setInterval(()=>{const g=st.classList.contains('go');
+   if(!g){on=false;return}
+   if(!on){on=true;t=0;run();return}
+   t+=250;if(t>=7800){t=0;tr.classList.add('fade');setTimeout(run,550)}},250)}}
+const NW=[['24.8','0.3'],['24.9','0.7'],['25.0','1.1'],['24.9','0.7'],['25.1','1.5'],['25.0','1.1']],nw=document.getElementById('sxNw'),up=document.getElementById('sxUp');let ni=0;
+if(!R)setInterval(()=>{if(!st.classList.contains('go')||!nw)return;ni=(ni+1)%NW.length;nw.textContent='\u20B9'+NW[ni][0]+'L';up.textContent='\u25B2 '+NW[ni][1]+'%';nw.classList.remove('tick');void nw.offsetWidth;nw.classList.add('tick')},2300);
+}catch(e){console.error(e)}})();
 </script>
 </body></html>
