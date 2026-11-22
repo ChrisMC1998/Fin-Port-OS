@@ -2164,7 +2164,7 @@ const names=['info','privacy','features','pricing','apk','faq','contact','referr
 function route(){let h=location.hash.slice(1);if(!names.includes(h))h='info';
  if(h!=='features'&&typeof resetF==='function')resetF();if(h==='contact'&&typeof cdraw==='function')cdraw();$$('.page').forEach(p=>p.classList.toggle('on',p.id==='p-'+h));$$('nav .l').forEach(a=>a.classList.toggle('on',a.getAttribute('href')==='#'+h));window.scrollTo(0,0);
  const ac=$('nav .l.on'),lk=ac&&ac.parentElement;if(lk&&lk.scrollWidth>lk.clientWidth)lk.scrollTo({left:ac.offsetLeft-(lk.clientWidth-ac.offsetWidth)/2,behavior:'smooth'})}
-addEventListener('hashchange',route);
+addEventListener('hashchange',()=>{window.__ptGo?window.__ptGo(route):route()});
 
 const incomingReferralCode=new URLSearchParams(location.search).get('ref');
 if(incomingReferralCode && /^[A-Za-z0-9_-]{4,40}$/.test(incomingReferralCode)){
@@ -3051,6 +3051,100 @@ const AC=(()=>{
  sync();setInterval(sync,700);
  /* only paid accounts can install */
  document.addEventListener('click',e=>{if(!e.target.closest('#inst'))return;const c=AC.cur();if(c&&c.paid)return;e.preventDefault();e.stopImmediatePropagation();openCart(c?'acct':'auth')},true);
+})();
+</script>
+<style id="motion-fx">
+/* ══ MOTION: liquid nav pill, page transitions, dynamic scroll ═══════════ */
+html{scroll-behavior:auto!important}
+.links{position:relative}
+#navBlob{position:absolute;left:0;top:0;width:0;height:0;border-radius:99px;z-index:0;pointer-events:none;opacity:0;transition:opacity .25s;
+ background:linear-gradient(135deg,rgba(52,211,153,.58),rgba(20,184,166,.34) 60%,rgba(110,231,183,.46));
+ box-shadow:0 0 20px rgba(52,211,153,.55),inset 0 0 0 1.5px rgba(190,255,225,.95),inset 0 1px 0 rgba(255,255,255,.45)}
+nav a.l{z-index:1}
+nav a.l.on{background:transparent!important;box-shadow:none!important}
+nav a.l.on::before{opacity:0!important}
+/* page transition layer */
+#ptx{position:fixed;inset:0;z-index:15;pointer-events:none;visibility:hidden}
+#ptx.run{visibility:visible}
+#ptx .pn{position:absolute;inset:0;clip-path:inset(0 100% 0 0);
+ background:repeating-linear-gradient(90deg,rgba(255,255,255,.05) 0 1px,transparent 1px 64px),radial-gradient(60vmax 40vmax at 50% 50%,rgba(16,185,129,.28),transparent 70%),linear-gradient(120deg,#010a07,#03261c 55%,#021a13)}
+#ptx .bm{position:absolute;top:0;bottom:0;left:0;width:3px;margin-left:-1px;background:#fff;box-shadow:0 0 24px 6px rgba(255,255,255,.55),0 0 90px 28px rgba(52,211,153,.55)}
+#ptx .rg{position:absolute;width:40px;height:40px;margin:-20px 0 0 -20px;border-radius:50%;border:2px solid #fff;box-shadow:0 0 30px rgba(52,211,153,.9),inset 0 0 20px rgba(52,211,153,.6)}
+.page.ptin>*{animation:ptRise .75s cubic-bezier(.2,.8,.2,1) both;animation-delay:calc(var(--k,0)*60ms)}
+@keyframes ptRise{from{opacity:0;transform:translateY(28px) scale(.985);filter:blur(10px)}}
+/* header icons: cart and account open with a holographic unfold + ripple */
+.dro .drw{animation:dwHolo .6s cubic-bezier(.2,.8,.2,1) both}
+@keyframes dwHolo{from{clip-path:circle(0 at 100% 0);opacity:.2;filter:blur(10px)}to{clip-path:circle(150% at 100% 0);opacity:1;filter:blur(0)}}
+.hrip{position:fixed;z-index:60;width:30px;height:30px;margin:-15px 0 0 -15px;border-radius:50%;border:2px solid #fff;pointer-events:none;box-shadow:0 0 24px rgba(52,211,153,.9);animation:hrip .8s ease-out forwards}
+@keyframes hrip{to{transform:scale(11);opacity:0}}
+/* scroll progress line */
+#spb{position:fixed;left:0;top:0;height:3px;width:100%;z-index:40;transform-origin:0 50%;transform:scaleX(0);pointer-events:none;background:linear-gradient(90deg,#34d399,#fff);box-shadow:0 0 12px rgba(255,255,255,.6)}
+@media(prefers-reduced-motion:reduce){#navBlob,#ptx,#spb,.hrip{display:none}.dro .drw,.page.ptin>*{animation:none}}
+</style>
+<script id="motion-fx-js">
+(function(){
+const R=matchMedia('(prefers-reduced-motion:reduce)').matches;
+const links=document.querySelector('nav .links');
+/* ── liquid pill: stretches toward the target tab, then settles (water / venom feel) ── */
+const Blob=(()=>{if(!links)return{sync(){}};
+ const b=document.createElement('div');b.id='navBlob';links.prepend(b);let cur=null;
+ const rect=a=>({l:a.offsetLeft,t:a.offsetTop,w:a.offsetWidth,h:a.offsetHeight}),px=o=>({left:o.l+'px',top:o.t+'px',width:o.w+'px',height:o.h+'px'});
+ const set=o=>{Object.assign(b.style,px(o))};
+ function sync(h,anim){const a=links.querySelector('a.l[href="#'+h+'"]');
+  if(!a||!a.offsetWidth){b.style.opacity=0;cur=null;return}
+  const r=rect(a);b.style.opacity=1;
+  if(!cur||!anim||R){b.getAnimations().forEach(x=>x.cancel());set(r);cur=r;return}
+  const L=Math.min(cur.l,r.l),T=Math.min(cur.t,r.t),mid={l:L,t:T,w:Math.max(cur.l+cur.w,r.l+r.w)-L,h:Math.max(cur.t+cur.h,r.t+r.h)-T};
+  const an=b.animate([px(cur),px(mid),px(r)],{duration:640,easing:'cubic-bezier(.65,0,.25,1)',offset:[0,.45,1]});
+  set(r);cur=r;an.onfinish=()=>an.cancel()}
+ const now=()=>{const h=location.hash.slice(1);return document.getElementById('p-'+h)?h:'info'};
+ const fit=()=>sync(now(),false);addEventListener('resize',fit);addEventListener('devicechange',fit);
+ (document.fonts&&document.fonts.ready||Promise.resolve()).then(()=>setTimeout(fit,50));setTimeout(fit,400);
+ return{sync}})();
+/* ── page transitions: shutter-wipe between main tabs, iris from the icon for Catalog / Referrals ── */
+const MAIN=['info','privacy','features','pricing','apk','faq','contact'],IRIS=['catalog','referrals'];
+const ov=document.createElement('div');ov.id='ptx';ov.innerHTML='<div class="pn"></div><i class="bm"></i>';document.body.append(ov);
+const pn=ov.firstChild,bm=ov.lastChild;let busy=false,ox=innerWidth-60,oy=30;
+document.addEventListener('pointerdown',e=>{ox=e.clientX;oy=e.clientY},true);
+const hashNow=()=>{const h=location.hash.slice(1);return document.getElementById('p-'+h)?h:'info'},curPage=()=>{const p=document.querySelector('.page.on');return p?p.id.slice(2):'info'};
+function mark(){const p=document.querySelector('.page.on');if(p){[...p.children].forEach((c,i)=>c.style.setProperty('--k',Math.min(i,8)));p.classList.add('ptin');setTimeout(()=>p.classList.remove('ptin'),1200)}window.__scrollSync&&window.__scrollSync()}
+async function go(fn){
+ const to=hashNow(),from=curPage();
+ Blob.sync(to,!busy&&!R&&to!==from);
+ if(R||busy||to===from){fn();return}
+ busy=true;ov.classList.add('run');
+ const iris=IRIS.includes(to)||IRIS.includes(from),i1=MAIN.indexOf(to),i0=MAIN.indexOf(from),f=!(i1>-1&&i0>-1&&i1<i0);
+ try{
+  if(!iris){const D=320,e='cubic-bezier(.7,0,.3,1)',o={duration:D,easing:e,fill:'both'};
+   const bem=(a,z)=>bm.animate([{left:a},{left:z}],o).finished;
+   await Promise.all([pn.animate([{clipPath:f?'inset(0 100% 0 0)':'inset(0 0 0 100%)'},{clipPath:'inset(0 0 0 0)'}],o).finished,bem(f?'0%':'100%',f?'100%':'0%')]);
+   fn();mark();
+   await Promise.all([pn.animate([{clipPath:'inset(0 0 0 0)'},{clipPath:f?'inset(0 0 0 100%)':'inset(0 100% 0 0)'}],o).finished,bem(f?'0%':'100%',f?'100%':'0%')]);
+  }else{bm.style.opacity=0;
+   const rg=document.createElement('i');rg.className='rg';rg.style.left=ox+'px';rg.style.top=oy+'px';ov.append(rg);
+   rg.animate([{transform:'scale(0)',opacity:1},{transform:'scale(40)',opacity:0}],{duration:700,easing:'ease-out'}).onfinish=()=>rg.remove();
+   await pn.animate([{clipPath:`circle(0px at ${ox}px ${oy}px)`},{clipPath:`circle(150vmax at ${ox}px ${oy}px)`}],{duration:460,easing:'cubic-bezier(.6,0,.2,1)',fill:'forwards'}).finished;
+   fn();mark();
+   await pn.animate([{opacity:1,filter:'blur(0)',transform:'scale(1)'},{opacity:0,filter:'blur(16px)',transform:'scale(1.08)'}],{duration:460,easing:'ease-out',fill:'forwards'}).finished;
+  }
+ }catch(e){fn()}
+ pn.getAnimations().concat(bm.getAnimations()).forEach(a=>a.cancel());bm.style.opacity='';ov.classList.remove('run');busy=false}
+window.__ptGo=go;
+/* cart / account: ripple from the button */
+document.addEventListener('click',e=>{const b=e.target.closest('#cartb,#acctb');if(!b||R)return;const r=b.getBoundingClientRect(),d=document.createElement('i');d.className='hrip';d.style.left=(r.left+r.width/2)+'px';d.style.top=(r.top+r.height/2)+'px';document.body.append(d);setTimeout(()=>d.remove(),900)},true);
+/* ── dynamic scroll: eased, inertial wheel scrolling on desktop + progress line ── */
+const bar=document.createElement('div');bar.id='spb';document.body.append(bar);
+const root=document.documentElement;let target=scrollY,pos=scrollY,raf=0,last=0;
+const prog=()=>{const m=root.scrollHeight-innerHeight;bar.style.transform='scaleX('+(m>0?Math.min(1,scrollY/m):0)+')'};
+addEventListener('scroll',()=>{prog();if(!raf){target=scrollY;pos=scrollY}},{passive:true});addEventListener('resize',prog);prog();
+window.__scrollSync=()=>{target=pos=scrollY;prog()};
+if(!R&&!matchMedia('(pointer:coarse)').matches){
+ const inner=el=>{while(el&&el!==document.body&&el!==root){if(el.nodeType===1){const s=getComputedStyle(el);if(/(auto|scroll)/.test(s.overflowY)&&el.scrollHeight>el.clientHeight+1)return true}el=el.parentElement}return false};
+ const tick=t=>{const dt=Math.min(.05,(t-last)/1000);last=t;pos+=(target-pos)*(1-Math.exp(-dt*9));scrollTo(0,pos);
+  if(Math.abs(target-pos)<.5){scrollTo(0,target);raf=0;return}raf=requestAnimationFrame(tick)};
+ addEventListener('wheel',e=>{if(e.ctrlKey||e.defaultPrevented||inner(e.target)||document.querySelector('.dro')||root.classList.contains('intro-on'))return;
+  e.preventDefault();const m=root.scrollHeight-innerHeight,d=e.deltaMode===1?e.deltaY*32:e.deltaMode===2?e.deltaY*innerHeight:e.deltaY;
+  target=Math.max(0,Math.min(m,(raf?target:scrollY)+d*1.1));if(!raf){pos=scrollY;last=performance.now();raf=requestAnimationFrame(tick)}},{passive:false})}
 })();
 </script>
 </body></html>
