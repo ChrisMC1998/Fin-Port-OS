@@ -1891,6 +1891,42 @@ header,footer,.toast,#cartb,.cartb,#p-catalog .ct-jump,#p-catalog .ct-act,#p-cat
   :root:not([data-theme="dark"]) .hero h1 .h1-w{color:#022c22;text-shadow:none;background:linear-gradient(90deg,#10b981,#34d399) 0 94%/100% .075em no-repeat}
 }
 </style>
+<style id="mobile-motion-fix">
+/* ══ MOBILE / TABLET PARITY ═══════════════════════════════════════════════
+   Root cause: the motion layer set .links{position:relative} for the liquid pill, which overrode the
+   phone/tablet bottom tab bar (position:fixed), so the bar collapsed and sat off-screen and the tabs could not be tapped.
+   Phones and tablets keep the fixed bar; the pill, page transitions and iris all run inside it. */
+@media(max-width:1024px){
+  header .links,.links{position:fixed;left:0;right:0;bottom:0;width:auto;z-index:50}
+  #navBlob{border-radius:14px;box-shadow:0 0 14px rgba(52,211,153,.55),inset 0 0 0 1.5px rgba(190,255,225,.9),inset 0 1px 0 rgba(255,255,255,.45)}
+  .links a.l{position:relative;z-index:1;-webkit-tap-highlight-color:transparent;touch-action:manipulation}
+  .links a.l.on{background:transparent!important;box-shadow:none!important}
+  /* page transition layer sits under the header and the tab bar, over the page */
+  #ptx{z-index:15;height:100vh;height:100dvh}
+  #ptx .pn{will-change:clip-path}
+  #spb{top:env(safe-area-inset-top,0px);z-index:60}
+  /* smoother, cheaper rise-in on phones */
+  .page.ptin>*{animation-duration:.6s}
+  @keyframes ptRise{from{opacity:0;transform:translateY(22px) scale(.985);filter:blur(6px)}}
+}
+@media(max-width:1024px) and (prefers-reduced-motion:no-preference){
+  .page{will-change:auto}
+}
+html{overscroll-behavior-y:none}
+/* header fits every phone width: four icon buttons + logo on one row */
+@media(max-width:440px){
+  header .wrap{gap:6px;padding-left:max(12px,env(safe-area-inset-left,0px));padding-right:max(12px,env(safe-area-inset-right,0px))}
+  header .logo{font-size:1.1rem;gap:6px;min-width:0;flex:0 1 auto}
+  header .logo svg{width:30px;height:30px;flex:none}
+  header .ref-head-link,header .cartb{width:38px;height:38px;border-radius:11px;flex:none}
+  header .ref-head-link svg,header .cartb svg{width:19px;height:19px}
+}
+@media(max-width:340px){
+  header .wrap{gap:4px;padding-left:8px;padding-right:8px}
+  header .logo{font-size:1rem}
+  header .ref-head-link,header .cartb{width:34px;height:34px}
+}
+</style>
 </head><body>
 <div id="intro" role="dialog" aria-label="Welcome to FinanceOS">
   <div class="ia-mark" id="ia-mark"><span class="ia-glow"></span><span class="ia-ring"></span><svg id="intro-logo" viewBox="0 0 64 64" role="img" aria-label="FinanceOS"><use href="#fos-logo"/></svg></div>
