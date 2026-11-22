@@ -2447,7 +2447,7 @@ function installBlock(){const ua=navigator.userAgent,ios=/iphone|ipad|ipod/i.tes
  const st=ios?['Tap Open FinanceOS below. Use Safari on iPhone and iPad.','Tap the Share button.','Choose Add to Home Screen, then Add.']:[tap+' Open FinanceOS below.',tap+' the Install button that appears at the bottom of the app.','Confirm, and FinanceOS is added to your '+(and?'home screen':'desktop and app list')+'.'];
  return `<div class="inst-s"><h4>Install FinanceOS on your ${dev}</h4><ol class="steps">${st.map(x=>`<li>${x}</li>`).join('')}</ol><div class="nx"><a class="btn" href="${APP}?install=1" target="_blank" rel="noopener">Open FinanceOS</a></div><p class="lead" style="font-size:.82rem;margin:8px 0 0">Works on Android, iPhone, iPad, Windows, Mac and Linux.</p></div>`}
 
-function openCart(mode,pre,bl){let m=cart.order?'done':mode||'cart',sp=pre==='Pro'?'Pro':null,sb=bl||'m',tm=0,qi=0,qseed=Math.floor(Math.random()*1e9),agree=false;
+function openCart(mode,pre,bl){let m=(mode==='auth'||mode==='acct')?mode:cart.order?'done':mode||'cart',sp=pre==='Pro'?'Pro':null,sb=bl||'m',tm=0,qi=0,qseed=Math.floor(Math.random()*1e9),agree=false;
  const prevOv=document.documentElement.style.overflow;
  const o=document.createElement('div');o.className='dro';o.innerHTML='<div class="drw" role="dialog" aria-modal="true" aria-label="Checkout" tabindex="-1"></div>';const w=o.firstChild;
  const stop=()=>{clearTimeout(tm);clearInterval(qi)};
@@ -2470,17 +2470,18 @@ function openCart(mode,pre,bl){let m=cart.order?'done':mode||'cart',sp=pre==='Pr
   if(cart.method==='upi')return `<div class="ckf">${fld('upi','UPI ID',inp('upi','autocomplete="off" autocapitalize="off" spellcheck="false" placeholder="name@bank"',cart.upi),1)}</div><p class="lead" style="font-size:.86rem;margin:10px 0 0">You will get a payment request in your UPI app. Approve it to finish.</p>`;
   return `<div class="qrbox">${qrSvg(qseed)}<b>${fm(payable(cart.items))}</b><p>Scan with any UPI app to pay. This code expires in <span class="qrt" id="qrt">5:00</span></p><button class="btn o sm" data-a="qrnew">Refresh code</button></div>`};
  const draw=()=>{stop();
+  if(m==='auth'||m==='acct'){w.innerHTML=AC.view(m,hd);const f=$('[data-au]',w);if(f&&m==='auth')f.focus();return}
   if(m==='done'){const r=cart.order;w.innerHTML=hd('Order confirmed')+`<div class="okmark">${I.ok}</div><h3 style="text-align:center">Thank you, ${esc(r.cust.name.split(' ')[0])}.</h3><p class="lead" style="text-align:center;margin:8px auto 0">Your order <b>${r.id}</b> is confirmed. Paid by ${r.method}. No money was charged in this demo.</p>
-   <div class="card" style="margin:18px 0 0">${r.items.map(i=>`<div class="tx"><span>FinanceOS Pro<small>${per(i.b)}, ${i.q} account${i.q>1?'s':''}</small></span><b>${fm(lp(i))}</b></div>`).join('')}${brk(r.items,r.coupon)}<div class="tx"><span>Billed to<small>${esc(r.cust.email)} &middot; ${esc(r.cust.city)}</small></span><b>${esc(r.cust.name)}</b></div></div>${installBlock()}<div class="ck-act"><button class="btn" data-a="x">Done</button></div>`;return}
+   <div class="card" style="margin:18px 0 0">${r.items.map(i=>`<div class="tx"><span>FinanceOS Pro<small>${per(i.b)}, ${i.q} account${i.q>1?'s':''}</small></span><b>${fm(lp(i))}</b></div>`).join('')}${brk(r.items,r.coupon)}<div class="tx"><span>Billed to<small>${esc(r.cust.email)} &middot; ${esc(r.cust.city)}</small></span><b>${esc(r.cust.name)}</b></div></div>${AC.doneNote()}${installBlock()}<div class="ck-act"><button class="btn" data-a="x">Done</button></div>`;return}
   if(m==='proc'){w.innerHTML=hd('Processing')+`<div class="proc"><div class="spin"></div><h3 id="pt">Contacting your bank</h3><p class="lead" style="margin:8px auto 0">Please do not close this panel.</p></div>`;
    tm=setTimeout(()=>{const t=$('#pt',w);if(t)t.textContent='Confirming payment'},900);
    tm=setTimeout(()=>{const lab=cart.method==='card'?'card ending '+cart.card.num.replace(/\D/g,'').slice(-4):cart.method==='upi'?'UPI':'QR code';
-    cart.order={id:'FOS-'+Math.floor(100000+Math.random()*900000),items:cart.items.map(i=>({...i})),total:payable(cart.items),coupon:cart.coupon?{...cart.coupon}:null,cust:{name:C.name.trim(),email:C.email.trim(),city:C.city.trim()},method:lab};
+    cart.order={id:'FOS-'+Math.floor(100000+Math.random()*900000),items:cart.items.map(i=>({...i})),total:payable(cart.items),coupon:cart.coupon?{...cart.coupon}:null,cust:{name:C.name.trim(),email:C.email.trim(),city:C.city.trim()},method:lab,acct:(AC.cur()||{}).email||''};AC.record(cart.order);
     cart.items=[];cart.coupon=null;cart.cpTxt='';cart.cpErr='';cart.card={num:'',name:'',exp:'',cvv:''};cart.upi='';m='done';cartBadge();draw()},1900);return}
   if(m==='pick'){w.innerHTML=hd('Choose your version')+`<button class="op" disabled><span><b>Starter</b><small class="oos">Out of stock for now</small></span><b>${fm(P[0][1])}/mo</b></button><button class="op ${sp==='Pro'?'on':''}" data-p="Pro"><span><b>Pro</b><small>Portfolio OS, Fin AI, alerts, PDF export</small></span><b>${fm(P[1][1])}/mo</b></button><div class="seg" style="margin-top:14px"><button data-b="m" class="${sb==='m'?'on':''}">Monthly</button><button data-b="y" class="${sb==='y'?'on':''}">Yearly (2 months free)</button></div>${deal(sb,sp)}<div class="tx"><span>Price</span><b>${sp?fm(unit(sb))+(sb==='m'?' /month':' /year'):'Select a version'}</b></div><button class="btn" id="add" ${sp?'':'disabled'} style="width:100%;margin-top:16px">Add to cart</button>`;return}
   if(m==='info'){w.innerHTML=hd('Your details')+steps(1)+summary(false)+`<div class="ckf">
    ${fld('name','Full name',inp('name','autocomplete="name" maxlength="80" placeholder="Your full name"',C.name),1)}
-   ${fld('email','Email address',inp('email','type="email" autocomplete="email" maxlength="120" placeholder="you@example.com"',C.email),1)}
+   ${fld('email','Email address',inp('email','type="email" autocomplete="email" maxlength="120" readonly placeholder="you@example.com"',C.email),1)}
    ${fld('phone','Mobile number',`<div class="pfx"><span>+91</span>${inp('phone','type="tel" inputmode="numeric" autocomplete="tel-national" maxlength="14" placeholder="98765 43210"',C.phone)}</div>`,1)}
    ${fld('a1','Address line 1',inp('a1','autocomplete="address-line1" maxlength="120" placeholder="House no., building, street"',C.a1),1)}
    <div class="fld full"><label for="ck-a2">Address line 2 <span style="font-weight:400;opacity:.8">(optional)</span></label>${inp('a2','autocomplete="address-line2" maxlength="120" placeholder="Area, landmark"',C.a2)}</div>
@@ -2507,6 +2508,7 @@ function openCart(mode,pre,bl){let m=cart.order?'done':mode||'cart',sp=pre==='Pr
   else C[f]=v;
   const fl=t.closest('.fld');if(fl&&fl.classList.contains('err')&&VAL[f]&&VAL[f](v))fl.classList.remove('err')});
  o.addEventListener('change',e=>{if(e.target.dataset&&e.target.dataset.f==='state'){C.state=e.target.value;mark('state',!C.state)}if(e.target.hasAttribute&&e.target.hasAttribute('data-agree')){agree=e.target.checked;const f=$('[data-fld="agree"]',w);if(f&&agree)f.classList.remove('err')}});
+ o.addEventListener('keydown',e=>{if(e.key==='Enter'&&e.target.closest&&e.target.closest('[data-au]')){const g=$('[data-a="auGo"]',w);if(g)g.click()}});
  o.onclick=e=>{const t=e.target,p=t.closest('[data-p]'),bb=t.closest('[data-b]'),qb=t.closest('[data-q]'),rb=t.closest('[data-r]'),ab=t.closest('[data-a]'),pm=t.closest('[data-pm]');
   if(t===o||t.classList.contains('rx'))return x();
   if(t.closest('[data-nav]'))return x();
@@ -2516,8 +2518,11 @@ function openCart(mode,pre,bl){let m=cart.order?'done':mode||'cart',sp=pre==='Pr
    if(a==='qrnew'){qseed=Math.floor(Math.random()*1e9);draw();return}
    if(a==='applyCoupon'){const el=$('#ck-coupon',w),code=(el?el.value:'').trim().toUpperCase();cart.cpTxt=code;if(!code)cart.cpErr='Enter a coupon code';else if(COUPONS[code]){cart.coupon={code,pct:COUPONS[code]};cart.cpErr='';cart.cpTxt=''}else cart.cpErr='That code is not valid. Check it and try again.';const st=w.scrollTop;draw();w.scrollTop=st;return}
 if(a==='rmCoupon'){cart.coupon=null;cart.cpErr='';const st=w.scrollTop;draw();w.scrollTop=st;return}
-if(a==='toCart')m='cart';
-   else if(a==='toInfo')m=cart.items.length?'info':'cart';
+if(a==='auSwitch'){e.preventDefault();AC.ui.tab=AC.ui.tab==='up'?'in':'up';AC.ui.err='';draw();return}
+   if(a==='auOut'){AC.logOut();AC.ui.err='';m='auth';draw();return}
+   if(a==='auGo'){AC.submit(w).then(ok=>{if(ok){const c=AC.cur();C.email=c.email;if(!C.name)C.name=c.name;m=cart.items.length?'info':'acct'}draw()});return}
+   if(a==='toCart')m='cart';
+   else if(a==='toInfo'){if(!cart.items.length)m='cart';else if(!AC.cur())m='auth';else{const c=AC.cur();C.email=c.email;if(!C.name)C.name=c.name;m='info'}}
    else if(a==='toPay'){if(!check(['name','email','phone','a1','city','pin','state']))return;m='pay'}
    else if(a==='pay'){const ids=cart.method==='card'?['cnum','cname','cexp','ccvv']:cart.method==='upi'?['upi']:[];const ok=check(ids);
     if(!agree){const f=$('[data-fld="agree"]',w);f.classList.add('err');if(ok)f.scrollIntoView({block:'center',behavior:'smooth'});return}
@@ -3001,5 +3006,51 @@ if(!R)pg.querySelectorAll('.ct-tgrid').forEach(g=>{
  g.addEventListener('pointermove',e=>{if(e.pointerType!=='mouse')return;const t=e.target.closest('.ct-tilt');g.querySelectorAll('.ct-tilt').forEach(o=>{if(o!==t)o.style.transform=''});if(!t)return;const r=t.getBoundingClientRect(),x=(e.clientX-r.left)/r.width,y=(e.clientY-r.top)/r.height;t.style.transform='rotateX('+((.5-y)*5)+'deg) rotateY('+((x-.5)*6)+'deg) translateY(-3px)'});
  g.addEventListener('pointerleave',()=>g.querySelectorAll('.ct-tilt').forEach(o=>{o.style.transform=''}))});
 }catch(e){console.error(e)}})();
+</script>
+<script id="acct-ui">
+/* ══ ACCOUNTS — TEMPORARY ON-DEVICE DEMO ═════════════════════════════════
+   Everything below keeps accounts in THIS browser only (localStorage), so it
+   is for testing the flow, not real security. To go live, replace the five
+   AC.* functions marked "SWAP" with Supabase calls (auth.signUp,
+   auth.signInWithPassword, auth.signOut, a purchases insert, a profile read).
+   The screens and checkout logic stay exactly as they are. */
+const AC=(()=>{
+ const K='fos_acct_users',S='fos_acct_session',ui={tab:'up',err:'',name:'',email:''};
+ const rd=()=>{try{return JSON.parse(localStorage.getItem(K)||'{}')}catch(e){return{}}},wr=u=>{try{localStorage.setItem(K,JSON.stringify(u))}catch(e){}};
+ const hash=async(pw,salt)=>{const t=salt+':'+pw;if(window.crypto&&crypto.subtle){const d=await crypto.subtle.digest('SHA-256',new TextEncoder().encode(t));return[...new Uint8Array(d)].map(x=>x.toString(16).padStart(2,'0')).join('')}let h=5381;for(const c of t)h=(h*33^c.charCodeAt(0))>>>0;return'f'+h};
+ const em=v=>/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(v);
+ const cur=()=>{try{const u=rd()[localStorage.getItem(S)];return u?{name:u.name,email:u.email,paid:!!u.paid,plan:u.plan||'',orders:u.orders||[]}:null}catch(e){return null}};   /* SWAP: read session + profile */
+ const signUp=async(name,email,pw)=>{const U=rd();if(U[email])return'An account with this email already exists. Log in instead.';const salt=Math.random().toString(36).slice(2);U[email]={name,email,salt,hash:await hash(pw,salt),created:Date.now(),paid:false,plan:'',orders:[]};wr(U);localStorage.setItem(S,email);return''};   /* SWAP: supabase.auth.signUp */
+ const logIn=async(email,pw)=>{const u=rd()[email];if(!u||u.hash!==await hash(pw,u.salt))return'Email or password is not right.';localStorage.setItem(S,email);return''};   /* SWAP: signInWithPassword */
+ const logOut=()=>{try{localStorage.removeItem(S)}catch(e){}};   /* SWAP: auth.signOut */
+ const record=o=>{const U=rd(),u=U[o.acct];if(!u)return;u.paid=true;u.plan='Pro';u.orders.push({id:o.id,total:o.total,date:Date.now(),method:o.method});wr(U)};   /* SWAP: insert purchase row; the server marks the account paid */
+ const submit=async w=>{const g=i=>((w.querySelector('#'+i)||{}).value||'').trim(),name=g('au-name'),email=g('au-email').toLowerCase();ui.name=name;ui.email=email;const pw=(w.querySelector('#au-pw')||{}).value||'';
+  if(ui.tab==='up'&&name.length<2)return ui.err='Enter your full name.',false;
+  if(!em(email))return ui.err='Enter a valid email address.',false;
+  if(ui.tab==='up'&&pw.length<8)return ui.err='Use at least 8 characters for the password.',false;
+  if(!pw)return ui.err='Enter your password.',false;
+  ui.err=ui.tab==='up'?await signUp(name,email,pw):await logIn(email,pw);return!ui.err};
+ const F=(id,l,t,ph,ac,v)=>`<div class="fld full" style="margin-bottom:12px"><label for="${id}">${l}</label><input class="si" id="${id}" type="${t}" placeholder="${ph}" autocomplete="${ac}" data-au maxlength="120" value="${esc(v||'')}"></div>`;
+ const view=(m,hd)=>{const c=cur();
+  if(m==='acct'&&c)return hd('Your account')+`<div class="card"><div class="tx"><span>Name</span><b>${esc(c.name)}</b></div><div class="tx"><span>Email</span><b>${esc(c.email)}</b></div><div class="tx"><span>Plan</span><b>${c.paid?'FinanceOS Pro, active':'No plan yet'}</b></div></div>`+
+   (c.paid?`<div class="nx" style="margin-top:14px"><a class="btn" href="${APP}?install=1" target="_blank" rel="noopener">Open FinanceOS</a></div><p class="lead" style="font-size:.86rem;margin:10px 0 0">Sign in to the app with this same email and password.</p>`:`<p class="lead" style="font-size:.9rem;margin:14px 0 0">The app unlocks after your first payment on this account.</p><div class="nx" style="margin-top:12px"><a class="btn" href="#pricing" data-nav>Choose a plan</a></div>`)+`<div class="nx" style="margin-top:10px"><button class="btn o sm" data-a="auOut">Log out</button></div>`;
+  const up=ui.tab==='up';
+  return hd(up?'Create your account':'Log in')+`<p class="lead" style="font-size:.92rem;margin:0 0 14px">${up?'One account per email. Your purchase is saved to this account, and you use the same email and password to sign in to the app.':'Use the email and password you signed up with.'}</p>`+
+   (up?F('au-name','Full name','text','Your full name','name',ui.name):'')+F('au-email','Email address','email','you@example.com','email',ui.email)+F('au-pw','Password','password',up?'At least 8 characters':'Your password',up?'new-password':'current-password')+
+   (ui.err?`<p class="cp-msg bad" role="alert">${esc(ui.err)}</p>`:'')+`<div class="nx" style="margin-top:6px"><button class="btn" data-a="auGo">${up?'Create account and continue':'Log in and continue'}</button></div><p class="lead" style="font-size:.9rem;margin:14px 0 0">${up?'Already have an account?':'New here?'} <a href="#" data-a="auSwitch" style="color:var(--em2)">${up?'Log in':'Create an account'}</a></p>`};
+ const doneNote=()=>{const c=cur();return c?`<div class="card" style="margin:14px 0 0"><h4 style="margin:0 0 6px">Your account is ready</h4><p class="lead" style="font-size:.9rem;margin:0">Pro is now active on <b>${esc(c.email)}</b>. Sign in to the app with this same email and password.</p></div>`:''};
+ return{ui,cur,signUp,logIn,logOut,record,submit,view,doneNote};
+})();
+/* header account button (next to the cart) */
+(function(){const cb=document.getElementById('cartb');if(!cb)return;
+ cb.insertAdjacentHTML('beforebegin','<button class="cartb" id="acctb" type="button" aria-label="Account"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="8" r="3.6"/><path d="M4.5 20a7.5 7.5 0 0115 0"/></svg></button>');
+ const b=document.getElementById('acctb');b.onclick=()=>openCart(AC.cur()?'acct':'auth');
+ const apk=document.querySelector('#p-apk .nx');if(apk)apk.insertAdjacentHTML('afterend','<p class="lead" id="apkAcct" style="font-size:.9rem;margin-top:12px"></p>');
+ const sync=()=>{const c=AC.cur();b.title=c?'Signed in as '+c.email:'Log in or create an account';b.style.borderColor=c?'#34d399':'';
+  const a=document.getElementById('apkAcct');if(a)a.textContent=c?(c.paid?'Signed in as '+c.email+'. Pro is active, you can install.':'Signed in as '+c.email+'. Choose a plan to unlock the app.'):'The app is for paying members. Create an account, then choose a plan.'};
+ sync();setInterval(sync,700);
+ /* only paid accounts can install */
+ document.addEventListener('click',e=>{if(!e.target.closest('#inst'))return;const c=AC.cur();if(c&&c.paid)return;e.preventDefault();e.stopImmediatePropagation();openCart(c?'acct':'auth')},true);
+})();
 </script>
 </body></html>
