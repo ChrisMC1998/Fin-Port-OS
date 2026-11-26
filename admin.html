@@ -5,6 +5,14 @@
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="robots" content="noindex,nofollow">
 <title>FinanceOS Command Center</title>
+<meta name="theme-color" content="#04110d">
+<link rel="manifest" href="admin.webmanifest">
+<link rel="icon" type="image/png" href="admin-icon-192.png">
+<link rel="apple-touch-icon" href="admin-icon-192.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="FOS Admin">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@500;700;800&family=DM+Sans:wght@400;500;700&display=swap" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js"></script>
@@ -106,6 +114,39 @@ td small{display:block;color:var(--mu);font-size:.8rem}
  table.rsp td .acts-c{justify-content:flex-end}
  table.rsp td small{text-align:right}
 }
+
+/* v2 additions */
+.pick{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:8px;margin-top:8px}
+.pick label{position:relative;display:grid;gap:2px;padding:12px;border-radius:13px;border:1.5px solid var(--line);background:var(--bg2);cursor:pointer;min-height:64px}
+.pick label:hover{border-color:var(--em2)}
+.pick input{position:absolute;opacity:0;pointer-events:none}
+.pick label:has(input:checked){border-color:var(--em2);background:rgba(16,185,129,.14);box-shadow:0 0 0 3px rgba(52,211,153,.15)}
+.pick label:has(input:focus-visible){outline:2px solid var(--em2);outline-offset:2px}
+.pick b{font-size:.98rem}.pick small{color:var(--mu);font-size:.8rem}
+.pick label.on{border-color:var(--em2);background:rgba(16,185,129,.14)}
+.step{display:flex;align-items:center;gap:8px;font:700 .92rem "DM Sans";margin-top:16px}
+.step i{width:22px;height:22px;border-radius:50%;display:grid;place-items:center;background:var(--em);color:var(--ink);font:700 .75rem "DM Sans";font-style:normal;flex:none}
+.sum{margin-top:16px;padding:12px 14px;border-radius:12px;background:rgba(16,185,129,.1);border:1px dashed var(--em2);font-size:.9rem}
+.sum b{color:var(--em2)}
+.row2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+@media(max-width:520px){.row2{grid-template-columns:1fr}}
+.bulk{position:sticky;bottom:12px;z-index:15;display:flex;gap:8px;align-items:center;flex-wrap:wrap;justify-content:space-between;padding:10px 14px;border-radius:14px;background:var(--card2);border:1px solid var(--em2);box-shadow:0 10px 30px rgba(0,0,0,.3);margin-top:12px}
+.cb{width:18px;height:18px;accent-color:var(--em);cursor:pointer}
+td.c0,th.c0{width:34px;padding-right:0}
+.qa{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:10px}
+.qa button{display:grid;gap:2px;text-align:left;padding:14px;border-radius:14px;border:1px solid var(--line);background:var(--bg2);cursor:pointer;color:var(--tx)}
+.qa button:hover{border-color:var(--em2)}.qa b{font-size:.95rem}.qa small{color:var(--mu);font-size:.8rem}
+.meter{height:8px;border-radius:99px;background:var(--bg2);overflow:hidden;margin-top:6px}.meter i{display:block;height:100%;background:var(--em)}
+details.help{margin-top:4px}details.help summary{cursor:pointer;color:var(--em2);font-weight:600;font-size:.9rem}
+details.help ol{margin:10px 0 0 18px;display:grid;gap:6px;font-size:.9rem;color:var(--mu)}
+details.help ol b{color:var(--tx)}
+.tog{display:flex;gap:10px;align-items:center;font-size:.9rem;margin-top:10px;cursor:pointer}.tog input{width:18px;height:18px;accent-color:var(--em)}
+.danger{border-color:rgba(248,113,113,.45)!important}
+.inst{background:linear-gradient(135deg,var(--em2),var(--em));color:var(--ink);border:0}
+.plan-ed .in{max-width:100%}
+textarea.in{resize:vertical;min-height:70px}
+.kpi small,.li small{overflow-wrap:anywhere}
+@media(max-width:860px){.side .inst{display:none}.mtop.inst{display:flex}}
 </style>
 </head>
 <body>
@@ -121,6 +162,7 @@ td small{display:block;color:var(--mu);font-size:.8rem}
    <button class="btn" style="width:100%;margin-top:18px" id="lb">Sign in</button>
    <p class="err" id="lerr" role="alert"></p>
   </form>
+  <button class="btn o sm inst hide" id="inst0" style="width:100%;margin-top:6px" type="button">Install Command Center as an app</button>
  </div>
 </section>
 
@@ -128,8 +170,9 @@ td small{display:block;color:var(--mu);font-size:.8rem}
 <div class="app hide" id="app">
  <aside class="side">
   <div class="logo"><i>F</i><span>Finance<b>OS</b></span></div>
-  <nav class="nav" id="nav"></nav>
-  <div class="me"><span id="meE"></span><button class="btn o sm" id="out">Sign out</button></div>
+  <nav class="nav" id="nav" aria-label="Sections"></nav>
+  <div class="me"><button class="btn sm inst hide" id="inst1" type="button">Install as app</button><span id="meE"></span><button class="btn o sm" id="out">Sign out</button></div>
+  <button class="btn sm mtop inst hide" id="inst2" type="button" aria-label="Install as app">Install</button>
   <button class="btn o sm mtop" id="out2" aria-label="Sign out">Sign out</button>
  </aside>
  <main>
@@ -151,25 +194,41 @@ const dt=t=>t?new Date(t).toLocaleDateString('en-IN',{day:'numeric',month:'short
 const dtt=t=>t?new Date(t).toLocaleString('en-IN',{day:'numeric',month:'short',hour:'numeric',minute:'2-digit',timeZone:TZ}):'–';
 const DAY=864e5,daysTo=t=>Math.ceil((new Date(t)-Date.now())/DAY);
 const ago=t=>{if(!t)return 'never';const m=Math.round((Date.now()-new Date(t))/6e4);return m<1?'just now':m<60?m+' min ago':m<1440?Math.round(m/60)+' h ago':Math.round(m/1440)+' d ago'};
-const ICO={home:'<path d="M3 11l9-7 9 7v9a1 1 0 01-1 1h-5v-6H9v6H4a1 1 0 01-1-1z"/>',pay:'<rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><path d="M14 14h3v3M21 14v0M14 21h7M18 18v3"/>',users:'<circle cx="9" cy="8" r="3.5"/><path d="M2.5 20a6.5 6.5 0 0113 0M16 4.5a3.5 3.5 0 010 7M18 14a6 6 0 013.5 6"/>',bell:'<path d="M18 8a6 6 0 10-12 0c0 7-3 8-3 8h18s-3-1-3-8"/><path d="M13.7 20a2 2 0 01-3.4 0"/>',gear:'<circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 00.3 1.8l.1.1a2 2 0 11-2.8 2.8l-.1-.1a1.7 1.7 0 00-1.8-.3 1.7 1.7 0 00-1 1.5V21a2 2 0 11-4 0v-.1a1.7 1.7 0 00-1.1-1.5 1.7 1.7 0 00-1.8.3l-.1.1a2 2 0 11-2.8-2.8l.1-.1a1.7 1.7 0 00.3-1.8 1.7 1.7 0 00-1.5-1H3a2 2 0 110-4h.1a1.7 1.7 0 001.5-1.1 1.7 1.7 0 00-.3-1.8l-.1-.1a2 2 0 112.8-2.8l.1.1a1.7 1.7 0 001.8.3H9a1.7 1.7 0 001-1.5V3a2 2 0 114 0v.1a1.7 1.7 0 001 1.5 1.7 1.7 0 001.8-.3l.1-.1a2 2 0 112.8 2.8l-.1.1a1.7 1.7 0 00-.3 1.8V9a1.7 1.7 0 001.5 1H21a2 2 0 110 4h-.1a1.7 1.7 0 00-1.5 1z"/>',log:'<path d="M4 6h16M4 12h16M4 18h10"/>',copy:'<rect x="8" y="8" width="12" height="12" rx="2"/><path d="M16 8V5a1 1 0 00-1-1H5a1 1 0 00-1 1v10a1 1 0 001 1h3"/>'};
+const isoD=d=>new Date(d.getTime()-d.getTimezoneOffset()*6e4).toISOString().slice(0,10);
+const ICO={home:'<path d="M3 11l9-7 9 7v9a1 1 0 01-1 1h-5v-6H9v6H4a1 1 0 01-1-1z"/>',pay:'<rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><path d="M14 14h3v3M21 14v0M14 21h7M18 18v3"/>',users:'<circle cx="9" cy="8" r="3.5"/><path d="M2.5 20a6.5 6.5 0 0113 0M16 4.5a3.5 3.5 0 010 7M18 14a6 6 0 013.5 6"/>',tag:'<path d="M20 12l-8 8-9-9V3h8z"/><circle cx="7.5" cy="7.5" r="1.5"/>',price:'<path d="M6 3h12M6 8h12M14 21L6 13h3a5 5 0 000-10"/>',bell:'<path d="M18 8a6 6 0 10-12 0c0 7-3 8-3 8h18s-3-1-3-8"/><path d="M13.7 20a2 2 0 01-3.4 0"/>',gear:'<circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 00.3 1.8l.1.1a2 2 0 11-2.8 2.8l-.1-.1a1.7 1.7 0 00-1.8-.3 1.7 1.7 0 00-1 1.5V21a2 2 0 11-4 0v-.1a1.7 1.7 0 00-1.1-1.5 1.7 1.7 0 00-1.8.3l-.1.1a2 2 0 11-2.8-2.8l.1-.1a1.7 1.7 0 00.3-1.8 1.7 1.7 0 00-1.5-1H3a2 2 0 110-4h.1a1.7 1.7 0 001.5-1.1 1.7 1.7 0 00-.3-1.8l-.1-.1a2 2 0 112.8-2.8l.1.1a1.7 1.7 0 001.8.3H9a1.7 1.7 0 001-1.5V3a2 2 0 114 0v.1a1.7 1.7 0 001 1.5 1.7 1.7 0 001.8-.3l.1-.1a2 2 0 112.8 2.8l-.1.1a1.7 1.7 0 00-.3 1.8V9a1.7 1.7 0 001.5 1H21a2 2 0 110 4h-.1a1.7 1.7 0 00-1.5 1z"/>',log:'<path d="M4 6h16M4 12h16M4 18h10"/>',gift:'<rect x="3" y="8" width="18" height="4" rx="1"/><path d="M12 8v13M5 12v8a1 1 0 001 1h12a1 1 0 001-1v-8M8.5 8a2.5 2.5 0 110-5C11 3 12 8 12 8s1-5 3.5-5a2.5 2.5 0 110 5"/>',copy:'<rect x="8" y="8" width="12" height="12" rx="2"/><path d="M16 8V5a1 1 0 00-1-1H5a1 1 0 00-1 1v10a1 1 0 001 1h3"/>'};
 const svg=k=>`<svg viewBox="0 0 24 24" aria-hidden="true">${ICO[k]}</svg>`;
 
 let sb=null;
 try{sb=window.supabase.createClient(SUPABASE_URL,SUPABASE_ANON_KEY,{auth:{persistSession:true,autoRefreshToken:true,detectSessionInUrl:false,storageKey:'fos-admin-auth'}})}catch(e){}
 
-const S={tab:'home',users:[],pays:[],audit:[],plans:[],settings:{},me:null,payF:'pending',userF:'all',q:'',loading:false};
+const S={tab:'home',users:[],pays:[],audit:[],plans:[],coupons:[],refs:[],refF:'reward_due',settings:{},me:null,payF:'pending',userF:'all',q:'',loading:false,sel:new Set(),v5:true};
 const PLAN=id=>(S.plans.find(p=>p.id===id)||{name:id||'–'}).name;
 const PAYST={pending_verification:['p-wait','Pending'],verified:['p-ok','Confirmed'],rejected:['p-bad','Rejected']};
-const userState=u=>u.locked?['p-bad','Locked']:u.pending_payment&&!u.active?['p-wait','Payment pending']:!u.plan_id?['p-mu','No plan']:!u.active?['p-bad','Expired']:u.source==='free'?['p-info','Free']:daysTo(u.expires_at)<=10?['p-wait','Ending soon']:['p-ok','Active'];
+const userState=u=>u.is_admin&&!u.plan_id?['p-info','Admin']:u.locked?['p-bad','Locked']:u.pending_payment&&!u.active?['p-wait','Payment pending']:!u.plan_id?['p-mu','No plan yet']:!u.active?['p-bad','Expired']:u.source==='free'?['p-info','Free']:daysTo(u.expires_at)<=10?['p-wait','Ending soon']:['p-ok','Active'];
+const isCash=p=>/^CASH/.test(p.utr||'');
 
-function toast(m,bad){const t=document.createElement('div');t.className='toast'+(bad?' bad':'');t.setAttribute('role','status');t.textContent=m;document.body.append(t);setTimeout(()=>t.remove(),3800)}
-const friendly=e=>{const m=(e&&(e.message||e.error_description||e.msg))||String(e||'Something went wrong');return m.replace(/^.*?ERROR:\s*/,'')};
+function toast(m,bad){document.querySelectorAll('.toast').forEach(x=>x.remove());const t=document.createElement('div');t.className='toast'+(bad?' bad':'');t.setAttribute('role','status');t.textContent=m;document.body.append(t);setTimeout(()=>t.remove(),4200)}
+const friendly=e=>{const m=(e&&(e.message||e.error_description||e.msg))||String(e||'Something went wrong');
+ if(/function .*(does not exist|could not find)|could not find the function|PGRST202/i.test(m+' '+(e&&e.code||'')))return 'This needs SQL file 5. Run 05-admin-extras.sql in Supabase first, then try again.';
+ return m.replace(/^.*?ERROR:\s*/,'')};
+
+/* ── install as an app (PWA) ── */
+let deferredInstall=null;const standalone=()=>matchMedia('(display-mode: standalone)').matches||navigator.standalone===true;
+const isIOS=/iphone|ipad|ipod/i.test(navigator.userAgent)||(navigator.platform==='MacIntel'&&navigator.maxTouchPoints>1);
+function showInstall(on){['#inst0','#inst1','#inst2'].forEach(s=>$(s).classList.toggle('hide',!on))}
+addEventListener('beforeinstallprompt',e=>{e.preventDefault();deferredInstall=e;showInstall(true)});
+addEventListener('appinstalled',()=>{deferredInstall=null;showInstall(false);toast('Installed. Open "FOS Admin" from your home screen or app list.')});
+if(isIOS&&!standalone())showInstall(true);
+async function install(){if(deferredInstall){deferredInstall.prompt();const r=await deferredInstall.userChoice;if(r.outcome==='accepted')showInstall(false);deferredInstall=null;return}
+ dialog(`<h3>Install on your phone</h3>${isIOS?`<ol style="margin:10px 0 0 18px;display:grid;gap:8px"><li>Open this page in <b>Safari</b>.</li><li>Tap the <b>Share</b> button (the square with an arrow).</li><li>Tap <b>Add to Home Screen</b>, then <b>Add</b>.</li></ol>`:`<ol style="margin:10px 0 0 18px;display:grid;gap:8px"><li>Open this page in <b>Chrome</b> or <b>Edge</b>.</li><li>Open the browser menu (⋮).</li><li>Tap <b>Install app</b> or <b>Add to Home screen</b>.</li></ol>`}<div class="foot"><button class="btn" data-x>Got it</button></div>`)}
+['#inst0','#inst1','#inst2'].forEach(s=>$(s).onclick=install);
+if('serviceWorker' in navigator&&location.protocol==='https:')navigator.serviceWorker.register('admin-sw.js',{scope:'./admin'}).catch(()=>{});
 
 /* ── sign in ── */
 $('#loginF').onsubmit=async e=>{e.preventDefault();const b=$('#lb');$('#lerr').textContent='';if(!sb){$('#lerr').textContent='Could not reach Supabase. Check your connection and reload.';return}
  b.disabled=true;b.textContent='Signing in…';
  const {error}=await sb.auth.signInWithPassword({email:$('#le').value.trim(),password:$('#lp').value});
- b.disabled=false;b.textContent='Sign in';if(error){$('#lerr').textContent='Email or password is not right.';return}
+ b.disabled=false;b.textContent='Sign in';if(error){$('#lerr').textContent=/confirm/i.test(error.message||'')?'Confirm your email first (check your inbox), then sign in.':'Email or password is not right.';return}
  boot()};
 const signOut=async()=>{try{await sb.auth.signOut()}catch(e){}location.reload()};
 $('#out').onclick=signOut;$('#out2').onclick=signOut;
@@ -186,14 +245,18 @@ async function boot(){
 /* ── data ── */
 async function load(quiet){if(S.loading)return;S.loading=true;if(!quiet)$('#rf').textContent='Loading…';
  try{
-  const [u,p,a,pl,st]=await Promise.all([
+  const [u,p,a,pl,st,cp,rf]=await Promise.all([
    sb.rpc('billing_admin_users'),
-   sb.from('billing_payments').select('*').not('utr','is',null).order('submitted_at',{ascending:false}).limit(1000),
-   sb.from('billing_audit').select('*').order('at',{ascending:false}).limit(300),
+   sb.from('billing_payments').select('*').not('utr','is',null).order('submitted_at',{ascending:false}).limit(2000),
+   sb.from('billing_audit').select('*').order('at',{ascending:false}).limit(400),
    sb.from('billing_plans').select('*').order('rank'),
-   sb.from('billing_settings').select('*')]);
+   sb.from('billing_settings').select('*'),
+   sb.from('billing_coupons').select('*').order('code'),
+   sb.from('billing_referrals').select('*').order('created_at',{ascending:false}).limit(2000)]);
   const bad=[u,p,a,pl,st].find(r=>r.error);if(bad)throw bad.error;
-  S.users=u.data||[];S.pays=p.data||[];S.audit=a.data||[];S.plans=pl.data||[];S.settings=Object.fromEntries((st.data||[]).map(r=>[r.key,r.value]));
+  S.users=u.data||[];S.pays=p.data||[];S.audit=a.data||[];S.plans=pl.data||[];S.coupons=cp.error?[]:(cp.data||[]);S.refs=rf.error?[]:(rf.data||[]);S.settings=Object.fromEntries((st.data||[]).map(r=>[r.key,r.value]));
+  S.v5=!S.users.length||'note' in S.users[0];
+  const ids=new Set(S.users.map(x=>x.user_id));S.sel=new Set([...S.sel].filter(i=>ids.has(i)));
   $('#stamp').textContent='Updated '+new Date().toLocaleTimeString('en-IN',{hour:'numeric',minute:'2-digit',timeZone:TZ});
  }catch(e){toast('Could not load: '+friendly(e),true)}
  S.loading=false;$('#rf').textContent='Refresh';render()}
@@ -202,63 +265,134 @@ $('#rf').onclick=()=>load();
 const uById=id=>S.users.find(u=>u.user_id===id)||{};
 const pending=()=>S.pays.filter(p=>p.status==='pending_verification');
 const expSoon=()=>S.users.filter(u=>u.active&&!u.locked&&daysTo(u.expires_at)<=10).sort((a,b)=>new Date(a.expires_at)-new Date(b.expires_at));
+const refDue=()=>S.refs.filter(r=>r.status==='reward_due');
+const noPlan=()=>S.users.filter(u=>!u.plan_id&&!u.is_admin);
 
 /* ── nav ── */
-const TABS=[['home','Overview','home'],['payments','Payments','pay'],['users','Users','users'],['reminders','Reminders','bell'],['settings','Settings','gear'],['activity','Activity','log']];
-function nav(){$('#nav').innerHTML=TABS.map(t=>{const c=t[0]==='payments'?pending().length:t[0]==='reminders'?expSoon().length:0;return `<button class="${S.tab===t[0]?'on':''}" data-tab="${t[0]}">${svg(t[2])}<span>${t[1]}</span>${c?`<b class="ct">${c}</b>`:''}</button>`}).join('')}
+const TABS=[['home','Overview','home'],['payments','Payments','pay'],['users','Users','users'],['plans','Plans & prices','price'],['codes','Discount codes','tag'],['referrals','Referrals','gift'],['reminders','Reminders','bell'],['settings','Settings','gear'],['activity','Activity','log']];
+function nav(){$('#nav').innerHTML=TABS.map(t=>{const c=t[0]==='payments'?pending().length:t[0]==='reminders'?expSoon().length:t[0]==='referrals'?refDue().length:0;return `<button class="${S.tab===t[0]?'on':''}" data-tab="${t[0]}" ${S.tab===t[0]?'aria-current="page"':''}>${svg(t[2])}<span>${t[1]}</span>${c?`<b class="ct" aria-label="${c} waiting">${c}</b>`:''}</button>`}).join('')}
 $('#nav').onclick=e=>{const b=e.target.closest('[data-tab]');if(b)go(b.dataset.tab)};
 function go(t,f){if(S.tab!==t)S.q='';S.tab=t;if(f){if(t==='payments')S.payF=f;if(t==='users')S.userF=f}history.replaceState(null,'','#'+t);render();scrollTo(0,0)}
 
 /* ── views ── */
-function render(){nav();const V={home:vHome,payments:vPays,users:vUsers,reminders:vRem,settings:vSet,activity:vAct}[S.tab]||vHome;V()}
+function render(){nav();const V={home:vHome,payments:vPays,users:vUsers,plans:vPlans,codes:vCodes,referrals:vRefs,reminders:vRem,settings:vSet,activity:vAct}[S.tab]||vHome;V();
+ if(!S.v5&&!$('#v5w'))$('#view').insertAdjacentHTML('afterbegin','<div class="card danger" id="v5w"><h2>One more step in Supabase</h2><p class="sub" style="margin:0">Run <b>05-admin-extras.sql</b> in Supabase (SQL Editor). It switches on price editing, discount codes, Paid or Free access for many people at once, notes and ending access.</p></div>')}
 const head=(t,s)=>{$('#pgT').textContent=t;$('#pgS').textContent=s||''};
 
-function vHome(){head('Overview','Everything that needs you, at a glance.');
- const us=S.users,act=us.filter(u=>u.active),now=new Date(),ms=new Date(now.getFullYear(),now.getMonth(),1);
- const month=S.pays.filter(p=>p.status==='verified'&&new Date(p.verified_at)>=ms).reduce((n,p)=>n+p.expected_amount,0);
+function vHome(){head('Overview','Everything that needs you, at a glance. Tap any number to open it.');
+ const us=S.users.filter(u=>!u.is_admin),act=us.filter(u=>u.active),now=new Date(),ms=new Date(now.getFullYear(),now.getMonth(),1);
+ const ver=S.pays.filter(p=>p.status==='verified');
+ const month=ver.filter(p=>new Date(p.verified_at)>=ms).reduce((n,p)=>n+p.expected_amount,0),all=ver.reduce((n,p)=>n+p.expected_amount,0);
  const k=(cls,lab,val,t,f)=>`<button class="kpi ${cls}" data-go="${t}" data-f="${f||''}"><small>${lab}</small><b>${val}</b></button>`;
- const pend=pending(),soon=expSoon();
+ const pend=pending(),soon=expSoon(),np=noPlan(),free=act.filter(u=>u.source==='free'),exp=us.filter(u=>u.plan_id&&!u.active);
+ const by=S.plans.map(p=>({p,n:act.filter(u=>u.plan_id===p.id).length})),mx=Math.max(1,...by.map(x=>x.n));
  $('#view').innerHTML=`<div class="kpis">
   ${k(pend.length?'warn':'','Payments to confirm',pend.length,'payments','pending')}
   ${k('ok','Active plans',act.length,'users','active')}
-  ${k('','All users',us.length,'users','all')}
+  ${k('','Free plans',free.length,'users','free')}
+  ${k(np.length?'warn':'','Signed up, no plan yet',np.length,'users','none')}
   ${k(soon.length?'warn':'','Ending in 10 days',soon.length,'reminders')}
-  ${k(us.filter(u=>u.plan_id&&!u.active).length?'bad':'','Expired or locked',us.filter(u=>u.plan_id&&!u.active).length,'users','expired')}
-  ${k('ok','Confirmed this month',inr(month),'payments','verified')}</div>
+  ${k(exp.length?'bad':'','Expired or locked',exp.length,'users','expired')}
+  ${k('ok','Confirmed this month',inr(month),'payments','verified')}
+  ${k('','All-time revenue',inr(all),'payments','verified')}
+  ${k(refDue().length?'warn':'','Referral rewards to pay',refDue().length?refDue().length+' · '+inr(refDue().reduce((n,r)=>n+r.reward_inr,0)):'0','referrals')}</div>
+  <div class="card"><h2>Quick actions</h2><div class="qa" style="margin-top:10px">
+   <button data-go="payments" data-f="pending"><b>Confirm payments</b><small>${pend.length?pend.length+' waiting for you':'Nothing waiting'}</small></button>
+   <button data-act="grant-pick"><b>Give someone access</b><small>Free, or paid in cash or by bank</small></button>
+   <button data-go="plans"><b>Change prices</b><small>Monthly and yearly, per plan</small></button>
+   <button data-go="codes"><b>Discount codes</b><small>${S.coupons.filter(c=>c.active).length} active</small></button>
+   <button data-go="referrals"><b>Referral rewards</b><small>${refDue().length?refDue().length+' to pay':'Nothing to pay'}</small></button>
+   <button data-act="csv"><b>Download users</b><small>Spreadsheet (CSV) of everyone</small></button>
+  </div>
+  <details class="help" style="margin-top:14px"><summary>How this works</summary><ol>
+   <li><b>Someone signs up</b> on the website or in the app. They show as <i>No plan yet</i> until they pay or you give them access.</li>
+   <li><b>They pay with the QR</b> and enter the UTR. It appears in <i>Payments</i>. Check it in your UPI app, then confirm or reject.</li>
+   <li><b>Confirming</b> starts their plan for 30 days (monthly) or 365 days (yearly) from the payment date, and tells them in their account.</li>
+   <li><b>Paid in cash or by bank?</b> Open <i>Users</i>, tap <i>Manage</i>, then <i>Give access</i> and choose <i>Paid outside the website</i>.</li>
+   <li><b>Want to stop someone?</b> <i>End access today</i> means they must pay again. <i>Lock</i> pauses them without changing their plan.</li></ol></details></div>
   <div class="g2"><div class="card"><h2>Payments to confirm</h2><p class="sub">Check each one in your UPI app before confirming.</p>${pend.length?`<div class="list">${pend.slice(0,6).map(p=>{const u=uById(p.user_id);return `<div class="li"><span><b>${esc(p.customer_name||u.name||u.email)}</b><small>${esc(PLAN(p.plan_id))} · ${p.billing_interval==='year'?'yearly':'monthly'} · <span class="mono">${esc(p.utr)}</span> · ${ago(p.submitted_at)}</small></span><span style="display:flex;gap:6px;align-items:center"><b>${inr(p.expected_amount)}</b><button class="btn sm" data-rev="${esc(p.id)}">Review</button></span></div>`}).join('')}</div>`:'<p class="empty">Nothing waiting. All caught up.</p>'}</div>
-  <div class="card"><h2>Plans ending soon</h2><p class="sub">Customers are reminded 3 days before. You see them 10 days before.</p>${soon.length?`<div class="list">${soon.slice(0,6).map(u=>`<div class="li"><span><b>${esc(u.name||u.email)}</b><small>${esc(u.email)} · ${esc(PLAN(u.plan_id))}</small></span><span class="pill ${daysTo(u.expires_at)<=3?'p-bad':'p-wait'}">${daysTo(u.expires_at)} d · ${dt(u.expires_at)}</span></div>`).join('')}</div>`:'<p class="empty">No plans end in the next 10 days.</p>'}</div></div>
-  <div class="card"><h2>Recently active</h2><p class="sub">Last sign-ins to FinanceOS.</p><div class="list">${us.filter(u=>u.last_sign_in).sort((a,b)=>new Date(b.last_sign_in)-new Date(a.last_sign_in)).slice(0,6).map(u=>{const s=userState(u);return `<div class="li"><span><b>${esc(u.name||u.email)}</b><small>${esc(u.email)} · ${ago(u.last_sign_in)}</small></span><span class="pill ${s[0]}">${s[1]}</span></div>`}).join('')||'<p class="empty">No sign-ins yet.</p>'}</div></div>`}
+  <div class="card"><h2>Active plans by type</h2><p class="sub">People who can use the app right now.</p><div class="list">${by.map(x=>`<div><div style="display:flex;justify-content:space-between"><b>${esc(x.p.name)}</b><span>${x.n} · ${inr(x.p.monthly_inr)}/mo</span></div><div class="meter"><i style="width:${Math.round(x.n/mx*100)}%"></i></div></div>`).join('')}</div></div></div>
+  <div class="g2"><div class="card"><h2>Plans ending soon</h2><p class="sub">Customers are reminded ${esc(S.settings.remind_user_days??3)} days before. You see them ${esc(S.settings.remind_admin_days??10)} days before.</p>${soon.length?`<div class="list">${soon.slice(0,6).map(u=>`<div class="li"><span><b>${esc(u.name||u.email)}</b><small>${esc(u.email)} · ${esc(PLAN(u.plan_id))}</small></span><span class="pill ${daysTo(u.expires_at)<=3?'p-bad':'p-wait'}">${daysTo(u.expires_at)} d · ${dt(u.expires_at)}</span></div>`).join('')}</div>`:'<p class="empty">No plans end in the next 10 days.</p>'}</div>
+  <div class="card"><h2>Recently active</h2><p class="sub">Last sign-ins to FinanceOS.</p><div class="list">${us.filter(u=>u.last_sign_in).sort((a,b)=>new Date(b.last_sign_in)-new Date(a.last_sign_in)).slice(0,6).map(u=>{const s=userState(u);return `<div class="li"><span><b>${esc(u.name||u.email)}</b><small>${esc(u.email)} · ${ago(u.last_sign_in)}</small></span><span class="pill ${s[0]}">${s[1]}</span></div>`}).join('')||'<p class="empty">No sign-ins yet.</p>'}</div></div></div>`}
 
 function vPays(){head('Payments','Confirm a payment only after you see the exact amount and UTR in your UPI app.');
  const F=[['pending','Pending'],['verified','Confirmed'],['rejected','Rejected'],['all','All']],m={pending:'pending_verification',verified:'verified',rejected:'rejected'};
  const q=S.q.toLowerCase();
  const rows=S.pays.filter(p=>S.payF==='all'||p.status===m[S.payF]).filter(p=>{if(!q)return true;const u=uById(p.user_id);return [p.id,p.utr,p.customer_name,u.email,u.name].join(' ').toLowerCase().includes(q)});
- $('#view').innerHTML=`<div class="card"><div class="bar"><div class="seg">${F.map(f=>`<button class="${S.payF===f[0]?'on':''}" data-pf="${f[0]}">${f[1]}${f[0]==='pending'&&pending().length?' ('+pending().length+')':''}</button>`).join('')}</div><input class="in" id="q" placeholder="Search name, email, request ID or UTR" value="${esc(S.q)}"></div>
+ $('#view').innerHTML=`<div class="card"><div class="bar"><div class="seg" role="group" aria-label="Filter payments">${F.map(f=>`<button class="${S.payF===f[0]?'on':''}" data-pf="${f[0]}" aria-pressed="${S.payF===f[0]}">${f[1]}${f[0]==='pending'&&pending().length?' ('+pending().length+')':''}</button>`).join('')}</div><input class="in" id="q" placeholder="Search name, email, request ID or UTR" aria-label="Search payments" value="${esc(S.q)}"><button class="btn o sm" data-act="csvp">Download</button></div>
  ${rows.length?`<div class="tw"><table class="rsp"><thead><tr><th>Customer</th><th>Request</th><th>Plan</th><th class="num">Amount</th><th>UTR</th><th>Submitted</th><th>Status</th><th></th></tr></thead><tbody>${rows.map(p=>{const u=uById(p.user_id),s=PAYST[p.status];return `<tr>
   <td data-l="Customer"><span><b>${esc(p.customer_name||u.name||'–')}</b><small>${esc(u.email||'')}</small></span></td>
   <td data-l="Request"><span class="mono">${esc(p.id)}</span></td>
   <td data-l="Plan"><span>${esc(PLAN(p.plan_id))}<small>${p.billing_interval==='year'?'Yearly':'Monthly'}${p.is_renewal?' · renewal':''}${p.coupon_code?' · '+esc(p.coupon_code):''}</small></span></td>
   <td data-l="Amount" class="num"><b>${inr(p.expected_amount)}</b></td>
-  <td data-l="UTR"><span class="mono">${esc(p.utr)}</span><button class="cp" data-copy="${esc(p.utr)}" aria-label="Copy UTR">${svg('copy')}</button></td>
+  <td data-l="UTR">${isCash(p)?'<span class="pill p-info">Cash or bank</span>':`<span class="mono">${esc(p.utr)}</span><button class="cp" data-copy="${esc(p.utr)}" aria-label="Copy UTR">${svg('copy')}</button>`}</td>
   <td data-l="Submitted"><span>${dtt(p.submitted_at)}<small>${ago(p.submitted_at)}</small></span></td>
   <td data-l="Status"><span><span class="pill ${s[0]}">${s[1]}</span>${p.status==='rejected'?`<small>${esc(p.rejection_reason)}</small>`:p.status==='verified'?`<small>${dtt(p.verified_at)}</small>`:''}</span></td>
   <td data-l="">${p.status==='pending_verification'?`<div class="acts-c"><button class="btn sm" data-rev="${esc(p.id)}">Review</button></div>`:''}</td></tr>`}).join('')}</tbody></table></div>`:'<p class="empty">No payments here.</p>'}</div>`;
  const qi=$('#q');qi.oninput=()=>{S.q=qi.value;const pos=qi.selectionStart;vPays();const n=$('#q');n.focus();n.setSelectionRange(pos,pos)}}
 
-function vUsers(){head('Users','Everyone with a FinanceOS login. Manage plans, free access and locks.');
- const F=[['all','All'],['active','Active'],['pending','Payment pending'],['soon','Ending soon'],['expired','Expired or locked'],['free','Free'],['none','No plan']];
- const fil={all:()=>true,active:u=>u.active,pending:u=>!!u.pending_payment,soon:u=>u.active&&daysTo(u.expires_at)<=10,expired:u=>u.plan_id&&!u.active,free:u=>u.source==='free'&&u.active,none:u=>!u.plan_id}[S.userF]||(()=>true);
- const q=S.q.toLowerCase(),rows=S.users.filter(fil).filter(u=>!q||[u.email,u.name].join(' ').toLowerCase().includes(q));
- $('#view').innerHTML=`<div class="card"><div class="bar"><div class="seg">${F.map(f=>`<button class="${S.userF===f[0]?'on':''}" data-uf="${f[0]}">${f[1]}</button>`).join('')}</div><input class="in" id="q" placeholder="Search name or email" value="${esc(S.q)}"></div>
- ${rows.length?`<div class="tw"><table class="rsp"><thead><tr><th>User</th><th>Status</th><th>Plan</th><th>Ends</th><th>Last sign-in</th><th class="num">Paid</th><th></th></tr></thead><tbody>${rows.map(u=>{const s=userState(u);return `<tr>
-  <td data-l="User"><span><b>${esc(u.name||'–')}</b><small>${esc(u.email)} · joined ${dt(u.signed_up)}</small></span></td>
+const UF=[['all','All'],['active','Active'],['none','No plan yet'],['pending','Payment pending'],['soon','Ending soon'],['expired','Expired or locked'],['free','Free'],['paid','Paying']];
+const ufil=f=>({all:()=>true,active:u=>u.active,pending:u=>!!u.pending_payment,soon:u=>u.active&&daysTo(u.expires_at)<=10,expired:u=>u.plan_id&&!u.active,free:u=>u.source==='free'&&u.active,paid:u=>u.source==='payment'&&u.active,none:u=>!u.plan_id}[f]||(()=>true));
+const userRows=()=>{const q=S.q.toLowerCase();return S.users.filter(ufil(S.userF)).filter(u=>!q||[u.email,u.name,u.phone,u.note].join(' ').toLowerCase().includes(q))};
+function vUsers(){head('Users','Everyone with a FinanceOS login. Tick people to give access to many at once, or tap Manage for one person.');
+ const rows=userRows(),allOn=rows.length&&rows.every(u=>S.sel.has(u.user_id));
+ $('#view').innerHTML=`<div class="card"><div class="bar"><div class="seg" role="group" aria-label="Filter users">${UF.map(f=>`<button class="${S.userF===f[0]?'on':''}" data-uf="${f[0]}" aria-pressed="${S.userF===f[0]}">${f[1]} (${S.users.filter(ufil(f[0])).length})</button>`).join('')}</div><input class="in" id="q" placeholder="Search name, email, phone or note" aria-label="Search users" value="${esc(S.q)}"><button class="btn o sm" data-act="selall">${allOn?'Clear selection':'Select all shown'}</button><button class="btn o sm" data-act="csv">Download</button></div>
+ ${rows.length?`<div class="tw"><table class="rsp"><thead><tr><th class="c0"><input type="checkbox" class="cb" data-act="selall" aria-label="Select all shown" ${allOn?'checked':''}></th><th>User</th><th>Status</th><th>Plan</th><th>Ends</th><th>Last sign-in</th><th class="num">Paid</th><th></th></tr></thead><tbody>${rows.map(u=>{const s=userState(u);return `<tr>
+  <td data-l="Select" class="c0"><input type="checkbox" class="cb" data-sel="${esc(u.user_id)}" aria-label="Select ${esc(u.email)}" ${S.sel.has(u.user_id)?'checked':''}></td>
+  <td data-l="User"><span><b>${esc(u.name||'–')}${u.is_admin?' <span class="pill p-info">Admin</span>':''}</b><small>${esc(u.email)}${u.phone?' · '+esc(u.phone):''} · joined ${dt(u.signed_up)}</small>${u.note?`<small>📝 ${esc(u.note.slice(0,80))}</small>`:''}</span></td>
   <td data-l="Status"><span class="pill ${s[0]}">${s[1]}</span></td>
-  <td data-l="Plan">${u.plan_id?esc(PLAN(u.plan_id))+(u.source==='free'?' <small>free</small>':''):'–'}</td>
+  <td data-l="Plan">${u.plan_id?`<span>${esc(PLAN(u.plan_id))}<small>${u.source==='free'?'free':'paid'}</small></span>`:'–'}</td>
   <td data-l="Ends">${u.expires_at?`<span>${dt(u.expires_at)}<small>${u.active?daysTo(u.expires_at)+' days left':'ended'}</small></span>`:'–'}</td>
   <td data-l="Last sign-in">${ago(u.last_sign_in)}</td>
   <td data-l="Paid" class="num">${inr(u.paid_total)}<small>${u.payments} payment${u.payments===1?'':'s'}</small></td>
-  <td data-l=""><div class="acts-c">${u.pending_payment?`<button class="btn sm" data-rev="${esc(u.pending_payment)}">Review payment</button>`:''}<button class="btn o sm" data-mng="${esc(u.user_id)}">Manage</button></div></td></tr>`}).join('')}</tbody></table></div>`:'<p class="empty">No users match.</p>'}</div>`;
+  <td data-l=""><div class="acts-c">${u.pending_payment?`<button class="btn sm" data-rev="${esc(u.pending_payment)}">Review payment</button>`:''}<button class="btn o sm" data-mng="${esc(u.user_id)}">Manage</button></div></td></tr>`}).join('')}</tbody></table></div>`:'<p class="empty">No users match.</p>'}
+ ${S.sel.size?`<div class="bulk" role="region" aria-label="Selected users"><b>${S.sel.size} selected</b><span style="display:flex;gap:8px;flex-wrap:wrap"><button class="btn o sm" data-act="selnone">Clear</button><button class="btn sm" data-act="grant-sel">Give access to ${S.sel.size}</button></span></div>`:''}</div>`;
  const qi=$('#q');qi.oninput=()=>{S.q=qi.value;const pos=qi.selectionStart;vUsers();const n=$('#q');n.focus();n.setSelectionRange(pos,pos)}}
+
+function vPlans(){head('Plans & prices','Change what each plan costs. The website and checkout use the new price straight away.');
+ $('#view').innerHTML=`<div class="g2">${S.plans.map(p=>`<div class="card plan-ed" data-plan="${esc(p.id)}"><h2>${esc(p.name)}</h2><p class="sub">${p.active===false?'Hidden: nobody can buy it right now.':'On sale.'} People on this plan now: ${S.users.filter(u=>u.active&&u.plan_id===p.id).length}</p>
+  <div class="row2"><div class="fld"><label for="pm-${esc(p.id)}">Monthly price (₹, 30 days)</label><input class="in" id="pm-${esc(p.id)}" type="number" min="1" step="1" inputmode="numeric" value="${esc(p.monthly_inr)}"></div>
+  <div class="fld"><label for="py-${esc(p.id)}">Yearly price (₹, 365 days)</label><input class="in" id="py-${esc(p.id)}" type="number" min="1" step="1" inputmode="numeric" value="${esc(p.yearly_inr)}"></div></div>
+  <div class="chips"><button type="button" data-y10="${esc(p.id)}">Yearly = 10 × monthly (2 months free)</button><button type="button" data-y12="${esc(p.id)}">Yearly = 12 × monthly</button></div>
+  <p class="note" id="ps-${esc(p.id)}"></p>
+  <label class="tog"><input type="checkbox" id="pa-${esc(p.id)}" ${p.active===false?'':'checked'}> Show on the website and allow purchases</label>
+  <div class="foot" style="justify-content:flex-start"><button class="btn" data-saveplan="${esc(p.id)}">Save ${esc(p.name)}</button></div></div>`).join('')}</div>
+  <div class="card"><h2>Good to know</h2><p class="sub" style="margin:0">People who already paid keep their plan until its end date. The new price applies to new payments and renewals. Payment requests already waiting keep the amount they were made with. The list of features on each plan stays as it is on the website.</p></div>`;
+ const upd=id=>{const m=+$('#pm-'+id).value,y=+$('#py-'+id).value;$('#ps-'+id).textContent=m>0&&y>0?`Yearly works out to ${inr(Math.round(y/12))} a month, a saving of ${Math.max(0,Math.round((1-y/(m*12))*100))}% against paying monthly.`:''};
+ S.plans.forEach(p=>{upd(p.id);$('#pm-'+p.id).oninput=()=>upd(p.id);$('#py-'+p.id).oninput=()=>upd(p.id)});
+ $$('[data-y10],[data-y12]').forEach(b=>b.onclick=()=>{const id=b.dataset.y10||b.dataset.y12;$('#py-'+id).value=(+$('#pm-'+id).value||0)*(b.dataset.y10?10:12);upd(id)})}
+
+function vCodes(){head('Discount codes','Codes customers type at checkout. The server checks every code and works out the discount, so a code cannot be faked. Referral codes are on the Referrals page.');
+ const c=S.coupons;
+ $('#view').innerHTML=`<div class="card"><h2>Add or edit a code</h2><p class="sub">Typing an existing code updates it.</p>
+  <div class="row2"><div class="fld"><label for="cc">Code (3 to 20 letters or numbers)</label><input class="in" id="cc" maxlength="20" placeholder="DIWALI25" autocapitalize="characters"></div>
+  <div class="fld"><label for="cpct">Discount (%)</label><input class="in" id="cpct" type="number" min="1" max="90" value="10" inputmode="numeric"></div></div>
+  <div class="row2"><div class="fld"><label for="cmax">How many times it can be used (empty = no limit)</label><input class="in" id="cmax" type="number" min="1" inputmode="numeric"></div><div></div></div>
+  <label class="tog"><input type="checkbox" id="cfirst"> Only for a customer's first payment</label>
+  <label class="tog"><input type="checkbox" id="cact" checked> Active (customers can use it)</label>
+  <label class="tog"><input type="checkbox" id="cshow"> Show it on the website (checkout and offers)</label>
+  <div class="fld"><label for="clabel">Text customers see (optional)</label><input class="in" id="clabel" maxlength="140" placeholder="First-time customer? Use code HELLO10 for 10% off."></div>
+  <div class="foot" style="justify-content:flex-start"><button class="btn" data-act="savecode">Save code</button></div></div>
+  <div class="card"><h2>All codes</h2>${c.length?`<div class="tw"><table class="rsp"><thead><tr><th>Code</th><th class="num">Discount</th><th>Rules</th><th>Used</th><th>On website</th><th>Status</th><th></th></tr></thead><tbody>${c.map(x=>`<tr><td data-l="Code"><b class="mono">${esc(x.code)}</b></td><td data-l="Discount" class="num">${esc(x.pct)}%</td><td data-l="Rules">${x.first_order_only?'First payment only':'Any payment'}</td><td data-l="Used">${esc(x.uses||0)}${x.max_uses?' of '+esc(x.max_uses):''}</td><td data-l="On website">${x.show_on_site?`<span><span class="pill p-info">Shown</span><small>${esc(x.label||'')}</small></span>`:'Hidden'}</td><td data-l="Status"><span class="pill ${x.active?'p-ok':'p-mu'}">${x.active?'Active':'Off'}</span></td><td data-l=""><div class="acts-c"><button class="btn o sm" data-editcode="${esc(x.code)}">Edit</button><button class="btn o sm" data-togcode="${esc(x.code)}">${x.active?'Switch off':'Switch on'}</button></div></td></tr>`).join('')}</tbody></table></div>`:'<p class="empty">No codes yet.</p>'}</div>`}
+
+const RST={issued:['p-mu','Waiting for first payment'],reward_due:['p-wait','Reward due'],rewarded:['p-ok','Reward paid'],rejected:['p-bad','Rejected']};
+function vRefs(){head('Referrals','A member refers a friend. The friend gets '+esc(S.settings.referral_pct??15)+'% off their first payment. When you confirm that payment, the member\'s ₹'+esc(S.settings.referral_reward??100)+' reward becomes due here.');
+ const F=[['reward_due','Reward due'],['issued','Waiting'],['rewarded','Paid'],['rejected','Rejected'],['all','All']],q=S.q.toLowerCase();
+ const rows=S.refs.filter(r=>S.refF==='all'||r.status===S.refF).filter(r=>{if(!q)return true;const u=uById(r.referrer_id);return [r.code,r.friend_name,r.friend_email,u.email,u.name].join(' ').toLowerCase().includes(q)});
+ const due=refDue();
+ $('#view').innerHTML=`${due.length?`<div class="card" style="border-color:var(--warn)"><h2>${due.length} reward${due.length===1?'':'s'} to pay · ${inr(due.reduce((n,r)=>n+r.reward_inr,0))}</h2><p class="sub" style="margin:0">Send each member their reward (for example by UPI), then tap <b>Mark reward paid</b>. They are told in their account.</p></div>`:''}
+ <div class="card"><div class="bar"><div class="seg" role="group" aria-label="Filter referrals">${F.map(f=>`<button class="${S.refF===f[0]?'on':''}" data-rf="${f[0]}" aria-pressed="${S.refF===f[0]}">${f[1]} (${f[0]==='all'?S.refs.length:S.refs.filter(r=>r.status===f[0]).length})</button>`).join('')}</div><input class="in" id="q" placeholder="Search code, member or friend" aria-label="Search referrals" value="${esc(S.q)}"></div>
+ ${rows.length?`<div class="tw"><table class="rsp"><thead><tr><th>Code</th><th>Member (referrer)</th><th>Friend</th><th>Status</th><th class="num">Reward</th><th></th></tr></thead><tbody>${rows.map(r=>{const u=uById(r.referrer_id),f=r.used_by?uById(r.used_by):null,s=RST[r.status]||RST.issued;return `<tr>
+  <td data-l="Code"><span><b class="mono">${esc(r.code)}</b><small>${dt(r.created_at)}</small></span></td>
+  <td data-l="Member"><span><b>${esc(u.name||u.email||'–')}</b><small>${esc(u.email||'')}${r.referrer_phone?' · '+esc(r.referrer_phone):(u.phone?' · '+esc(u.phone):'')}</small></span></td>
+  <td data-l="Friend"><span><b>${esc(r.friend_name)}</b><small>${esc(r.friend_email)}${f&&f.email&&f.email.toLowerCase()!==r.friend_email?' · paid as '+esc(f.email):''}</small></span></td>
+  <td data-l="Status"><span><span class="pill ${s[0]}">${s[1]}</span>${r.used_at?`<small>Joined ${dt(r.used_at)}</small>`:''}${r.rewarded_at?`<small>Paid ${dt(r.rewarded_at)}</small>`:''}${r.admin_note?`<small>${esc(r.admin_note)}</small>`:''}</span></td>
+  <td data-l="Reward" class="num">${inr(r.reward_inr)}</td>
+  <td data-l=""><div class="acts-c">${r.status==='reward_due'?`<button class="btn sm" data-refpay="${esc(r.code)}">Mark reward paid</button>`:''}${r.status==='issued'||r.status==='reward_due'?`<button class="btn o sm" data-refrej="${esc(r.code)}">Reject</button>`:''}${r.status==='rewarded'||r.status==='rejected'?`<button class="btn o sm" data-refundo="${esc(r.code)}">Undo</button>`:''}</div></td></tr>`}).join('')}</tbody></table></div>`:'<p class="empty">No referrals here.</p>'}</div>`;
+ const qi=$('#q');qi.oninput=()=>{S.q=qi.value;const pos=qi.selectionStart;vRefs();const n=$('#q');n.focus();n.setSelectionRange(pos,pos)}}
+async function setRef(code,status,note,btn){if(btn)btn.disabled=true;const {error}=await sb.rpc('billing_set_referral',{p_code:code,p_status:status,p_note:note||null});if(btn)btn.disabled=false;
+ if(error){toast(friendly(error),true);return false}toast(status==='rewarded'?'Marked as paid. The member has been told.':status==='rejected'?'Referral rejected.':'Referral moved back.');load(true);return true}
+function rejectRef(code){dialog(`<h3>Reject referral ${esc(code)}</h3><p class="sub">The code stops working and no reward is due. Only admins see the reason.</p><div class="fld"><label for="rjr">Reason</label><input class="in" id="rjr" maxlength="200" placeholder="For example: self-referral, duplicate"></div><div class="foot"><button class="btn o" data-x>Cancel</button><button class="btn bad" id="rjGo">Reject</button></div>`,(o,close)=>{$('#rjGo',o).onclick=async e=>{const r=$('#rjr',o).value.trim();if(!r){toast('Give a reason.',true);return}if(await setRef(code,'rejected',r,e.currentTarget))close()}})}
 
 function vRem(){head('Reminders','Plans ending in the next 10 days, and ones that have just ended.');
  const soon=expSoon(),gone=S.users.filter(u=>u.plan_id&&!u.active&&!u.locked&&daysTo(u.expires_at)>-30).sort((a,b)=>new Date(b.expires_at)-new Date(a.expires_at));
@@ -276,18 +410,24 @@ function vSet(){head('Settings','What customers see on the website. Changes appl
  <div class="card"><h2>Reminders</h2><p class="sub">How many days before a plan ends.</p>
   <div class="fld"><label for="s-ru">Remind the customer (days)</label><input class="in" id="s-ru" type="number" min="1" max="30" value="${esc(v('remind_user_days'))}"></div>
   <div class="fld"><label for="s-ra">Remind me (days)</label><input class="in" id="s-ra" type="number" min="1" max="60" value="${esc(v('remind_admin_days'))}"></div>
-  <div class="foot" style="justify-content:flex-start"><button class="btn" data-save="rem">Save reminder settings</button></div></div></div>
- <div class="card"><h2>Plans and prices</h2><p class="sub">Monthly and yearly prices the server charges.</p><div class="tw"><table class="rsp"><thead><tr><th>Plan</th><th class="num">Monthly</th><th class="num">Yearly</th></tr></thead><tbody>${S.plans.map(p=>`<tr><td data-l="Plan"><b>${esc(p.name)}</b></td><td data-l="Monthly" class="num">${inr(p.monthly_inr)}</td><td data-l="Yearly" class="num">${inr(p.yearly_inr)}</td></tr>`).join('')}</tbody></table></div><p class="note">Price changes are done together with the website text, so ask me when you want to change one.</p></div>`}
+  <div class="foot" style="justify-content:flex-start"><button class="btn" data-save="rem">Save reminder settings</button></div></div>
+ <div class="card"><h2>Referral programme</h2><p class="sub">What a referred friend saves, and what the member earns.</p>
+  <div class="fld"><label for="s-rp">Friend's discount on their first payment (%)</label><input class="in" id="s-rp" type="number" min="1" max="90" value="${esc(v('referral_pct'))}"></div>
+  <div class="fld"><label for="s-rr">Member's reward (₹, for new referrals)</label><input class="in" id="s-rr" type="number" min="1" max="10000" value="${esc(v('referral_reward'))}"></div>
+  <div class="fld"><label for="s-rm">Most open referrals one member can have</label><input class="in" id="s-rm" type="number" min="1" max="500" value="${esc(v('referral_max_open'))}"></div>
+  <div class="foot" style="justify-content:flex-start"><button class="btn" data-save="ref">Save referral settings</button></div></div></div>
+ <div class="card"><h2>Prices and discount codes</h2><p class="sub" style="margin:0">These have their own pages now: <a href="#plans" data-go="plans">Plans &amp; prices</a> and <a href="#codes" data-go="codes">Discount codes</a>.</p></div>
+ <div class="card"><h2>This app</h2><p class="sub" style="margin:0">Install the Command Center on your phone or computer so it opens like an app.</p><div class="foot" style="justify-content:flex-start"><button class="btn o" data-act="install">How to install</button></div></div>`}
 
+const ACT={submitted:'Payment submitted',reference_corrected:'UTR corrected',approved:'Payment confirmed',rejected:'Payment rejected',free_access:'Free access given',access_changed:'Paid access given (cash or bank)',access_ended:'Access ended',referral_created:'Referral created',referral_reward_due:'Referral reward due',referral_rewarded:'Referral reward paid',referral_rejected:'Referral rejected',referral_issued:'Referral reopened',locked:'User locked',unlocked:'User unlocked',setting_changed:'Setting changed',price_changed:'Price changed',coupon_saved:'Discount code saved'};
 function vAct(){head('Activity','Every payment and access change, newest first. Nothing here can be edited.');
- const L={submitted:'Payment submitted',reference_corrected:'UTR corrected',approved:'Payment confirmed',rejected:'Payment rejected',free_access:'Free access given',locked:'User locked',unlocked:'User unlocked',setting_changed:'Setting changed'};
- $('#view').innerHTML=`<div class="card">${S.audit.length?`<div class="tw"><table class="rsp"><thead><tr><th>When</th><th>What</th><th>User</th><th>Details</th><th>By</th></tr></thead><tbody>${S.audit.map(a=>{const u=uById(a.user_id),ad=a.admin_id?uById(a.admin_id):null;const det=[a.payment_id?`<span class="mono">${esc(a.payment_id)}</span>`:'',a.old_utr?`UTR ${esc(a.old_utr)} → ${esc(a.new_utr)}`:a.new_utr?`UTR ${esc(a.new_utr)}`:'',a.reason?esc(a.reason):'',a.action==='setting_changed'&&a.details?esc(a.details.key+' = '+JSON.stringify(a.details.value)):'',a.action==='free_access'&&a.details?esc(PLAN(a.details.plan)+' until '+dt(a.details.until)):''].filter(Boolean).join(' · ');
-  return `<tr><td data-l="When">${dtt(a.at)}</td><td data-l="What"><b>${esc(L[a.action]||a.action)}</b></td><td data-l="User">${esc(u.email||'–')}</td><td data-l="Details">${det||'–'}</td><td data-l="By">${ad?esc(ad.email):a.admin_id?'admin':'customer'}</td></tr>`}).join('')}</tbody></table></div>`:'<p class="empty">No activity yet.</p>'}</div>`}
+ $('#view').innerHTML=`<div class="card">${S.audit.length?`<div class="tw"><table class="rsp"><thead><tr><th>When</th><th>What</th><th>User</th><th>Details</th><th>By</th></tr></thead><tbody>${S.audit.map(a=>{const u=uById(a.user_id),ad=a.admin_id?uById(a.admin_id):null,d=a.details||{};const det=[a.payment_id?`<span class="mono">${esc(a.payment_id)}</span>`:'',a.old_utr?`UTR ${esc(a.old_utr)} → ${esc(a.new_utr)}`:a.new_utr?`UTR ${esc(a.new_utr)}`:'',a.reason?esc(a.reason):'',a.action==='setting_changed'?esc(d.key+' = '+JSON.stringify(d.value)):'',(a.action==='free_access'||a.action==='access_changed')&&d.plan?esc(PLAN(d.plan)+' until '+dt(d.until)):'',a.action==='price_changed'?esc(PLAN(d.plan)+': '+inr(d.monthly_before)+' → '+inr(d.monthly)+' a month, '+inr(d.yearly_before)+' → '+inr(d.yearly)+' a year'):'',a.action==='coupon_saved'?esc(d.code+' '+d.pct+'%'+(d.active===false?' (off)':'')):'',/^referral_/.test(a.action)&&d.code?esc('Code '+d.code+(d.friend?' · '+d.friend:'')+(d.reward?' · '+inr(d.reward):'')):''].filter(Boolean).join(' · ');
+  return `<tr><td data-l="When">${dtt(a.at)}</td><td data-l="What"><b>${esc(ACT[a.action]||a.action)}</b></td><td data-l="User">${esc(u.email||'–')}</td><td data-l="Details">${det||'–'}</td><td data-l="By">${ad?esc(ad.email):a.admin_id?'admin':'customer'}</td></tr>`}).join('')}</tbody></table></div>`:'<p class="empty">No activity yet.</p>'}</div>`}
 
 /* ── dialogs ── */
 function dialog(html,onOpen){const o=document.createElement('div');o.className='ov';o.innerHTML=`<div class="dlg" role="dialog" aria-modal="true">${html}</div>`;document.body.append(o);
- const close=()=>{o.remove();removeEventListener('keydown',k)},k=e=>{if(e.key==='Escape')close()};addEventListener('keydown',k);
- o.addEventListener('click',e=>{if(e.target===o||e.target.closest('[data-x]'))close()});onOpen&&onOpen(o,close);const f=o.querySelector('input,textarea,button');f&&f.focus()}
+ const prev=document.activeElement,close=()=>{o.remove();removeEventListener('keydown',k);prev&&prev.focus&&prev.focus()},k=e=>{if(e.key==='Escape')close()};addEventListener('keydown',k);
+ o.addEventListener('click',e=>{if(e.target===o||e.target.closest('[data-x]'))close()});onOpen&&onOpen(o,close);const f=o.querySelector('input:not([type=radio]):not([type=checkbox]),textarea,button');f&&f.focus();return close}
 
 const REASONS=['No payment with this UPI reference reached us.','The amount received does not match the amount due.','The UPI reference number is incomplete or incorrect.','This payment was made for a different order.'];
 function review(id){const p=S.pays.find(x=>x.id===id);if(!p)return;const u=uById(p.user_id);
@@ -308,45 +448,126 @@ function review(id){const p=S.pays.find(x=>x.id===id);if(!p)return;const u=uById
    close();toast(dec==='approve'?'Payment confirmed. The customer has been notified.':'Payment rejected. The customer has been notified.');load(true)};
   ok.onclick=()=>act('approve',ok);$('#doRej',o).onclick=e=>act('reject',e.currentTarget)})}
 
+/* one person: overview + every action */
 function manage(uid){const u=uById(uid);if(!u.user_id)return;const s=userState(u);
- const hist=S.pays.filter(p=>p.user_id===uid),def=u.expires_at&&u.active?new Date(u.expires_at):new Date(Date.now()+30*DAY);
- const iso=d=>new Date(d.getTime()-d.getTimezoneOffset()*6e4).toISOString().slice(0,10);
- dialog(`<h3>${esc(u.name||u.email)}</h3><p class="sub">${esc(u.email)} · <span class="pill ${s[0]}">${s[1]}</span></p>
-  <dl class="dl"><dt>Plan</dt><dd>${u.plan_id?esc(PLAN(u.plan_id))+(u.source==='free'?' (free)':''):'None'}</dd><dt>Ends</dt><dd>${u.expires_at?dt(u.expires_at):'–'}</dd><dt>Joined</dt><dd>${dt(u.signed_up)}</dd><dt>Last sign-in</dt><dd>${ago(u.last_sign_in)}</dd><dt>Paid in total</dt><dd>${inr(u.paid_total)}</dd></dl>
-  <div class="card" style="background:var(--bg2);margin:0 0 12px"><h2>Give access or change plan</h2><p class="sub">Free of charge, until the date you pick. Use it for friends, testers or to fix a mistake.</p>
-   <div class="fld"><label for="mp">Plan</label><select class="in" id="mp">${S.plans.map(p=>`<option value="${esc(p.id)}" ${p.id===(u.plan_id||'pro_plus')?'selected':''}>${esc(p.name)}</option>`).join('')}</select></div>
-   <div class="fld"><label for="md">Access until</label><input class="in" id="md" type="date" value="${iso(def)}"></div>
-   <div class="chips"><button type="button" data-add="30">+30 days</button><button type="button" data-add="90">+90 days</button><button type="button" data-add="365">+1 year</button><button type="button" data-add="end">End today</button></div>
-   <div class="fld"><label for="mn">Note (only you see this)</label><input class="in" id="mn" maxlength="200" placeholder="For example: tester, free for 3 months"></div>
-   <div class="foot" style="justify-content:flex-start"><button class="btn" id="mSave">Save access</button></div></div>
-  ${u.plan_id?`<div class="card" style="background:var(--bg2);margin:0 0 12px"><h2>${u.locked?'Unlock this user':'Lock this user'}</h2><p class="sub">${u.locked?'They get their plan back straight away, until its end date.':'The app locks at their next check, whatever their plan says. Use it to stop access or to make them pay first.'}</p>
+ const hist=S.pays.filter(p=>p.user_id===uid);
+ dialog(`<h3>${esc(u.name||u.email)}</h3><p class="sub">${esc(u.email)}${u.phone?' · '+esc(u.phone):''} · <span class="pill ${s[0]}">${s[1]}</span>${u.email_confirmed===false?' · <span class="pill p-wait">Email not confirmed</span>':''}</p>
+  <dl class="dl"><dt>Plan</dt><dd>${u.plan_id?esc(PLAN(u.plan_id))+(u.source==='free'?' (free)':' (paid)'):'No plan yet'}</dd><dt>Ends</dt><dd>${u.expires_at?dt(u.expires_at)+(u.active?' · '+daysTo(u.expires_at)+' days left':' · ended'):'–'}</dd><dt>Joined</dt><dd>${dt(u.signed_up)}</dd><dt>Last sign-in</dt><dd>${ago(u.last_sign_in)}</dd><dt>Paid in total</dt><dd>${inr(u.paid_total)}</dd></dl>
+  <div class="card" style="background:var(--bg2);margin:0 0 12px"><h2>${u.plan_id?'Change plan or dates':'Give a plan'}</h2><p class="sub">Pick the plan, Free or Paid, and how long. ${u.plan_id?'This replaces their current plan.':''}</p>
+   <div class="foot" style="justify-content:flex-start;margin-top:0"><button class="btn" id="mGrant">${u.plan_id?'Change plan':'Give access'}</button>${u.pending_payment?`<button class="btn o" data-rev="${esc(u.pending_payment)}">Review their payment</button>`:''}</div></div>
+  ${u.plan_id?`<div class="card" style="background:var(--bg2);margin:0 0 12px"><h2>Stop access</h2>
+   <p class="sub"><b>End access today:</b> their plan ends now and they must pay to get back in.<br><b>${u.locked?'Unlock':'Lock'}:</b> ${u.locked?'gives their plan back straight away, until its end date.':'pauses them without changing their plan or end date.'}</p>
    ${u.locked?'':'<div class="fld"><label for="ml">Reason (only you see this)</label><input class="in" id="ml" maxlength="200"></div>'}
-   <div class="foot" style="justify-content:flex-start"><button class="btn ${u.locked?'':'bad'}" id="mLock">${u.locked?'Unlock':'Lock now'}</button></div></div>`:''}
-  ${hist.length?`<h2 style="font-size:1rem;margin:6px 0 8px">Payment history</h2><div class="list">${hist.map(p=>{const st=PAYST[p.status];return `<div class="li"><span><b>${inr(p.expected_amount)} · ${esc(PLAN(p.plan_id))}</b><small>${dt(p.submitted_at)} · <span class="mono">${esc(p.utr)}</span></small></span><span class="pill ${st[0]}">${st[1]}</span></div>`}).join('')}</div>`:''}
+   <div class="foot" style="justify-content:flex-start">${u.active?'<button class="btn bad" id="mEnd">End access today</button>':''}<button class="btn ${u.locked?'':'o'}" id="mLock">${u.locked?'Unlock':'Lock'}</button></div></div>`:''}
+  <div class="card" style="background:var(--bg2);margin:0 0 12px"><h2>Private note</h2><p class="sub">Only admins see this. For example: pays in cash every month.</p>
+   <textarea class="in" id="mNote" maxlength="2000" aria-label="Private note">${esc(u.note||'')}</textarea>
+   <div class="foot" style="justify-content:flex-start"><button class="btn o" id="mNoteS">Save note</button><button class="btn o" data-copy="${esc(u.email)}">Copy email</button></div></div>
+  ${hist.length?`<h2 style="font-size:1rem;margin:6px 0 8px">Payment history</h2><div class="list">${hist.map(p=>{const st=PAYST[p.status];return `<div class="li"><span><b>${inr(p.expected_amount)} · ${esc(PLAN(p.plan_id))}, ${p.billing_interval==='year'?'yearly':'monthly'}</b><small>${dt(p.submitted_at)} · ${isCash(p)?'Cash or bank':`<span class="mono">${esc(p.utr)}</span>`}</small></span><span class="pill ${st[0]}">${st[1]}</span></div>`}).join('')}</div>`:'<p class="note">No payments yet.</p>'}
   <div class="foot"><button class="btn o" data-x>Close</button></div>`,(o,close)=>{
-  const d=$('#md',o);o.addEventListener('click',e=>{const a=e.target.closest('[data-add]');if(!a)return;if(a.dataset.add==='end'){d.value=iso(new Date());return}const base=d.value?new Date(d.value+'T12:00:00'):new Date();d.value=iso(new Date(base.getTime()+(+a.dataset.add)*DAY))});
-  $('#mSave',o).onclick=async e=>{const b=e.currentTarget;if(!d.value){toast('Pick a date.',true);return}
-   const until=new Date(d.value+'T23:59:59+05:30').toISOString();b.disabled=true;
-   const {error}=await sb.rpc('billing_set_access',{p_user:uid,p_plan:$('#mp',o).value,p_until:until,p_note:$('#mn',o).value.trim()||null});
-   b.disabled=false;if(error){toast(friendly(error),true);return}close();toast('Access saved.');load(true)};
+  $('#mGrant',o).onclick=()=>{close();grant([uid])};
+  const en=$('#mEnd',o);if(en)en.onclick=async()=>{if(!en.dataset.sure){en.dataset.sure=1;en.textContent='Tap again to end access now';return}
+   en.disabled=true;const {error}=await sb.rpc('billing_end_access',{p_user:uid,p_reason:(($('#ml',o)||{}).value||'').trim()||null});en.disabled=false;if(error){toast(friendly(error),true);return}close();toast('Access ended. They need to pay to use FinanceOS again.');load(true)};
   const lk=$('#mLock',o);if(lk)lk.onclick=async()=>{lk.disabled=true;const {error}=await sb.rpc('billing_set_locked',{p_user:uid,p_locked:!u.locked,p_reason:u.locked?null:(($('#ml',o)||{}).value||'').trim()||null});
-   lk.disabled=false;if(error){toast(friendly(error),true);return}close();toast(u.locked?'User unlocked.':'User locked.');load(true)}})}
+   lk.disabled=false;if(error){toast(friendly(error),true);return}close();toast(u.locked?'User unlocked.':'User locked.');load(true)};
+  $('#mNoteS',o).onclick=async e=>{const b=e.currentTarget;b.disabled=true;const {error}=await sb.rpc('billing_set_note',{p_user:uid,p_note:$('#mNote',o).value});b.disabled=false;if(error){toast(friendly(error),true);return}toast('Note saved.');load(true)}})}
 
-async function saveSettings(kind,btn){const pairs=kind==='pay'?[['payee_name',$('#s-payee').value.trim()],['confirm_hours',+$('#s-hours').value],['qr_image_url',$('#s-qr').value.trim()]]:[['remind_user_days',+$('#s-ru').value],['remind_admin_days',+$('#s-ra').value]];
+/* give access: one person or many */
+const DUR=[['30','1 month'],['90','3 months'],['180','6 months'],['365','1 year'],['date','Pick a date']];
+function grant(uids){uids=uids.filter(i=>uById(i).user_id);if(!uids.length){toast('Pick at least one person first.',true);return}
+ const one=uids.length===1?uById(uids[0]):null,cur=one&&one.plan_id?one.plan_id:(S.plans[S.plans.length-1]||{}).id;
+ const extendFrom=one&&one.active?new Date(one.expires_at):null;
+ dialog(`<h3>${one?(one.plan_id?'Change plan':'Give access')+': '+esc(one.name||one.email):'Give access to '+uids.length+' people'}</h3>
+  <p class="sub">${one?esc(one.email):uids.slice(0,4).map(i=>esc(uById(i).email)).join(', ')+(uids.length>4?' and '+(uids.length-4)+' more':'')}</p>
+  <div class="step"><i>1</i>Choose the plan</div>
+  <div class="pick" role="radiogroup" aria-label="Plan">${S.plans.map(p=>`<label><input type="radio" name="gp" value="${esc(p.id)}" ${p.id===cur?'checked':''}><b>${esc(p.name)}</b><small>${inr(p.monthly_inr)} a month</small><small>${inr(p.yearly_inr)} a year</small></label>`).join('')}</div>
+  <div class="step"><i>2</i>Free or paid?</div>
+  <div class="pick" role="radiogroup" aria-label="Access type"><label><input type="radio" name="gk" value="free" checked><b>Free</b><small>Friends, testers, a gift. No money.</small></label><label><input type="radio" name="gk" value="paid"><b>Paid outside the website</b><small>Cash, bank transfer or another UPI. Counts in revenue.</small></label></div>
+  <div class="fld hide" id="gAmtW"><label for="gAmt">Amount received from ${one?'them':'each person'} (₹)</label><input class="in" id="gAmt" type="number" min="1" inputmode="numeric"></div>
+  <div class="step"><i>3</i>For how long?</div>
+  <div class="pick" role="radiogroup" aria-label="How long">${DUR.map((d,i)=>`<label><input type="radio" name="gd" value="${d[0]}" ${i===0?'checked':''}><b>${d[1]}</b>${d[0]!=='date'?`<small>${d[0]} days</small>`:'<small>Any end date</small>'}</label>`).join('')}</div>
+  <div class="fld hide" id="gDateW"><label for="gDate">Access until</label><input class="in" id="gDate" type="date" value="${isoD(new Date(Date.now()+30*DAY))}"></div>
+  ${extendFrom?`<label class="tog"><input type="checkbox" id="gExt" checked> Add the time after their current end date (${dt(extendFrom)})</label>`:''}
+  <div class="fld"><label for="gNote">Reason (optional, only you see it)</label><input class="in" id="gNote" maxlength="200" placeholder="For example: paid cash on 26 Nov"></div>
+  <div class="sum" id="gSum" aria-live="polite"></div>
+  <div class="foot"><button class="btn o" data-x>Cancel</button><button class="btn" id="gGo">Give access</button></div>`,(o,close)=>{
+  const val=n=>($(`input[name="${n}"]:checked`,o)||{}).value;
+  const until=()=>{const d=val('gd');if(d==='date'){const v=$('#gDate',o).value;return v?new Date(v+'T23:59:59+05:30'):null}
+   const base=extendFrom&&$('#gExt',o)&&$('#gExt',o).checked?extendFrom.getTime():Date.now();return new Date(base+(+d)*DAY)};
+  const suggest=()=>{const p=S.plans.find(x=>x.id===val('gp'))||{},d=val('gd');const days=d==='date'?Math.max(1,daysTo(until()||new Date())):+d;return days>=365?Math.round(p.yearly_inr*days/365):Math.round(p.monthly_inr*Math.max(1,Math.round(days/30)))};
+  let amtTouched=false;$('#gAmt',o).oninput=()=>amtTouched=true;
+  const upd=()=>{const paid=val('gk')==='paid';$('#gAmtW',o).classList.toggle('hide',!paid);$('#gDateW',o).classList.toggle('hide',val('gd')!=='date');
+   if(paid&&!amtTouched)$('#gAmt',o).value=suggest();
+   $$('.pick label',o).forEach(l=>l.classList.toggle('on',l.querySelector('input').checked));
+   const u=until();$('#gSum',o).innerHTML=u?`<b>${esc(PLAN(val('gp')))}</b>, ${paid?'paid'+($('#gAmt',o).value?' '+inr($('#gAmt',o).value):''):'free'}, until <b>${dt(u)}</b> for ${one?esc(one.name||one.email):uids.length+' people'}. ${one&&one.plan_id?'This replaces their current plan.':''} They can use the app straight away.`:'Pick an end date.'};
+  o.addEventListener('change',upd);o.addEventListener('input',e=>{if(e.target.id==='gDate')upd()});upd();
+  $('#gGo',o).onclick=async e=>{const b=e.currentTarget,u=until(),paid=val('gk')==='paid',amt=paid?Math.round(+$('#gAmt',o).value):null;
+   if(!u||u<=new Date()){toast('Pick an end date after today.',true);return}if(paid&&!(amt>0)){toast('Enter the amount you received.',true);return}
+   b.disabled=true;b.textContent='Saving…';
+   const {data,error}=await sb.rpc('billing_grant',{p_users:uids,p_plan:val('gp'),p_until:u.toISOString(),p_kind:paid?'paid':'free',p_note:$('#gNote',o).value.trim()||null,p_amount:amt});
+   b.disabled=false;b.textContent='Give access';if(error){toast(friendly(error),true);return}
+   close();S.sel.clear();toast(`Done. ${PLAN(val('gp'))} given to ${data??uids.length} ${(data??uids.length)===1?'person':'people'} until ${dt(u)}.`);load(true)}})}
+
+function pickUser(){dialog(`<h3>Give someone access</h3><p class="sub">Search by name or email.</p><input class="in" id="pu" placeholder="Name or email" aria-label="Find a user" style="margin-top:12px"><div class="list" id="pul" style="margin-top:10px;max-height:50vh;overflow:auto"></div><div class="foot"><button class="btn o" data-x>Cancel</button></div>`,(o,close)=>{
+ const draw=()=>{const q=$('#pu',o).value.toLowerCase();$('#pul',o).innerHTML=S.users.filter(u=>!q||[u.email,u.name].join(' ').toLowerCase().includes(q)).slice(0,30).map(u=>{const s=userState(u);return `<button class="li" style="cursor:pointer;text-align:left;color:var(--tx);width:100%" data-pu="${esc(u.user_id)}"><span><b>${esc(u.name||u.email)}</b><small>${esc(u.email)}</small></span><span class="pill ${s[0]}">${s[1]}</span></button>`}).join('')||'<p class="empty">Nobody found.</p>'};
+ $('#pu',o).oninput=draw;draw();o.addEventListener('click',e=>{const b=e.target.closest('[data-pu]');if(b){close();grant([b.dataset.pu])}})})}
+
+/* saving */
+async function savePlan(id,btn){const m=Math.round(+$('#pm-'+id).value),y=Math.round(+$('#py-'+id).value),a=$('#pa-'+id).checked;
+ if(!(m>=1&&y>=1)){toast('Prices must be 1 rupee or more.',true);return}
+ if(y<m){toast('The yearly price is lower than the monthly price. Check the numbers.',true);return}
+ btn.disabled=true;const {error}=await sb.rpc('billing_set_plan',{p_plan:id,p_monthly:m,p_yearly:y,p_active:a});btn.disabled=false;
+ if(error){toast(friendly(error),true);return}toast(PLAN(id)+' saved. The website now shows '+inr(m)+' a month and '+inr(y)+' a year.');load(true)}
+async function saveCode(btn){const code=$('#cc').value.trim().toUpperCase(),pct=Math.round(+$('#cpct').value),mx=$('#cmax').value?Math.round(+$('#cmax').value):null;
+ if(!/^[A-Z0-9]{3,20}$/.test(code)){toast('Codes use 3 to 20 letters or numbers, no spaces.',true);return}
+ if(!(pct>=1&&pct<=90)){toast('The discount must be between 1 and 90 percent.',true);return}
+ btn.disabled=true;const {error}=await sb.rpc('billing_save_coupon',{p_code:code,p_pct:pct,p_first_only:$('#cfirst').checked,p_max_uses:mx,p_active:$('#cact').checked,p_show:$('#cshow').checked,p_label:$('#clabel').value.trim()||null});btn.disabled=false;
+ if(error){toast(friendly(error),true);return}toast('Code '+code+' saved.');load(true)}
+async function togCode(code){const c=S.coupons.find(x=>x.code===code);if(!c)return;
+ const {error}=await sb.rpc('billing_save_coupon',{p_code:c.code,p_pct:c.pct,p_first_only:c.first_order_only,p_max_uses:c.max_uses,p_active:!c.active,p_show:!!c.show_on_site,p_label:c.label||null});
+ if(error){toast(friendly(error),true);return}toast(c.code+(c.active?' switched off.':' switched on.'));load(true)}
+function editCode(code){const c=S.coupons.find(x=>x.code===code);if(!c)return;$('#cc').value=c.code;$('#cpct').value=c.pct;$('#cmax').value=c.max_uses??'';$('#cfirst').checked=!!c.first_order_only;$('#cact').checked=!!c.active;$('#cshow').checked=!!c.show_on_site;$('#clabel').value=c.label||'';$('#cc').scrollIntoView({behavior:'smooth',block:'center'});$('#cc').focus()}
+
+async function saveSettings(kind,btn){const pairs=kind==='pay'?[['payee_name',$('#s-payee').value.trim()],['confirm_hours',+$('#s-hours').value],['qr_image_url',$('#s-qr').value.trim()]]:kind==='ref'?[['referral_pct',+$('#s-rp').value],['referral_reward',+$('#s-rr').value],['referral_max_open',+$('#s-rm').value]]:[['remind_user_days',+$('#s-ru').value],['remind_admin_days',+$('#s-ra').value]];
+ if(kind==='ref'&&(pairs[0][1]>90)){toast('The discount must be 90% or less.',true);return}
  if(kind==='pay'&&!pairs[0][1]){toast('Enter the payee name.',true);return}
  if(pairs.some(([k,v])=>typeof v==='number'&&(!Number.isInteger(v)||v<1))){toast('Use whole numbers of 1 or more.',true);return}
  const qr=kind==='pay'&&pairs[2][1];if(qr&&!/^https:\/\//.test(qr)){toast('The QR link must start with https://',true);return}
  btn.disabled=true;for(const [k,v] of pairs){if(JSON.stringify(S.settings[k])===JSON.stringify(v))continue;const {error}=await sb.rpc('billing_set_setting',{p_key:k,p_value:v});if(error){btn.disabled=false;toast(friendly(error),true);return}}
  btn.disabled=false;toast('Settings saved.');load(true)}
 
+/* spreadsheet downloads */
+function csv(name,rows){const c=v=>{v=v==null?'':String(v);return /[",\n]/.test(v)?'"'+v.replace(/"/g,'""')+'"':v};
+ const blob=new Blob(['﻿'+rows.map(r=>r.map(c).join(',')).join('\r\n')],{type:'text/csv'});const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=name;document.body.append(a);a.click();setTimeout(()=>{URL.revokeObjectURL(a.href);a.remove()},500)}
+const day=t=>t?new Date(t).toLocaleDateString('en-CA',{timeZone:TZ}):'';
+function csvUsers(){csv('financeos-users-'+day(new Date())+'.csv',[['Name','Email','Phone','Status','Plan','Free or paid','Ends','Last sign-in','Joined','Paid total (INR)','Payments','Note'],...S.users.map(u=>[u.name,u.email,u.phone,userState(u)[1],u.plan_id?PLAN(u.plan_id):'',u.source==='free'?'Free':u.source?'Paid':'',day(u.expires_at),day(u.last_sign_in),day(u.signed_up),u.paid_total,u.payments,u.note])])}
+function csvPays(){csv('financeos-payments-'+day(new Date())+'.csv',[['Request','Name','Email','Plan','Billing','Amount (INR)','Code','UTR','Submitted','Status','Confirmed','Reason'],...S.pays.map(p=>{const u=uById(p.user_id);return [p.id,p.customer_name||u.name,u.email,PLAN(p.plan_id),p.billing_interval==='year'?'Yearly':'Monthly',p.expected_amount,p.coupon_code,isCash(p)?'Cash or bank':p.utr,day(p.submitted_at),(PAYST[p.status]||[])[1],day(p.verified_at),p.rejection_reason]})])}
+
 /* ── clicks ── */
 document.addEventListener('click',e=>{const t=e.target;
- const g=t.closest('[data-go]');if(g){go(g.dataset.go,g.dataset.f||null);return}
- const r=t.closest('[data-rev]');if(r){review(r.dataset.rev);return}
+ const g=t.closest('[data-go]');if(g){e.preventDefault();go(g.dataset.go,g.dataset.f||null);return}
+ const r=t.closest('[data-rev]');if(r){const ov=t.closest('.ov');if(ov)ov.remove();review(r.dataset.rev);return}
  const m=t.closest('[data-mng]');if(m){manage(m.dataset.mng);return}
  const pf=t.closest('[data-pf]');if(pf){S.payF=pf.dataset.pf;vPays();return}
  const uf=t.closest('[data-uf]');if(uf){S.userF=uf.dataset.uf;vUsers();return}
+ const sl=t.closest('[data-sel]');if(sl){const id=sl.dataset.sel;sl.checked?S.sel.add(id):S.sel.delete(id);vUsers();return}
  const sv=t.closest('[data-save]');if(sv){saveSettings(sv.dataset.save,sv);return}
+ const sp=t.closest('[data-saveplan]');if(sp){savePlan(sp.dataset.saveplan,sp);return}
+ const rfb=t.closest('[data-rf]');if(rfb){S.refF=rfb.dataset.rf;vRefs();return}
+ const rpb=t.closest('[data-refpay]');if(rpb){if(!rpb.dataset.sure){rpb.dataset.sure=1;rpb.textContent='Tap again: reward sent';return}setRef(rpb.dataset.refpay,'rewarded','',rpb);return}
+ const rjb=t.closest('[data-refrej]');if(rjb){rejectRef(rjb.dataset.refrej);return}
+ const rub=t.closest('[data-refundo]');if(rub){const r=S.refs.find(x=>x.code===rub.dataset.refundo);setRef(rub.dataset.refundo,r&&r.used_by?'reward_due':'issued','',rub);return}
+ const ec=t.closest('[data-editcode]');if(ec){editCode(ec.dataset.editcode);return}
+ const tc=t.closest('[data-togcode]');if(tc){togCode(tc.dataset.togcode);return}
+ const a=t.closest('[data-act]');if(a){const k=a.dataset.act;
+  if(k==='selall'){const rows=userRows(),on=rows.length&&rows.every(u=>S.sel.has(u.user_id));rows.forEach(u=>on?S.sel.delete(u.user_id):S.sel.add(u.user_id));vUsers()}
+  else if(k==='selnone'){S.sel.clear();vUsers()}
+  else if(k==='grant-sel')grant([...S.sel]);
+  else if(k==='grant-pick')pickUser();
+  else if(k==='csv')csvUsers();
+  else if(k==='csvp')csvPays();
+  else if(k==='savecode')saveCode(a);
+  else if(k==='install')install();
+  return}
  const cp=t.closest('[data-copy]');if(cp){(navigator.clipboard?navigator.clipboard.writeText(cp.dataset.copy):Promise.reject()).then(()=>toast('Copied')).catch(()=>toast(cp.dataset.copy))}});
 
 boot();
