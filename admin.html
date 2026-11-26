@@ -204,7 +204,7 @@ try{sb=window.supabase.createClient(SUPABASE_URL,SUPABASE_ANON_KEY,{auth:{persis
 const S={tab:'home',users:[],pays:[],audit:[],plans:[],coupons:[],refs:[],refF:'reward_due',settings:{},me:null,payF:'pending',userF:'all',q:'',loading:false,sel:new Set(),v5:true};
 const PLAN=id=>(S.plans.find(p=>p.id===id)||{name:id||'–'}).name;
 const PAYST={pending_verification:['p-wait','Pending'],verified:['p-ok','Confirmed'],rejected:['p-bad','Rejected']};
-const userState=u=>u.is_admin&&!u.plan_id?['p-info','Admin']:u.locked?['p-bad','Locked']:u.pending_payment&&!u.active?['p-wait','Payment pending']:!u.plan_id?['p-mu','No plan yet']:!u.active?['p-bad','Expired']:u.source==='free'?['p-info','Free']:daysTo(u.expires_at)<=10?['p-wait','Ending soon']:['p-ok','Active'];
+const userState=u=>u.is_admin&&!u.plan_id?['p-info','Admin']:u.locked?['p-bad','Blocked']:u.pending_payment&&!u.active?['p-wait','Payment pending']:!u.plan_id?['p-mu','No plan yet']:!u.active?['p-bad','Expired']:u.source==='free'?['p-info','Free']:daysTo(u.expires_at)<=10?['p-wait','Ending soon']:['p-ok','Active'];
 const isCash=p=>/^CASH/.test(p.utr||'');
 
 function toast(m,bad){document.querySelectorAll('.toast').forEach(x=>x.remove());const t=document.createElement('div');t.className='toast'+(bad?' bad':'');t.setAttribute('role','status');t.textContent=m;document.body.append(t);setTimeout(()=>t.remove(),4200)}
@@ -331,8 +331,8 @@ function vPays(){head('Payments','Confirm a payment only after you see the exact
   <td data-l="">${p.status==='pending_verification'?`<div class="acts-c"><button class="btn sm" data-rev="${esc(p.id)}">Review</button></div>`:''}</td></tr>`}).join('')}</tbody></table></div>`:'<p class="empty">No payments here.</p>'}</div>`;
  const qi=$('#q');qi.oninput=()=>{S.q=qi.value;const pos=qi.selectionStart;vPays();const n=$('#q');n.focus();n.setSelectionRange(pos,pos)}}
 
-const UF=[['all','All'],['active','Active'],['none','No plan yet'],['pending','Payment pending'],['soon','Ending soon'],['expired','Expired or locked'],['free','Free'],['paid','Paying']];
-const ufil=f=>({all:()=>true,active:u=>u.active,pending:u=>!!u.pending_payment,soon:u=>u.active&&daysTo(u.expires_at)<=10,expired:u=>u.plan_id&&!u.active,free:u=>u.source==='free'&&u.active,paid:u=>u.source==='payment'&&u.active,none:u=>!u.plan_id}[f]||(()=>true));
+const UF=[['all','All'],['active','Active'],['none','No plan yet'],['pending','Payment pending'],['soon','Ending soon'],['expired','Expired or locked'],['free','Free'],['paid','Paying'],['blocked','Blocked']];
+const ufil=f=>({all:()=>true,active:u=>u.active,pending:u=>!!u.pending_payment,soon:u=>u.active&&daysTo(u.expires_at)<=10,expired:u=>u.plan_id&&!u.active,free:u=>u.source==='free'&&u.active,paid:u=>u.source==='payment'&&u.active,blocked:u=>u.locked,none:u=>!u.plan_id}[f]||(()=>true));
 const userRows=()=>{const q=S.q.toLowerCase();return S.users.filter(ufil(S.userF)).filter(u=>!q||[u.email,u.name,u.phone,u.note].join(' ').toLowerCase().includes(q))};
 function vUsers(){head('Users','Everyone with a FinanceOS login. Tick people to give access to many at once, or tap Manage for one person.');
  const rows=userRows(),allOn=rows.length&&rows.every(u=>S.sel.has(u.user_id));
@@ -346,7 +346,7 @@ function vUsers(){head('Users','Everyone with a FinanceOS login. Tick people to 
   <td data-l="Last sign-in">${ago(u.last_sign_in)}</td>
   <td data-l="Paid" class="num">${inr(u.paid_total)}<small>${u.payments} payment${u.payments===1?'':'s'}</small></td>
   <td data-l=""><div class="acts-c">${u.pending_payment?`<button class="btn sm" data-rev="${esc(u.pending_payment)}">Review payment</button>`:''}<button class="btn o sm" data-mng="${esc(u.user_id)}">Manage</button></div></td></tr>`}).join('')}</tbody></table></div>`:'<p class="empty">No users match.</p>'}
- ${S.sel.size?`<div class="bulk" role="region" aria-label="Selected users"><b>${S.sel.size} selected</b><span style="display:flex;gap:8px;flex-wrap:wrap"><button class="btn o sm" data-act="selnone">Clear</button><button class="btn sm" data-act="grant-sel">Give access to ${S.sel.size}</button></span></div>`:''}</div>`;
+ ${S.sel.size?`<div class="bulk" role="region" aria-label="Selected users"><b>${S.sel.size} selected</b><span style="display:flex;gap:8px;flex-wrap:wrap"><button class="btn o sm" data-act="selnone">Clear</button><button class="btn o sm" data-act="block-sel">Block ${S.sel.size}</button><button class="btn o sm" data-act="unblock-sel">Unblock ${S.sel.size}</button><button class="btn sm" data-act="grant-sel">Give access to ${S.sel.size}</button></span></div>`:''}</div>`;
  const qi=$('#q');qi.oninput=()=>{S.q=qi.value;const pos=qi.selectionStart;vUsers();const n=$('#q');n.focus();n.setSelectionRange(pos,pos)}}
 
 function vPlans(){head('Plans & prices','Change what each plan costs. The website and checkout use the new price straight away.');
@@ -419,7 +419,7 @@ function vSet(){head('Settings','What customers see on the website. Changes appl
  <div class="card"><h2>Prices and discount codes</h2><p class="sub" style="margin:0">These have their own pages now: <a href="#plans" data-go="plans">Plans &amp; prices</a> and <a href="#codes" data-go="codes">Discount codes</a>.</p></div>
  <div class="card"><h2>This app</h2><p class="sub" style="margin:0">Install the Command Center on your phone or computer so it opens like an app.</p><div class="foot" style="justify-content:flex-start"><button class="btn o" data-act="install">How to install</button></div></div>`}
 
-const ACT={submitted:'Payment submitted',reference_corrected:'UTR corrected',approved:'Payment confirmed',rejected:'Payment rejected',free_access:'Free access given',access_changed:'Paid access given (cash or bank)',access_ended:'Access ended',referral_created:'Referral created',referral_reward_due:'Referral reward due',referral_rewarded:'Referral reward paid',referral_rejected:'Referral rejected',referral_issued:'Referral reopened',locked:'User locked',unlocked:'User unlocked',setting_changed:'Setting changed',price_changed:'Price changed',coupon_saved:'Discount code saved'};
+const ACT={submitted:'Payment submitted',reference_corrected:'UTR corrected',approved:'Payment confirmed',rejected:'Payment rejected',free_access:'Free access given',access_changed:'Paid access given (cash or bank)',access_ended:'Access ended',referral_created:'Referral created',referral_reward_due:'Referral reward due',referral_rewarded:'Referral reward paid',referral_rejected:'Referral rejected',referral_issued:'Referral reopened',locked:'User blocked',unlocked:'User unblocked',blocked:'User blocked',unblocked:'User unblocked',setting_changed:'Setting changed',price_changed:'Price changed',coupon_saved:'Discount code saved'};
 function vAct(){head('Activity','Every payment and access change, newest first. Nothing here can be edited.');
  $('#view').innerHTML=`<div class="card">${S.audit.length?`<div class="tw"><table class="rsp"><thead><tr><th>When</th><th>What</th><th>User</th><th>Details</th><th>By</th></tr></thead><tbody>${S.audit.map(a=>{const u=uById(a.user_id),ad=a.admin_id?uById(a.admin_id):null,d=a.details||{};const det=[a.payment_id?`<span class="mono">${esc(a.payment_id)}</span>`:'',a.old_utr?`UTR ${esc(a.old_utr)} → ${esc(a.new_utr)}`:a.new_utr?`UTR ${esc(a.new_utr)}`:'',a.reason?esc(a.reason):'',a.action==='setting_changed'?esc(d.key+' = '+JSON.stringify(d.value)):'',(a.action==='free_access'||a.action==='access_changed')&&d.plan?esc(PLAN(d.plan)+' until '+dt(d.until)):'',a.action==='price_changed'?esc(PLAN(d.plan)+': '+inr(d.monthly_before)+' → '+inr(d.monthly)+' a month, '+inr(d.yearly_before)+' → '+inr(d.yearly)+' a year'):'',a.action==='coupon_saved'?esc(d.code+' '+d.pct+'%'+(d.active===false?' (off)':'')):'',/^referral_/.test(a.action)&&d.code?esc('Code '+d.code+(d.friend?' · '+d.friend:'')+(d.reward?' · '+inr(d.reward):'')):''].filter(Boolean).join(' · ');
   return `<tr><td data-l="When">${dtt(a.at)}</td><td data-l="What"><b>${esc(ACT[a.action]||a.action)}</b></td><td data-l="User">${esc(u.email||'–')}</td><td data-l="Details">${det||'–'}</td><td data-l="By">${ad?esc(ad.email):a.admin_id?'admin':'customer'}</td></tr>`}).join('')}</tbody></table></div>`:'<p class="empty">No activity yet.</p>'}</div>`}
@@ -455,10 +455,10 @@ function manage(uid){const u=uById(uid);if(!u.user_id)return;const s=userState(u
   <dl class="dl"><dt>Plan</dt><dd>${u.plan_id?esc(PLAN(u.plan_id))+(u.source==='free'?' (free)':' (paid)'):'No plan yet'}</dd><dt>Ends</dt><dd>${u.expires_at?dt(u.expires_at)+(u.active?' · '+daysTo(u.expires_at)+' days left':' · ended'):'–'}</dd><dt>Joined</dt><dd>${dt(u.signed_up)}</dd><dt>Last sign-in</dt><dd>${ago(u.last_sign_in)}</dd><dt>Paid in total</dt><dd>${inr(u.paid_total)}</dd></dl>
   <div class="card" style="background:var(--bg2);margin:0 0 12px"><h2>${u.plan_id?'Change plan or dates':'Give a plan'}</h2><p class="sub">Pick the plan, Free or Paid, and how long. ${u.plan_id?'This replaces their current plan.':''}</p>
    <div class="foot" style="justify-content:flex-start;margin-top:0"><button class="btn" id="mGrant">${u.plan_id?'Change plan':'Give access'}</button>${u.pending_payment?`<button class="btn o" data-rev="${esc(u.pending_payment)}">Review their payment</button>`:''}</div></div>
-  ${u.plan_id?`<div class="card" style="background:var(--bg2);margin:0 0 12px"><h2>Stop access</h2>
-   <p class="sub"><b>End access today:</b> their plan ends now and they must pay to get back in.<br><b>${u.locked?'Unlock':'Lock'}:</b> ${u.locked?'gives their plan back straight away, until its end date.':'pauses them without changing their plan or end date.'}</p>
-   ${u.locked?'':'<div class="fld"><label for="ml">Reason (only you see this)</label><input class="in" id="ml" maxlength="200"></div>'}
-   <div class="foot" style="justify-content:flex-start">${u.active?'<button class="btn bad" id="mEnd">End access today</button>':''}<button class="btn ${u.locked?'':'o'}" id="mLock">${u.locked?'Unlock':'Lock'}</button></div></div>`:''}
+  <div class="card ${u.locked?'danger':''}" style="background:var(--bg2);margin:0 0 12px"><h2>${u.locked?'This user is blocked':'Block or stop access'}</h2>
+   <p class="sub">${u.locked?`They see: <i>"${esc(S.settings.block_message||'Please complete your monthly subscription to access FinanceOS.')}"</i> in the app and on the website.${u.block_reason?'<br>Your reason: '+esc(u.block_reason):''}<br><b>Unblock</b> gives back whatever plan they had, until its end date. Confirming a payment from them or giving them access also unblocks them.`:`<b>Block:</b> they cannot use the app and are asked to complete their monthly subscription, with your support email. Works for anyone, with or without a plan.${u.active?'<br><b>End access today:</b> their plan ends now and they must pay to get back in.':''}`}</p>
+   ${u.locked||u.is_admin?'':'<div class="fld"><label for="ml">Reason (only you see this)</label><input class="in" id="ml" maxlength="200" placeholder="For example: payment overdue"></div>'}
+   <div class="foot" style="justify-content:flex-start">${u.is_admin?'<p class="note" style="margin:0">Admin accounts cannot be blocked.</p>':`${u.active&&!u.locked?'<button class="btn o" id="mEnd">End access today</button>':''}<button class="btn ${u.locked?'':'bad'}" id="mLock">${u.locked?'Unblock':'Block user'}</button>`}</div></div>
   <div class="card" style="background:var(--bg2);margin:0 0 12px"><h2>Private note</h2><p class="sub">Only admins see this. For example: pays in cash every month.</p>
    <textarea class="in" id="mNote" maxlength="2000" aria-label="Private note">${esc(u.note||'')}</textarea>
    <div class="foot" style="justify-content:flex-start"><button class="btn o" id="mNoteS">Save note</button><button class="btn o" data-copy="${esc(u.email)}">Copy email</button></div></div>
@@ -467,8 +467,8 @@ function manage(uid){const u=uById(uid);if(!u.user_id)return;const s=userState(u
   $('#mGrant',o).onclick=()=>{close();grant([uid])};
   const en=$('#mEnd',o);if(en)en.onclick=async()=>{if(!en.dataset.sure){en.dataset.sure=1;en.textContent='Tap again to end access now';return}
    en.disabled=true;const {error}=await sb.rpc('billing_end_access',{p_user:uid,p_reason:(($('#ml',o)||{}).value||'').trim()||null});en.disabled=false;if(error){toast(friendly(error),true);return}close();toast('Access ended. They need to pay to use FinanceOS again.');load(true)};
-  const lk=$('#mLock',o);if(lk)lk.onclick=async()=>{lk.disabled=true;const {error}=await sb.rpc('billing_set_locked',{p_user:uid,p_locked:!u.locked,p_reason:u.locked?null:(($('#ml',o)||{}).value||'').trim()||null});
-   lk.disabled=false;if(error){toast(friendly(error),true);return}close();toast(u.locked?'User unlocked.':'User locked.');load(true)};
+  const lk=$('#mLock',o);if(lk)lk.onclick=async()=>{lk.disabled=true;const args={p_user:uid,p_blocked:!u.locked,p_reason:u.locked?null:(($('#ml',o)||{}).value||'').trim()||null};let {error}=await sb.rpc('billing_set_blocked',args);if(error&&/find the function|does not exist|PGRST202/i.test((error.message||'')+(error.code||''))){if(!u.plan_id){lk.disabled=false;toast('Run SQL file 6 (06-block-users.sql) in Supabase to block people who have no plan yet.',true);return}({error}=await sb.rpc('billing_set_locked',{p_user:uid,p_locked:args.p_blocked,p_reason:args.p_reason}))}
+   lk.disabled=false;if(error){toast(friendly(error),true);return}close();toast(u.locked?'User unblocked. They can use FinanceOS again.':'User blocked. They are asked to complete their subscription.');load(true)};
   $('#mNoteS',o).onclick=async e=>{const b=e.currentTarget;b.disabled=true;const {error}=await sb.rpc('billing_set_note',{p_user:uid,p_note:$('#mNote',o).value});b.disabled=false;if(error){toast(friendly(error),true);return}toast('Note saved.');load(true)}})}
 
 /* give access: one person or many */
@@ -510,6 +510,11 @@ function grant(uids){uids=uids.filter(i=>uById(i).user_id);if(!uids.length){toas
 function pickUser(){dialog(`<h3>Give someone access</h3><p class="sub">Search by name or email.</p><input class="in" id="pu" placeholder="Name or email" aria-label="Find a user" style="margin-top:12px"><div class="list" id="pul" style="margin-top:10px;max-height:50vh;overflow:auto"></div><div class="foot"><button class="btn o" data-x>Cancel</button></div>`,(o,close)=>{
  const draw=()=>{const q=$('#pu',o).value.toLowerCase();$('#pul',o).innerHTML=S.users.filter(u=>!q||[u.email,u.name].join(' ').toLowerCase().includes(q)).slice(0,30).map(u=>{const s=userState(u);return `<button class="li" style="cursor:pointer;text-align:left;color:var(--tx);width:100%" data-pu="${esc(u.user_id)}"><span><b>${esc(u.name||u.email)}</b><small>${esc(u.email)}</small></span><span class="pill ${s[0]}">${s[1]}</span></button>`}).join('')||'<p class="empty">Nobody found.</p>'};
  $('#pu',o).oninput=draw;draw();o.addEventListener('click',e=>{const b=e.target.closest('[data-pu]');if(b){close();grant([b.dataset.pu])}})})}
+
+/* block or unblock many people */
+async function bulkBlock(ids,on){ids=ids.filter(i=>{const u=uById(i);return u.user_id&&!u.is_admin&&!!u.locked!==on});let n=0,err=null;
+ for(const id of ids){const {error}=await sb.rpc('billing_set_blocked',{p_user:id,p_blocked:on,p_reason:on?'Blocked from the Users list':null});if(error){err=error;break}n++}
+ if(err)toast(friendly(err).replace('SQL file 5','SQL file 6').replace('05-admin-extras.sql','06-block-users.sql'),true);else toast((on?'Blocked ':'Unblocked ')+n+' '+(n===1?'person':'people')+'.');S.sel.clear();load(true)}
 
 /* saving */
 async function savePlan(id,btn){const m=Math.round(+$('#pm-'+id).value),y=Math.round(+$('#py-'+id).value),a=$('#pa-'+id).checked;
@@ -562,6 +567,7 @@ document.addEventListener('click',e=>{const t=e.target;
   if(k==='selall'){const rows=userRows(),on=rows.length&&rows.every(u=>S.sel.has(u.user_id));rows.forEach(u=>on?S.sel.delete(u.user_id):S.sel.add(u.user_id));vUsers()}
   else if(k==='selnone'){S.sel.clear();vUsers()}
   else if(k==='grant-sel')grant([...S.sel]);
+  else if(k==='block-sel'||k==='unblock-sel'){const on=k==='block-sel';if(!a.dataset.sure){a.dataset.sure=1;a.textContent='Tap again to '+(on?'block ':'unblock ')+S.sel.size;return}bulkBlock([...S.sel],on)}
   else if(k==='grant-pick')pickUser();
   else if(k==='csv')csvUsers();
   else if(k==='csvp')csvPays();
