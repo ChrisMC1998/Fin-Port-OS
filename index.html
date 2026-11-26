@@ -2221,7 +2221,7 @@ html{overscroll-behavior-y:none}
 <div class="gq-f"><button class="btn gq-b" id="gqUse" type="button">Use this message</button><span class="gq-n">Fills the form on this page. You can edit it before sending.</span></div>
 <div class="gq-bar" aria-hidden="true"><i id="gqPg"></i></div></div></div>
 <div class="cr" style="display:grid;gap:20px"><div class="card chartcard" style="padding:22px"><div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px"><div><small style="color:var(--mu)">Net worth</small><h3 id="cv" style="font-size:1.9rem"></h3><small id="cc"></small></div><div class="seg" id="cr" style="margin:0"><button class="on" data-r="1M">1M</button><button data-r="6M">6M</button><button data-r="1Y">1Y</button></div></div><svg id="cs" viewBox="0 0 400 160" style="width:100%;margin-top:10px;touch-action:pan-y" role="img" aria-label="Net worth trend chart"></svg><div class="kpis" style="margin:12px 0 0"><div class="kpi"><small>Portfolio</small><strong class="up">+12.4%</strong></div><div class="kpi"><small>Savings rate</small><strong>39%</strong></div><div class="kpi"><small>Loans paid</small><strong>₹25K</strong></div></div></div>
-<div class="card" style="padding:clamp(20px,3vw,32px)"><h3>Send a message</h3><div class="f"><input id="cn" placeholder="Your name"><input id="ce" placeholder="Your email"><select id="ct"><option>I’m an individual</option><option>I’m an investor</option><option>I represent a business</option></select><textarea id="cm" rows="5" placeholder="How can we help?"></textarea><button class="btn" id="send">Send message</button></div><p class="lead" style="font-size:.85rem">This opens your email app with your message ready to send to us.</p></div><div class="card blk cnext rvl"><h3>Not ready to write yet?</h3><p>Get a feel for FinanceOS first. Each of these takes about two minutes.</p><div class="cn-l"><a class="cn-t" href="#features" style="--k:0"><i><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M13 2L4 14h7l-1 8 9-12h-7z"/></svg></i><span><b>Try the features live</b><small>Open any feature and use it right in your browser</small></span><em>&rarr;</em></a><a class="cn-t" href="#faq" style="--k:1"><i><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M9.5 9.5a2.5 2.5 0 114 2c-.9.6-1.5 1.1-1.5 2.2M12 17h.01"/></svg></i><span><b>Read the common questions</b><small>Plans, privacy, setup and how it all works</small></span><em>&rarr;</em></a><a class="cn-t" href="#privacy" style="--k:2"><i><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3l8 3v6c0 5-3.4 8-8 9-4.6-1-8-4-8-9V6z"/><path d="M9 12l2 2 4-4"/></svg></i><span><b>See how your data is protected</b><small>Device-only mode, encryption and app locks</small></span><em>&rarr;</em></a></div></div></div></div></section>
+<div class="card" style="padding:clamp(20px,3vw,32px)"><h3>Send a message</h3><div class="f"><input id="cn" autocomplete="name" placeholder="Your name"><input id="cf-email" type="email" autocomplete="email" placeholder="Your email"><select id="ct"><option>I’m an individual</option><option>I’m an investor</option><option>I represent a business</option></select><textarea id="cm" rows="5" placeholder="How can we help?"></textarea><button class="btn" id="send">Send message</button></div><p class="lead" style="font-size:.85rem">This opens your email app with your message ready to send to us.</p></div><div class="card blk cnext rvl"><h3>Not ready to write yet?</h3><p>Get a feel for FinanceOS first. Each of these takes about two minutes.</p><div class="cn-l"><a class="cn-t" href="#features" style="--k:0"><i><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M13 2L4 14h7l-1 8 9-12h-7z"/></svg></i><span><b>Try the features live</b><small>Open any feature and use it right in your browser</small></span><em>&rarr;</em></a><a class="cn-t" href="#faq" style="--k:1"><i><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M9.5 9.5a2.5 2.5 0 114 2c-.9.6-1.5 1.1-1.5 2.2M12 17h.01"/></svg></i><span><b>Read the common questions</b><small>Plans, privacy, setup and how it all works</small></span><em>&rarr;</em></a><a class="cn-t" href="#privacy" style="--k:2"><i><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3l8 3v6c0 5-3.4 8-8 9-4.6-1-8-4-8-9V6z"/><path d="M9 12l2 2 4-4"/></svg></i><span><b>See how your data is protected</b><small>Device-only mode, encryption and app locks</small></span><em>&rarr;</em></a></div></div></div></div></section>
 
 
 <section class="page" id="p-catalog">
@@ -2832,7 +2832,20 @@ const EMAIL='financeosdesk@gmail.com';
 const mail=(a,b)=>`mailto:${EMAIL}?subject=${encodeURIComponent(a)}&body=${encodeURIComponent(b)}`;
 $('#em').textContent=EMAIL;$('#ml').href=mail('FinanceOS enquiry','');
 $('#cp').onclick=async()=>{try{await navigator.clipboard.writeText(EMAIL);toast('Email copied')}catch(e){toast(EMAIL)}};
-$('#send').onclick=()=>{const n=$('#cn').value.trim(),e=$('#ce').value.trim(),m=$('#cm').value.trim();if(!n||!e||!m)return toast('Please fill in your name, email and message');const a=document.createElement('a');a.href=mail('FinanceOS enquiry ('+$('#ct').value+')','Name: '+n+'\nEmail: '+e+'\n\n'+m);a.target='_blank';a.rel='noopener';document.body.append(a);a.click();a.remove();toast('Opening your email app')};
+$('#send').onclick=()=>{const g=k=>document.getElementById(k),enc=encodeURIComponent,n=g('cn').value.trim(),e=g('cf-email').value.trim(),m=g('cm').value.trim();
+ if(!n||!e||!m)return toast('Please fill in your name, email and message');
+ if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(e))return toast('Please check your email address');
+ const su='FinanceOS enquiry ('+g('ct').value+')',bd='Name: '+n+'\nEmail: '+e+'\n\n'+m;
+ try{location.href=mail(su,bd)}catch(_){}
+ let x=g('cf-alt');if(!x){x=document.createElement('div');x.id='cf-alt';x.setAttribute('role','status');g('send').insertAdjacentElement('afterend',x)}
+ const B='display:inline-block;padding:8px 14px;border-radius:10px;border:1px solid rgba(52,211,153,.55);color:#6ee7b7;background:#000;font:inherit;font-size:.85rem;font-weight:600;text-decoration:none;cursor:pointer';
+ x.style.cssText='margin-top:4px;padding:12px 14px;border-radius:14px;background:rgba(16,185,129,.1);border:1px solid rgba(52,211,153,.35)';
+ x.innerHTML='<p style="margin:0 0 8px;font-size:.88rem">Your email app should open now with the message ready. If it did not, send it with:</p><div style="display:flex;flex-wrap:wrap;gap:8px">'+
+  '<a style="'+B+'" target="_blank" rel="noopener" href="https://mail.google.com/mail/?view=cm&fs=1&to='+enc(EMAIL)+'&su='+enc(su)+'&body='+enc(bd)+'">Gmail</a>'+
+  '<a style="'+B+'" target="_blank" rel="noopener" href="https://outlook.live.com/mail/0/deeplink/compose?to='+enc(EMAIL)+'&subject='+enc(su)+'&body='+enc(bd)+'">Outlook</a>'+
+  '<button type="button" id="cf-copy" style="'+B+'">Copy message</button></div><p style="margin:8px 0 0;font-size:.8rem;opacity:.8">Or write to us at <a href="mailto:'+EMAIL+'" style="color:inherit;font-weight:600">'+EMAIL+'</a>.</p>';
+ g('cf-copy').onclick=()=>{const t='To: '+EMAIL+'\nSubject: '+su+'\n\n'+bd;Promise.resolve().then(()=>navigator.clipboard.writeText(t)).then(()=>toast('Message copied. Paste it into a new email to '+EMAIL),()=>toast('Please email us at '+EMAIL))};
+ toast('Opening your email app')};
 
 /* Referrals: a logged-in member creates a code for one friend. The server stores it, checks it at checkout
    (first payment only, never your own code), and marks the reward due when FinanceOS confirms the friend's payment. */
@@ -3334,14 +3347,14 @@ const AC=(()=>{
   if(o&&!o.error){offers=o.data||[];dispatchEvent(new Event('fos:prices'))}
   if(a.error||b.error)return;const st=Object.fromEntries((b.data||[]).map(r=>[r.key,r.value]));applyCfg(a.data,st,true);try{localStorage.setItem(PK,JSON.stringify({plans:a.data,settings:st,offers}))}catch(e){}}catch(e){}};
  /* account cache */
- let me=null,acc=null,pays=[],ready=false;
+ let me=null,acc=null,pays=[],ready=false,blk=null;
  const mapPay=p=>({id:p.id,plan:NM(p.plan_id),planId:p.plan_id,b:p.billing_interval==='year'?'y':'m',renewal:!!p.is_renewal,total:p.expected_amount,coupon:p.coupon_code||'',utr:p.utr||'',status:p.status,date:Date.parse(p.created_at||p.submitted_at)||0,submittedAt:Date.parse(p.submitted_at)||0,verifiedAt:Date.parse(p.verified_at)||0,reason:p.rejection_reason||'',cash:/^CASH/.test(p.utr||'')});
  const refresh=async()=>{if(!sb){ready=true;return null}
   try{const {data}=await sb.auth.getSession();const s=data&&data.session;
-   if(!s){me=null;acc=null;pays=[];ready=true;return null}
+   if(!s){me=null;acc=null;pays=[];blk=null;ready=true;return null}
    me={id:s.user.id,email:s.user.email,name:(s.user.user_metadata&&(s.user.user_metadata.name||s.user.user_metadata.full_name))||''};
    const [a,p]=await Promise.all([sb.rpc('billing_my_access'),sb.from('billing_payments').select('*').eq('user_id',s.user.id).not('utr','is',null).order('submitted_at',{ascending:true})]);
-   if(!a.error){const r=(a.data||[])[0]||null;acc=r&&r.plan_id?r:null}
+   if(!a.error){const r=(a.data||[])[0]||null;acc=r&&r.plan_id?r:null;blk=r&&r.blocked?(r.block_message||'Please complete your monthly subscription to access FinanceOS.'):null}
    if(!p.error)pays=(p.data||[]).map(mapPay);
   }catch(e){}
   ready=true;return cur()};
@@ -3349,7 +3362,7 @@ const AC=(()=>{
   const exp=acc&&acc.expires_at?Date.parse(acc.expires_at):0;
   const sub=acc?{plan:acc.plan_name||NM(acc.plan_id),planId:acc.plan_id,b:acc.billing_interval==='year'?'y':acc.billing_interval==='month'?'m':'',expiry:exp,source:acc.source,locked:!!acc.locked}:null;
   const active=!!acc&&!!acc.active;
-  return{name:me.name,email:me.email,paid:active,expired:!!sub&&!active,locked:!!(sub&&sub.locked),plan:sub?sub.plan:'',sub,orders,last,pending:orders.some(o=>o.status==='pending_verification'),app:sub?{status:active?'active':'pending'}:null,free:!!sub&&sub.source==='free'}};
+  return{name:me.name,email:me.email,paid:active,expired:!!sub&&!active,locked:!!(sub&&sub.locked),plan:sub?sub.plan:'',sub,orders,last,pending:orders.some(o=>o.status==='pending_verification'),app:sub?{status:active?'active':'pending'}:null,free:!!sub&&sub.source==='free',blocked:!!blk,blockMsg:blk||''}};
  /* sign up, log in, log out */
  const signUp=async(name,email,pw,consent)=>{if(!sb)return NO_SB;
   const {data,error}=await sb.auth.signUp({email,password:pw,options:{data:{name,full_name:name,app_registration_consent:!!consent,consent_at:new Date().toISOString()},emailRedirectTo:location.origin+location.pathname}});
@@ -3360,7 +3373,7 @@ const AC=(()=>{
  const logIn=async(email,pw)=>{if(!sb)return NO_SB;const {error}=await sb.auth.signInWithPassword({email,password:pw});
   if(error)return /confirm/i.test(error.message)?'Please confirm your email first. Open the link we sent to '+email+', then log in.':'Email or password is not right.';
   await refresh();return ''};
- const logOut=()=>{me=null;acc=null;pays=[];if(sb)sb.auth.signOut().catch(()=>{})};
+ const logOut=()=>{me=null;acc=null;pays=[];blk=null;if(sb)sb.auth.signOut().catch(()=>{})};
  /* payments: the server makes the request, works out the amount and checks everything */
  const request=async(planName,b,code)=>{if(!sb)return{error:NO_SB};if(!me)return{error:'Please log in first.'};
   const {data,error}=await sb.rpc('billing_create_request',{p_plan:ID(planName),p_interval:b==='y'?'year':'month',p_coupon:code||null});
@@ -3382,6 +3395,7 @@ const AC=(()=>{
   if(l&&l.status==='verified'&&l.verifiedAt>Date.now()-30*DAY&&c.sub){key='v:'+l.id;msg='Payment confirmed. FinanceOS '+l.plan+' is now active until '+dt(c.sub.expiry)+'.'}
   if(l&&l.status==='rejected'){key='r:'+l.id+':'+l.utr;msg='We could not confirm your payment'+(l.reason?': '+l.reason:'.')+' Open your account to fix it.'}
   if(c.sub&&!c.pending&&!c.locked){const d=daysLeft(c);if(c.expired){key='x:'+c.sub.expiry;msg='Your FinanceOS '+c.sub.plan+' plan ended on '+dt(c.sub.expiry)+'. Renew to get access back.'}else if(d<=3){key='e:'+c.sub.expiry;msg='Your FinanceOS '+c.sub.plan+' plan ends in '+d+' day'+(d===1?'':'s')+'. Renew early and keep every day you have paid for.'}}
+  if(c.blocked){key='b:'+new Date().toDateString();msg=c.blockMsg}
   if(!key)return'';let seen={};try{seen=JSON.parse(localStorage.getItem(NK)||'{}')}catch(e){}const k=c.email+'|'+key;if(seen[k])return'';seen[k]=Date.now();try{localStorage.setItem(NK,JSON.stringify(seen))}catch(e){}return msg};
  const ST={pending_verification:['wait','Confirmation pending'],verified:['ok','Payment confirmed'],rejected:['bad','Payment not confirmed']};
  const statusView=(o,fresh)=>{if(!o)return'';const s=ST[o.status]||ST.pending_verification,c=cur();
@@ -3411,10 +3425,10 @@ const AC=(()=>{
  const resetPw=async email=>{if(!sb)return NO_SB;if(!em(email))return 'Enter your email address above first.';const {error}=await sb.auth.resetPasswordForEmail(email,{redirectTo:location.origin+location.pathname});return error?clean(error):''};
  const F=(id,l,t,ph,ac,v)=>`<div class="fld full" style="margin-bottom:12px"><label for="${id}">${l}</label><input class="si" id="${id}" type="${t}" placeholder="${ph}" autocomplete="${ac}" data-au maxlength="120" value="${esc(v||'')}"></div>`;
  const view=(m,hd)=>{const c=cur();
-  if(m==='acct'&&c){const l=c.last,d=daysLeft(c),planTxt=c.locked?'FinanceOS '+esc(c.sub.plan)+', paused':c.paid?'FinanceOS '+esc(c.sub.plan)+(c.free?', active (complimentary)':', active'):c.expired?'FinanceOS '+esc(c.sub.plan)+', ended':l&&l.status==='pending_verification'?'Payment confirmation pending':'No plan yet';
+  if(m==='acct'&&c){const l=c.last,d=daysLeft(c),planTxt=c.blocked&&!c.sub?'Access paused':c.locked?'FinanceOS '+esc(c.sub.plan)+', paused':c.paid?'FinanceOS '+esc(c.sub.plan)+(c.free?', active (complimentary)':', active'):c.expired?'FinanceOS '+esc(c.sub.plan)+', ended':l&&l.status==='pending_verification'?'Payment confirmation pending':'No plan yet';
    const appTxt=c.paid?'Ready, sign in with this login':c.locked?'Paused':c.expired?'Locked until you renew':c.pending?'Unlocks after confirmation':'Unlocks with a plan';
-   const subRows=c.sub?`<div class="tx"><span>${c.expired?'Ended':'Active until'}</span><b>${dt(c.sub.expiry)}</b></div>`:'';
-   const exp=c.locked?`<div class="au-note bad"><b>Your access is paused</b><p>Please email <a href="mailto:${EMAIL}" style="color:var(--em2)">${EMAIL}</a> and we will help you straight away.</p></div>`:c.sub&&!c.pending?(c.expired?`<div class="au-note bad"><b>Your plan has ended</b><p>FinanceOS ${esc(c.sub.plan)} ended on ${dt(c.sub.expiry)}, so the app is locked. Renew to pick up where you left off. Your data is kept.</p></div>`:d<=3?`<div class="au-note"><b>Your plan ends in ${d} day${d===1?'':'s'}</b><p>Renew now and the new period starts on ${dt(c.sub.expiry)}, so you keep every day you have already paid for.</p></div>`:''):'';
+   const subRows=c.sub?`<div class="tx"><span>${new Date(c.sub.expiry)<new Date()?'Ended':(c.locked||c.blocked)?'Plan runs until':'Active until'}</span><b>${dt(c.sub.expiry)}</b></div>`:'';
+   const exp=c.blocked||c.locked?`<div class="au-note bad"><b>Your FinanceOS access is paused</b><p style="color:#dff7ec">${esc((c.blockMsg||'Please complete your monthly subscription to access FinanceOS.').replace(EMAIL,'').replace(/[\s,]*(email us at)?[\s.]*$/i,''))}. Email us at <a href="mailto:${EMAIL}" style="color:var(--em2)">${EMAIL}</a>.</p></div><div class="nx" style="margin-top:10px"><a class="btn" href="#pricing" data-nav>Complete my subscription</a><a class="btn o" href="mailto:${EMAIL}?subject=${encodeURIComponent('FinanceOS access')}">Email us</a></div>`:c.sub&&!c.pending?(c.expired?`<div class="au-note bad"><b>Your plan has ended</b><p>FinanceOS ${esc(c.sub.plan)} ended on ${dt(c.sub.expiry)}, so the app is locked. Renew to pick up where you left off. Your data is kept.</p></div>`:d<=3?`<div class="au-note"><b>Your plan ends in ${d} day${d===1?'':'s'}</b><p>Renew now and the new period starts on ${dt(c.sub.expiry)}, so you keep every day you have already paid for.</p></div>`:''):'';
    const canRenew=c.sub&&!c.pending&&!c.locked;
    return hd('Your account')+noteHtml()+`<div class="card"><div class="tx"><span>Name</span><b>${esc(c.name||'–')}</b></div><div class="tx"><span>Email</span><b>${esc(c.email)}</b></div><div class="tx"><span>Plan</span><b>${planTxt}</b></div>${subRows}<div class="tx"><span>FinanceOS app</span><b>${appTxt}</b></div></div>`+exp+
    (l&&l.status!=='verified'?`<h4 style="margin:18px 0 8px">Latest payment</h4>`+statusView(l):'')+
