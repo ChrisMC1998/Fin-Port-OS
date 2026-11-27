@@ -325,6 +325,16 @@ html.pin-on body{overflow:hidden}
 .pin .alt{margin-top:8px;background:none;border:0;color:var(--em2);font:600 .9rem "DM Sans",system-ui,sans-serif;cursor:pointer}
 .pin-set .dots{justify-content:flex-start}
 .pin-row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+/* AI usage tab */
+.ai-m{margin:10px 0}.ai-ml{display:flex;justify-content:space-between;gap:10px;font-size:.88rem}.ai-ml b{font-weight:700}
+.ai-m small{display:block;color:var(--mu);font-size:.76rem;margin-top:4px}
+.ai-m.warn .meter i{background:var(--warn)}.ai-m.bad .meter i{background:var(--bad)}
+.ai-live,.ai-est{border:1px solid var(--line);border-radius:12px;padding:10px 12px;margin-top:10px}
+.ai-live>b,.ai-est>b{font-size:.8rem;color:var(--mu);text-transform:uppercase;letter-spacing:.04em}
+.ai-g{fill:var(--em);background:var(--em)}.ai-gm{fill:var(--info);background:var(--info)}.ai-e{fill:var(--warn);background:var(--warn)}
+.ai-leg{display:flex;gap:16px;flex-wrap:wrap;font-size:.8rem;color:var(--mu);margin-top:8px}.ai-leg i{display:inline-block;width:10px;height:10px;border-radius:3px;margin-right:6px;vertical-align:-1px}
+.warn-t{color:var(--warn)}
+td small{display:block;color:var(--mu);font-size:.74rem;margin-top:2px}
 </style>
 </head>
 <body>
@@ -374,7 +384,7 @@ const dtt=t=>t?new Date(t).toLocaleString('en-IN',{day:'numeric',month:'short',h
 const DAY=864e5,daysTo=t=>Math.ceil((new Date(t)-Date.now())/DAY);
 const ago=t=>{if(!t)return 'never';const m=Math.round((Date.now()-new Date(t))/6e4);return m<1?'just now':m<60?m+' min ago':m<1440?Math.round(m/60)+' h ago':Math.round(m/1440)+' d ago'};
 const isoD=d=>new Date(d.getTime()-d.getTimezoneOffset()*6e4).toISOString().slice(0,10);
-const ICO={iq:'<path d="M3 20h18"/><path d="M5 16l4-5 4 3 6-8"/><path d="M15 6h4v4"/>',home:'<path d="M3 11l9-7 9 7v9a1 1 0 01-1 1h-5v-6H9v6H4a1 1 0 01-1-1z"/>',pay:'<rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><path d="M14 14h3v3M21 14v0M14 21h7M18 18v3"/>',users:'<circle cx="9" cy="8" r="3.5"/><path d="M2.5 20a6.5 6.5 0 0113 0M16 4.5a3.5 3.5 0 010 7M18 14a6 6 0 013.5 6"/>',tag:'<path d="M20 12l-8 8-9-9V3h8z"/><circle cx="7.5" cy="7.5" r="1.5"/>',price:'<path d="M6 3h12M6 8h12M14 21L6 13h3a5 5 0 000-10"/>',bell:'<path d="M18 8a6 6 0 10-12 0c0 7-3 8-3 8h18s-3-1-3-8"/><path d="M13.7 20a2 2 0 01-3.4 0"/>',gear:'<circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 00.3 1.8l.1.1a2 2 0 11-2.8 2.8l-.1-.1a1.7 1.7 0 00-1.8-.3 1.7 1.7 0 00-1 1.5V21a2 2 0 11-4 0v-.1a1.7 1.7 0 00-1.1-1.5 1.7 1.7 0 00-1.8.3l-.1.1a2 2 0 11-2.8-2.8l.1-.1a1.7 1.7 0 00.3-1.8 1.7 1.7 0 00-1.5-1H3a2 2 0 110-4h.1a1.7 1.7 0 001.5-1.1 1.7 1.7 0 00-.3-1.8l-.1-.1a2 2 0 112.8-2.8l.1.1a1.7 1.7 0 001.8.3H9a1.7 1.7 0 001-1.5V3a2 2 0 114 0v.1a1.7 1.7 0 001 1.5 1.7 1.7 0 001.8-.3l.1-.1a2 2 0 112.8 2.8l-.1.1a1.7 1.7 0 00-.3 1.8V9a1.7 1.7 0 001.5 1H21a2 2 0 110 4h-.1a1.7 1.7 0 00-1.5 1z"/>',log:'<path d="M4 6h16M4 12h16M4 18h10"/>',gift:'<rect x="3" y="8" width="18" height="4" rx="1"/><path d="M12 8v13M5 12v8a1 1 0 001 1h12a1 1 0 001-1v-8M8.5 8a2.5 2.5 0 110-5C11 3 12 8 12 8s1-5 3.5-5a2.5 2.5 0 110 5"/>',copy:'<rect x="8" y="8" width="12" height="12" rx="2"/><path d="M16 8V5a1 1 0 00-1-1H5a1 1 0 00-1 1v10a1 1 0 001 1h3"/>'};
+const ICO={ai:'<path d="M12 3l1.8 4.7L18.5 9.5l-4.7 1.8L12 16l-1.8-4.7L5.5 9.5l4.7-1.8z"/><path d="M18 15l.9 2.1L21 18l-2.1.9L18 21l-.9-2.1L15 18l2.1-.9z"/>',iq:'<path d="M3 20h18"/><path d="M5 16l4-5 4 3 6-8"/><path d="M15 6h4v4"/>',home:'<path d="M3 11l9-7 9 7v9a1 1 0 01-1 1h-5v-6H9v6H4a1 1 0 01-1-1z"/>',pay:'<rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><path d="M14 14h3v3M21 14v0M14 21h7M18 18v3"/>',users:'<circle cx="9" cy="8" r="3.5"/><path d="M2.5 20a6.5 6.5 0 0113 0M16 4.5a3.5 3.5 0 010 7M18 14a6 6 0 013.5 6"/>',tag:'<path d="M20 12l-8 8-9-9V3h8z"/><circle cx="7.5" cy="7.5" r="1.5"/>',price:'<path d="M6 3h12M6 8h12M14 21L6 13h3a5 5 0 000-10"/>',bell:'<path d="M18 8a6 6 0 10-12 0c0 7-3 8-3 8h18s-3-1-3-8"/><path d="M13.7 20a2 2 0 01-3.4 0"/>',gear:'<circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 00.3 1.8l.1.1a2 2 0 11-2.8 2.8l-.1-.1a1.7 1.7 0 00-1.8-.3 1.7 1.7 0 00-1 1.5V21a2 2 0 11-4 0v-.1a1.7 1.7 0 00-1.1-1.5 1.7 1.7 0 00-1.8.3l-.1.1a2 2 0 11-2.8-2.8l.1-.1a1.7 1.7 0 00.3-1.8 1.7 1.7 0 00-1.5-1H3a2 2 0 110-4h.1a1.7 1.7 0 001.5-1.1 1.7 1.7 0 00-.3-1.8l-.1-.1a2 2 0 112.8-2.8l.1.1a1.7 1.7 0 001.8.3H9a1.7 1.7 0 001-1.5V3a2 2 0 114 0v.1a1.7 1.7 0 001 1.5 1.7 1.7 0 001.8-.3l.1-.1a2 2 0 112.8 2.8l-.1.1a1.7 1.7 0 00-.3 1.8V9a1.7 1.7 0 001.5 1H21a2 2 0 110 4h-.1a1.7 1.7 0 00-1.5 1z"/>',log:'<path d="M4 6h16M4 12h16M4 18h10"/>',gift:'<rect x="3" y="8" width="18" height="4" rx="1"/><path d="M12 8v13M5 12v8a1 1 0 001 1h12a1 1 0 001-1v-8M8.5 8a2.5 2.5 0 110-5C11 3 12 8 12 8s1-5 3.5-5a2.5 2.5 0 110 5"/>',copy:'<rect x="8" y="8" width="12" height="12" rx="2"/><path d="M16 8V5a1 1 0 00-1-1H5a1 1 0 00-1 1v10a1 1 0 001 1h3"/>'};
 const svg=k=>`<svg viewBox="0 0 24 24" aria-hidden="true">${ICO[k]}</svg>`;
 
 let sb=null;
@@ -451,13 +461,13 @@ const refDue=()=>S.refs.filter(r=>r.status==='reward_due');
 const noPlan=()=>S.users.filter(u=>!u.plan_id&&!u.is_admin);
 
 /* ── nav ── */
-const TABS=[['home','Overview','home'],['sales','Sales IQ','iq'],['payments','Payments','pay'],['users','Users','users'],['plans','Plans & prices','price'],['codes','Discount codes','tag'],['referrals','Referrals','gift'],['reminders','Reminders','bell'],['settings','Settings','gear'],['activity','Activity','log']];
+const TABS=[['home','Overview','home'],['sales','Sales IQ','iq'],['ai','AI usage','ai'],['payments','Payments','pay'],['users','Users','users'],['plans','Plans & prices','price'],['codes','Discount codes','tag'],['referrals','Referrals','gift'],['reminders','Reminders','bell'],['settings','Settings','gear'],['activity','Activity','log']];
 function nav(){$('#nav').innerHTML=TABS.map(t=>{const c=t[0]==='payments'?pending().length:t[0]==='reminders'?expSoon().length:t[0]==='referrals'?refDue().length:0;return `<button class="${S.tab===t[0]?'on':''}" data-tab="${t[0]}" ${S.tab===t[0]?'aria-current="page"':''}>${svg(t[2])}<span>${t[1]}</span>${c?`<b class="ct" aria-label="${c} waiting">${c}</b>`:''}</button>`}).join('')}
 $('#nav').onclick=e=>{const b=e.target.closest('[data-tab]');if(b)go(b.dataset.tab)};
 function go(t,f){if(S.tab!==t)S.q='';S.tab=t;if(f){if(t==='payments')S.payF=f;if(t==='users')S.userF=f}history.replaceState(null,'','#'+t);render();scrollTo(0,0)}
 
 /* ── views ── */
-function render(){nav();const V={home:vHome,sales:vSales,payments:vPays,users:vUsers,plans:vPlans,codes:vCodes,referrals:vRefs,reminders:vRem,settings:vSet,activity:vAct}[S.tab]||vHome;V();
+function render(){nav();const V={home:vHome,sales:vSales,payments:vPays,users:vUsers,plans:vPlans,codes:vCodes,referrals:vRefs,reminders:vRem,settings:vSet,activity:vAct,ai:vAi}[S.tab]||vHome;V();
  if(!S.v5&&!$('#v5w'))$('#view').insertAdjacentHTML('afterbegin','<div class="card danger" id="v5w"><h2>One more step in Supabase</h2><p class="sub" style="margin:0">Run <b>05-admin-extras.sql</b> in Supabase (SQL Editor). It switches on price editing, discount codes, Paid or Free access for many people at once, notes and ending access.</p></div>')}
 const head=(t,s)=>{$('#pgT').textContent=t;$('#pgS').textContent=s||''};
 
@@ -926,6 +936,98 @@ function sqMore(c,rows){
 }
 
 /* ── clicks ── */
+/* ── AI usage (Fin AI tracking, file 12) ── */
+const AI_DEF={groq:{rpm:30,rpd:1000,tpm:8000,tpd:200000},gemini:{rpm:15,rpd:500,tpm:250000,tpd:0}};
+const AIP=[['1','Today'],['7','7 days'],['30','30 days']];
+const AI_NAME={groq:'Groq',gemini:'Gemini',engine:'Built-in engine'};
+const AI_WHY={busy:'Both AI services were busy or out of free quota',ai_unavailable:'The AI services could not be reached',daily_limit:'The person used their daily smart answers',empty:'The AI sent back an empty answer',other:'Other'};
+function aiLimits(){const s=S.settings.cc_ai_limits||{};const o={};for(const p in AI_DEF){o[p]={...AI_DEF[p],...(s[p]||{})}}return o}
+const aiN=n=>Number(n||0).toLocaleString('en-IN');
+const aiK=n=>{n=Number(n||0);return n>=1e6?(n/1e6).toFixed(1).replace(/\.0$/,'')+'M':n>=1e4?Math.round(n/1e3)+'k':n>=1e3?(n/1e3).toFixed(1).replace(/\.0$/,'')+'k':String(n)};
+const aiSec=ms=>ms==null?'–':ms<1000?Math.round(ms)+' ms':(ms/1000).toFixed(1)+' s';
+function aiMeter(label,used,limit,note){
+ if(!limit)return `<div class="ai-m"><div class="ai-ml"><span>${label}</span><b>${aiN(used)}</b></div>${note?`<small>${note}</small>`:''}</div>`;
+ const pct=Math.min(100,Math.round(used/limit*100)),left=Math.max(0,limit-used),cls=pct>=90?'bad':pct>=70?'warn':'';
+ return `<div class="ai-m ${cls}"><div class="ai-ml"><span>${label}</span><b>${aiN(left)} left</b></div><div class="meter"><i style="width:${pct}%"></i></div><small>${aiN(used)} of ${aiN(limit)} used (${pct}%)${note?' · '+note:''}</small></div>`}
+async function aiFetch(force){
+ const P=S.aiP||'7';if(!force&&S.ai&&S.ai.P===P&&Date.now()-S.ai.at<5000)return;
+ if(S.aiBusy)return;S.aiBusy=true;
+ try{const {data,error}=await sb.rpc('finai_admin_stats',{p_days:+P});S.ai={P,at:Date.now(),d:error?null:data,err:error?friendly(error):''}}
+ catch(e){S.ai={P,at:Date.now(),d:null,err:friendly(e)}}
+ S.aiBusy=false;if(S.tab==='ai')vAi(true)}
+function aiChart(series,days){
+ const map=Object.fromEntries((series||[]).map(r=>[r.day,r])),B=[];const now=new Date();
+ for(let i=days-1;i>=0;i--){const d=new Date(now.getTime()-i*864e5),k=d.toLocaleDateString('en-CA',{timeZone:TZ}),r=map[k]||{};B.push({k,l:d.toLocaleDateString('en-IN',{day:'numeric',month:'short',timeZone:TZ}),g:+r.groq||0,m:+r.gemini||0,e:+r.engine||0})}
+ const W=Math.max(300,Math.round((($('#view')||{}).clientWidth||680)-40)),H=200,L=34,R=8,T=10,Bt=26,mx=Math.max(1,...B.map(b=>b.g+b.m+b.e)),top=Math.max(4,Math.ceil(mx/4)*4);
+ const bw=(W-L-R)/B.length,gap=Math.min(6,bw*.3),y=v=>T+(H-T-Bt)*(1-v/top),every=Math.ceil(B.length/8);
+ const grid=[0,.5,1].map(f=>`<line x1="${L}" x2="${W-R}" y1="${y(top*f)}" y2="${y(top*f)}" class="sq-grid"/><text x="${L-6}" y="${y(top*f)+4}" text-anchor="end" class="sq-ax">${Math.round(top*f)}</text>`).join('');
+ const bars=B.map((b,i)=>{const x=L+i*bw+gap/2,w=Math.max(2,bw-gap);let base=0;const seg=(v,c)=>{if(!v)return'';const y1=y(base+v),h=y(base)-y1;base+=v;return `<rect x="${x}" y="${y1}" width="${w}" height="${h}" class="${c}" rx="2"/>`};
+  return `<g class="sq-b" data-tip="${esc(b.l)}: Groq ${b.g}, Gemini ${b.m}, built-in ${b.e}" tabindex="0"><rect x="${L+i*bw}" y="${T}" width="${bw}" height="${H-T-Bt+4}" fill="transparent"/>${seg(b.g,'ai-g')}${seg(b.m,'ai-gm')}${seg(b.e,'ai-e')}${i%every===0?`<text x="${x+w/2}" y="${H-8}" text-anchor="middle" class="sq-ax">${esc(b.l)}</text>`:''}</g>`}).join('');
+ return `<div class="sq-chart"><svg viewBox="0 0 ${W} ${H}" role="group" aria-label="Smart answers per day">${grid}<line x1="${L}" x2="${W-R}" y1="${y(0)}" y2="${y(0)}" class="sq-base"/>${bars}</svg><div class="sq-tip" role="status" hidden></div></div>
+ <div class="ai-leg"><span><i class="ai-g"></i>Groq</span><span><i class="ai-gm"></i>Gemini</span><span><i class="ai-e"></i>Built-in engine</span></div>`}
+function vAi(fromFetch){head('AI usage','How Fin AI answers: which AI replied, how much free allowance is used and what is left, speed, and who uses it most.');
+ if(!fromFetch)aiFetch();
+ const P=S.aiP||'7',A=S.ai&&S.ai.P===P?S.ai:null,seg=`<div class="seg" role="group" aria-label="Time range">${AIP.map(x=>`<button class="${P===x[0]?'on':''}" data-aip="${x[0]}" aria-pressed="${P===x[0]}">${x[1]}</button>`).join('')}</div>`;
+ const top=`<div class="bar sq-top">${seg}<button class="btn o sm" data-act="ai-limits">Free limits</button></div>`;
+ if(!A){$('#view').innerHTML=top+'<div class="card"><p class="empty">Loading AI usage…</p></div>';return}
+ if(!A.d){$('#view').innerHTML=top+`<div class="card danger"><h2>One more step in Supabase</h2><p class="sub" style="margin:0">Run <b>12-fin-ai-tracking.sql</b> in Supabase (SQL Editor), then deploy the updated <b>fin-ai</b> edge function. After that, every smart question shows up here.${A.err?`<br><small>${esc(A.err)}</small>`:''}</p></div>`;return}
+ const d=A.d,pr=d.providers||{},g=pr.groq||{},m=pr.gemini||{},L=aiLimits(),st=d.state||{},gs=st.groq||{},ms=st.gemini||{};
+ const fb=Object.values(d.fallbacks||{}).reduce((n,v)=>n+(+v||0),0),ans=(+g.calls||0)+(+m.calls||0),all=ans+fb,pc=v=>all?Math.round(v/all*100)+'%':'–';
+ const kp=(t,v,s,cls)=>`<div class="kpi sq-k ${cls||''}"><small>${t}</small><b>${v}</b>${s?`<em>${s}</em>`:''}</div>`;
+ const per=P==='1'?'today (last 24 hours)':'in the last '+P+' days';
+ const fresh=t=>t&&(Date.now()-new Date(t))<15*6e4;
+ const groqLive=fresh(gs.updated_at)&&gs.remaining_requests!=null?`<div class="ai-live"><b>Groq says right now</b> <small>(as of ${dtt(gs.updated_at)})</small>
+   ${aiMeter('Requests left today',(+gs.limit_requests||0)-(+gs.remaining_requests||0),+gs.limit_requests||0,gs.reset_requests?'resets in '+esc(gs.reset_requests):'')}
+   ${gs.remaining_tokens!=null?aiMeter('Tokens left this minute',(+gs.limit_tokens||0)-(+gs.remaining_tokens||0),+gs.limit_tokens||0,gs.reset_tokens?'resets in '+esc(gs.reset_tokens):''):''}</div>`:'<p class="note" style="margin-top:0">Groq reports its exact quota with each answer. It shows here after the next smart question.</p>';
+ const ptH=new Date(d.pt_midnight).toLocaleTimeString('en-IN',{hour:'numeric',minute:'2-digit',timeZone:TZ});
+ const err=(o)=>o.last_error_at&&fresh(o.last_error_at)?`<p class="note warn-t">Last refusal ${dtt(o.last_error_at)}: HTTP ${esc(o.last_status)} ${esc((o.last_error||'').slice(0,120))}</p>`:'';
+ const ref=(d.refusals||[]).map(r=>`<tr><td>${esc(AI_NAME[r.p]||r.p)}</td><td class="num">${r.s===429?'429 · out of free quota':r.s===413?'413 · question too big':r.s===0?'no reply':r.s===401||r.s===403?r.s+' · key not accepted':esc(r.s)}</td><td class="num">${aiN(r.n)}</td></tr>`).join('');
+ const fbs=Object.entries(d.fallbacks||{}).sort((a,b)=>b[1]-a[1]).map(([k,v])=>`<div class="sq-mix"><span>${esc(AI_WHY[k]||k)}</span><b>${aiN(v)}</b><i style="--w:${fb?Math.round(v/fb*100):0}%"></i></div>`).join('');
+ const days=P==='1'?7:+P;
+ $('#view').innerHTML=top+`
+ <div class="kpis sq-kp">${kp('Smart questions, '+(P==='1'?'today':'last '+P+' days'),aiN(all),(d.people_period||0)+' '+((d.people_period||0)===1?'person':'people')+' · '+(d.people_today||0)+' today','ok')}
+  ${kp('Answered by Groq',aiN(g.calls),pc(+g.calls||0)+' of questions · '+aiK((+g.tokens_in||0)+(+g.tokens_out||0))+' tokens')}
+  ${kp('Answered by Gemini',aiN(m.calls),pc(+m.calls||0)+' of questions · '+aiK((+m.tokens_in||0)+(+m.tokens_out||0))+' tokens')}
+  ${kp('Built-in engine stepped in',aiN(fb),pc(fb)+' of questions',fb&&fb/all>.25?'warn':'')}
+  ${kp('First words appear after',aiSec(ans?((+g.avg_first_ms||0)*(+g.calls||0)+(+m.avg_first_ms||0)*(+m.calls||0))/ans:null),'Full answer in '+aiSec(ans?((+g.avg_ms||0)*(+g.calls||0)+(+m.avg_ms||0)*(+m.calls||0))/ans:null)+' on average')}</div>
+ <div class="g2">
+  <div class="card"><h2>Groq · free allowance</h2><p class="sub">Main AI. Free limits are shared by all your users.</p>${groqLive}
+   <div class="ai-est"><b>Worked out from Fin AI's own log</b>
+   ${aiMeter('Tokens this minute',+g.min_tokens||0,L.groq.tpm)}
+   ${aiMeter('Tokens in the last 24 hours',+g.day_tokens||0,L.groq.tpd)}
+   ${aiMeter('Requests in the last 24 hours',+g.day_calls||0,L.groq.rpd)}
+   ${aiMeter('Requests this minute',+g.min_calls||0,L.groq.rpm)}</div>
+   <p class="note">Last answer: ${dtt(g.last_at)} · average ${aiK(g.calls?((+g.tokens_in||0)+(+g.tokens_out||0))/g.calls:0)} tokens per question</p></div>
+  <div class="card"><h2>Gemini · free allowance</h2><p class="sub">Backup AI. Google resets the daily count at midnight Pacific time (${esc(ptH)} your time).</p>
+   <div class="ai-est"><b>Worked out from Fin AI's own log</b>
+   ${aiMeter('Requests since the daily reset',+m.pt_calls||0,L.gemini.rpd)}
+   ${aiMeter('Requests this minute',+m.min_calls||0,L.gemini.rpm)}
+   ${aiMeter('Tokens this minute',+m.min_tokens||0,L.gemini.tpm)}</div>${err(ms)}
+   <p class="note">Last answer: ${dtt(m.last_at)} · Google doesn't report the quota left, so these figures come from what Fin AI used. Requests made outside FinanceOS with the same key don't show here.</p></div></div>
+ <div class="card"><h2>Who answered, day by day</h2><p class="sub">Smart questions per day, last ${days} days. Hover or tap a bar for the numbers.</p>${aiChart(d.series,days)}</div>
+ <div class="g2">
+  <div class="card"><h2>Why the built-in engine stepped in</h2><p class="sub">${per}. The person still got an answer every time.</p>${fbs||'<p class="empty">Never. Every smart question was answered by an AI.</p>'}</div>
+  <div class="card"><h2>When an AI said no</h2><p class="sub">${per}. Fin AI moved on to the next AI each time.</p>${ref?`<div class="tw"><table><thead><tr><th>AI</th><th class="num">Reply</th><th class="num">Times</th></tr></thead><tbody>${ref}</tbody></table></div>`:'<p class="empty">No refusals.</p>'}</div></div>
+ <div class="card"><h2>Who uses Fin AI most</h2><p class="sub">${per}.</p>${(d.top_users||[]).length?`<div class="tw"><table class="rsp"><thead><tr><th>Person</th><th class="num">Questions</th><th class="num">Tokens</th><th class="num">Built-in answers</th><th>Last asked</th></tr></thead><tbody>${d.top_users.map(u=>`<tr><td data-l="Person">${esc(u.email)}</td><td class="num" data-l="Questions">${aiN(u.calls)}</td><td class="num" data-l="Tokens">${aiK(u.tokens)}</td><td class="num" data-l="Built-in answers">${aiN(u.fallbacks)}</td><td data-l="Last asked">${dtt(u.last_at)}</td></tr>`).join('')}</tbody></table></div>`:'<p class="empty">No smart questions yet.</p>'}</div>
+ <div class="card"><h2>Latest questions</h2><p class="sub">The latest smart questions (40 on a computer, 12 on a phone). What people asked is never stored here, only how it was answered.</p>${(d.recent||[]).length?`<div class="tw"><table class="rsp"><thead><tr><th>When</th><th>Person</th><th>Answered by</th><th class="num">Tokens</th><th class="num">Speed</th><th>Route</th></tr></thead><tbody>${d.recent.slice(0,innerWidth<700?12:40).map(r=>`<tr><td data-l="When">${dtt(r.at)}</td><td data-l="Person">${esc(r.email)}</td><td data-l="Answered by"><span class="pill ${r.outcome==='answered'?'p-ok':'p-wait'}">${esc(AI_NAME[r.provider]||r.provider)}</span>${r.reason?`<small>${esc(AI_WHY[r.reason]||r.reason)}</small>`:''}</td><td class="num" data-l="Tokens">${aiK((+r.tokens_in||0)+(+r.tokens_out||0))}</td><td class="num" data-l="Speed">${aiSec(r.ms)}</td><td data-l="Route" class="mono">${(r.tried||[]).map(t=>esc((AI_NAME[t.p]||t.p)+' '+(t.s||'×'))).join(' → ')||'–'}</td></tr>`).join('')}</tbody></table></div>`:'<p class="empty">No smart questions yet. Ask Fin AI something with Smart on, then press Refresh.</p>'}</div>
+ <p class="note">Token counts come from the AI services when they report them, otherwise they are estimated (about 4 characters per token). "Left" is worked out against the free limits you set under <b>Free limits</b>. The services can change their limits at any time.</p>`;
+ aiTips()}
+function aiTips(){document.querySelectorAll('#view .sq-chart').forEach(ch=>{const tip=ch.querySelector('.sq-tip');if(!tip)return;const show=g=>{tip.textContent=g.dataset.tip;tip.hidden=false};
+ ch.querySelectorAll('.sq-b').forEach(g=>{g.addEventListener('mouseenter',()=>show(g));g.addEventListener('focus',()=>show(g));g.addEventListener('click',()=>show(g))});ch.addEventListener('mouseleave',()=>{tip.hidden=true})})}
+function aiLimitsDlg(){const L=aiLimits(),f=(p,k,l)=>`<div class="fld"><label for="al-${p}-${k}">${l}</label><input class="in" id="al-${p}-${k}" type="number" min="0" step="1" value="${esc(L[p][k])}"></div>`;
+ dialog(`<h3>Free limits</h3><p class="sub">The AI usage tab measures what's left against these numbers. Check your real limits at console.groq.com (Settings › Limits) and aistudio.google.com (Usage), and update them here if they change. 0 means no limit.</p>
+  <h4 style="margin:12px 0 6px">Groq (${esc(S.settings.cc_ai_groq_model||'openai/gpt-oss-120b')})</h4>${f('groq','rpm','Requests per minute')}${f('groq','rpd','Requests per day')}${f('groq','tpm','Tokens per minute')}${f('groq','tpd','Tokens per day')}
+  <h4 style="margin:12px 0 6px">Gemini (gemini-3.5-flash-lite)</h4>${f('gemini','rpm','Requests per minute')}${f('gemini','rpd','Requests per day')}${f('gemini','tpm','Tokens per minute')}
+  <div class="foot"><button class="btn o" data-act="ai-lim-reset">Use the defaults</button><button class="btn o" data-x>Cancel</button><button class="btn" id="alSave">Save</button></div>`,(o,close)=>{
+  o.querySelector('#alSave').onclick=async()=>{const v={};for(const p in AI_DEF){v[p]={};for(const k in AI_DEF[p]){const el=o.querySelector(`#al-${p}-${k}`);if(el)v[p][k]=Math.max(0,Math.round(+el.value||0))}}
+   const {error}=await sb.rpc('billing_set_setting',{p_key:'cc_ai_limits',p_value:v});if(error){toast('Could not save: '+friendly(error),true);return}S.settings.cc_ai_limits=v;close();toast('Free limits saved');vAi(true)};
+  o.querySelector('[data-act="ai-lim-reset"]').onclick=async()=>{const {error}=await sb.rpc('billing_set_setting',{p_key:'cc_ai_limits',p_value:{}});if(error){toast('Could not save: '+friendly(error),true);return}S.settings.cc_ai_limits={};close();toast('Back to the defaults');vAi(true)}})}
+document.addEventListener('click',e=>{const t=e.target;
+ const p=t.closest('[data-aip]');if(p){S.aiP=p.dataset.aip;vAi();return}
+ const a=t.closest('[data-act]');if(!a)return;
+ if(a.dataset.act==='ai-refresh'){S.ai=null;vAi();aiFetch(true)}
+ else if(a.dataset.act==='ai-limits')aiLimitsDlg()});
+
 document.addEventListener('click',e=>{const t=e.target;
  const sqb=t.closest('[data-sq]');if(sqb){S.sqP=sqb.dataset.sq;vSales();return}
  const g=t.closest('[data-go]');if(g){e.preventDefault();go(g.dataset.go,g.dataset.f||null);return}
