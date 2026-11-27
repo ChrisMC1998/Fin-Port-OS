@@ -147,6 +147,57 @@ details.help ol b{color:var(--tx)}
 textarea.in{resize:vertical;min-height:70px}
 .kpi small,.li small{overflow-wrap:anywhere}
 @media(max-width:860px){.side .inst{display:none}.mtop.inst{display:flex}}
+
+/* v3: green and white. Neutral surfaces, white text and cards, green only for accents. */
+:root{--bg:#0c100f;--bg2:#121817;--card:#171e1c;--card2:#1d2624;--line:#2a3532;--tx:#f7fbf9;--mu:#a7b6b0;--em:#10b981;--em2:#34d399;--emd:#059669;--ink:#ffffff;--wh:#ffffff;--glow:rgba(16,185,129,.14);color-scheme:dark}
+@media(prefers-color-scheme:light){:root:not([data-theme="dark"]){--bg:#f5f7f6;--bg2:#ffffff;--card:#ffffff;--card2:#f6f9f8;--line:#e2e8e5;--tx:#0f1d18;--mu:#5c6c66;--em:#059669;--em2:#047857;--emd:#047857;--ink:#ffffff;--wh:#ffffff;--glow:rgba(5,150,105,.09);--warn:#b45309;--bad:#dc2626;--info:#0369a1;color-scheme:light}}
+:root[data-theme="light"]{--bg:#f5f7f6;--bg2:#ffffff;--card:#ffffff;--card2:#f6f9f8;--line:#e2e8e5;--tx:#0f1d18;--mu:#5c6c66;--em:#059669;--em2:#047857;--emd:#047857;--ink:#ffffff;--wh:#ffffff;--glow:rgba(5,150,105,.09);--warn:#b45309;--bad:#dc2626;--info:#0369a1;color-scheme:light}
+/* buttons: solid green with white text */
+.btn{background:var(--emd);color:#fff}
+.btn.o{background:var(--card);color:var(--tx)}
+.seg button.on{background:var(--emd);color:#fff}
+.logo i,.step i,.inst{background:var(--emd);color:#fff}
+/* sidebar: white active item in dark mode, green tint in light mode */
+.side{background:var(--bg2)}
+.nav button.on{background:var(--wh);color:#0c100f;box-shadow:inset 3px 0 0 var(--em);font-weight:700}
+.nav button.on svg{color:var(--emd)}
+:root[data-theme="light"] .nav button.on{background:var(--glow);color:var(--em2)}
+@media(prefers-color-scheme:light){:root:not([data-theme="dark"]) .nav button.on{background:var(--glow);color:var(--em2)}}
+/* cards: clean, with a thin green top accent on the numbers */
+.card,.kpi{box-shadow:0 1px 2px rgba(0,0,0,.06)}
+.kpi{position:relative;overflow:hidden}
+.kpi::before{content:'';position:absolute;left:0;top:0;right:0;height:3px;background:linear-gradient(90deg,var(--em),transparent 80%);opacity:.9}
+.kpi b{color:var(--tx)}
+.kpi.ok b{color:var(--em2)}
+.li,.qa button,.pick label,.chips button{background:var(--card2)}
+.meter{background:var(--card2);border:1px solid var(--line)}
+.p-ok{background:var(--glow);color:var(--em2);box-shadow:inset 0 0 0 1px rgba(16,185,129,.35)}
+.gate{background:radial-gradient(800px 400px at 50% -10%,var(--glow),transparent 70%),var(--bg)}
+.gate .box{box-shadow:0 20px 60px rgba(0,0,0,.18)}
+.toast{background:var(--card);border-color:var(--em)}
+.sum{background:var(--glow)}
+.lnk{border:0;background:none;padding:0;font:inherit;font-weight:700;color:var(--tx);cursor:pointer;text-align:left}
+.lnk:hover{color:var(--em2);text-decoration:underline}
+/* Sales IQ */
+.sq-top{justify-content:space-between}
+.sq-k em{display:block;font-style:normal;font-size:.8rem;color:var(--mu);margin-top:4px}
+.sq-k .up{color:var(--em2);font-weight:700}.sq-k .dn{color:var(--bad);font-weight:700}
+.kpi.sq-k{cursor:default}
+.sq-chart{position:relative;margin-top:6px}
+.sq-chart svg{display:block;width:100%;height:auto;overflow:visible}
+.kpis.sq-kp{grid-template-columns:repeat(auto-fit,minmax(min(100%,250px),1fr))}
+.sq-grid{stroke:var(--line);stroke-width:1;vector-effect:non-scaling-stroke}
+.sq-base{stroke:var(--mu);stroke-width:1;opacity:.6;vector-effect:non-scaling-stroke}
+.sq-ax{fill:var(--mu);font-size:11px;font-family:"DM Sans",system-ui,sans-serif}
+.sq-bar{fill:var(--em)}
+.sq-b{cursor:pointer;outline:none}
+.sq-b:hover .sq-bar,.sq-b:focus .sq-bar,.sq-b.on .sq-bar{fill:var(--em2)}
+.sq-b:focus-visible rect{stroke:var(--em2);stroke-width:1}
+.sq-tip{position:absolute;top:4px;left:0;padding:6px 10px;border-radius:9px;background:var(--wh);color:#0c100f;font-size:.82rem;font-weight:600;box-shadow:0 8px 24px rgba(0,0,0,.25);pointer-events:none;white-space:nowrap;border:1px solid var(--line)}
+.sq-pl{margin:12px 0}.sq-pl>div{display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;font-size:.9rem}.sq-pl span{color:var(--mu)}
+.sq-pl i,.sq-mix i{display:block;height:8px;border-radius:99px;margin-top:6px;background:linear-gradient(90deg,var(--em) var(--w),var(--card2) var(--w));border:1px solid var(--line)}
+.sq-mix{margin:10px 0;font-size:.9rem}.sq-mix{display:grid;grid-template-columns:1fr auto;gap:0 10px}.sq-mix i{grid-column:1/-1}.sq-mix span{color:var(--mu)}
+@media(max-width:860px){.sq-top .btn{width:100%}}
 </style>
 </head>
 <body>
@@ -195,7 +246,7 @@ const dtt=t=>t?new Date(t).toLocaleString('en-IN',{day:'numeric',month:'short',h
 const DAY=864e5,daysTo=t=>Math.ceil((new Date(t)-Date.now())/DAY);
 const ago=t=>{if(!t)return 'never';const m=Math.round((Date.now()-new Date(t))/6e4);return m<1?'just now':m<60?m+' min ago':m<1440?Math.round(m/60)+' h ago':Math.round(m/1440)+' d ago'};
 const isoD=d=>new Date(d.getTime()-d.getTimezoneOffset()*6e4).toISOString().slice(0,10);
-const ICO={home:'<path d="M3 11l9-7 9 7v9a1 1 0 01-1 1h-5v-6H9v6H4a1 1 0 01-1-1z"/>',pay:'<rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><path d="M14 14h3v3M21 14v0M14 21h7M18 18v3"/>',users:'<circle cx="9" cy="8" r="3.5"/><path d="M2.5 20a6.5 6.5 0 0113 0M16 4.5a3.5 3.5 0 010 7M18 14a6 6 0 013.5 6"/>',tag:'<path d="M20 12l-8 8-9-9V3h8z"/><circle cx="7.5" cy="7.5" r="1.5"/>',price:'<path d="M6 3h12M6 8h12M14 21L6 13h3a5 5 0 000-10"/>',bell:'<path d="M18 8a6 6 0 10-12 0c0 7-3 8-3 8h18s-3-1-3-8"/><path d="M13.7 20a2 2 0 01-3.4 0"/>',gear:'<circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 00.3 1.8l.1.1a2 2 0 11-2.8 2.8l-.1-.1a1.7 1.7 0 00-1.8-.3 1.7 1.7 0 00-1 1.5V21a2 2 0 11-4 0v-.1a1.7 1.7 0 00-1.1-1.5 1.7 1.7 0 00-1.8.3l-.1.1a2 2 0 11-2.8-2.8l.1-.1a1.7 1.7 0 00.3-1.8 1.7 1.7 0 00-1.5-1H3a2 2 0 110-4h.1a1.7 1.7 0 001.5-1.1 1.7 1.7 0 00-.3-1.8l-.1-.1a2 2 0 112.8-2.8l.1.1a1.7 1.7 0 001.8.3H9a1.7 1.7 0 001-1.5V3a2 2 0 114 0v.1a1.7 1.7 0 001 1.5 1.7 1.7 0 001.8-.3l.1-.1a2 2 0 112.8 2.8l-.1.1a1.7 1.7 0 00-.3 1.8V9a1.7 1.7 0 001.5 1H21a2 2 0 110 4h-.1a1.7 1.7 0 00-1.5 1z"/>',log:'<path d="M4 6h16M4 12h16M4 18h10"/>',gift:'<rect x="3" y="8" width="18" height="4" rx="1"/><path d="M12 8v13M5 12v8a1 1 0 001 1h12a1 1 0 001-1v-8M8.5 8a2.5 2.5 0 110-5C11 3 12 8 12 8s1-5 3.5-5a2.5 2.5 0 110 5"/>',copy:'<rect x="8" y="8" width="12" height="12" rx="2"/><path d="M16 8V5a1 1 0 00-1-1H5a1 1 0 00-1 1v10a1 1 0 001 1h3"/>'};
+const ICO={iq:'<path d="M3 20h18"/><path d="M5 16l4-5 4 3 6-8"/><path d="M15 6h4v4"/>',home:'<path d="M3 11l9-7 9 7v9a1 1 0 01-1 1h-5v-6H9v6H4a1 1 0 01-1-1z"/>',pay:'<rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><path d="M14 14h3v3M21 14v0M14 21h7M18 18v3"/>',users:'<circle cx="9" cy="8" r="3.5"/><path d="M2.5 20a6.5 6.5 0 0113 0M16 4.5a3.5 3.5 0 010 7M18 14a6 6 0 013.5 6"/>',tag:'<path d="M20 12l-8 8-9-9V3h8z"/><circle cx="7.5" cy="7.5" r="1.5"/>',price:'<path d="M6 3h12M6 8h12M14 21L6 13h3a5 5 0 000-10"/>',bell:'<path d="M18 8a6 6 0 10-12 0c0 7-3 8-3 8h18s-3-1-3-8"/><path d="M13.7 20a2 2 0 01-3.4 0"/>',gear:'<circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 00.3 1.8l.1.1a2 2 0 11-2.8 2.8l-.1-.1a1.7 1.7 0 00-1.8-.3 1.7 1.7 0 00-1 1.5V21a2 2 0 11-4 0v-.1a1.7 1.7 0 00-1.1-1.5 1.7 1.7 0 00-1.8.3l-.1.1a2 2 0 11-2.8-2.8l.1-.1a1.7 1.7 0 00.3-1.8 1.7 1.7 0 00-1.5-1H3a2 2 0 110-4h.1a1.7 1.7 0 001.5-1.1 1.7 1.7 0 00-.3-1.8l-.1-.1a2 2 0 112.8-2.8l.1.1a1.7 1.7 0 001.8.3H9a1.7 1.7 0 001-1.5V3a2 2 0 114 0v.1a1.7 1.7 0 001 1.5 1.7 1.7 0 001.8-.3l.1-.1a2 2 0 112.8 2.8l-.1.1a1.7 1.7 0 00-.3 1.8V9a1.7 1.7 0 001.5 1H21a2 2 0 110 4h-.1a1.7 1.7 0 00-1.5 1z"/>',log:'<path d="M4 6h16M4 12h16M4 18h10"/>',gift:'<rect x="3" y="8" width="18" height="4" rx="1"/><path d="M12 8v13M5 12v8a1 1 0 001 1h12a1 1 0 001-1v-8M8.5 8a2.5 2.5 0 110-5C11 3 12 8 12 8s1-5 3.5-5a2.5 2.5 0 110 5"/>',copy:'<rect x="8" y="8" width="12" height="12" rx="2"/><path d="M16 8V5a1 1 0 00-1-1H5a1 1 0 00-1 1v10a1 1 0 001 1h3"/>'};
 const svg=k=>`<svg viewBox="0 0 24 24" aria-hidden="true">${ICO[k]}</svg>`;
 
 let sb=null;
@@ -269,13 +320,13 @@ const refDue=()=>S.refs.filter(r=>r.status==='reward_due');
 const noPlan=()=>S.users.filter(u=>!u.plan_id&&!u.is_admin);
 
 /* ── nav ── */
-const TABS=[['home','Overview','home'],['payments','Payments','pay'],['users','Users','users'],['plans','Plans & prices','price'],['codes','Discount codes','tag'],['referrals','Referrals','gift'],['reminders','Reminders','bell'],['settings','Settings','gear'],['activity','Activity','log']];
+const TABS=[['home','Overview','home'],['sales','Sales IQ','iq'],['payments','Payments','pay'],['users','Users','users'],['plans','Plans & prices','price'],['codes','Discount codes','tag'],['referrals','Referrals','gift'],['reminders','Reminders','bell'],['settings','Settings','gear'],['activity','Activity','log']];
 function nav(){$('#nav').innerHTML=TABS.map(t=>{const c=t[0]==='payments'?pending().length:t[0]==='reminders'?expSoon().length:t[0]==='referrals'?refDue().length:0;return `<button class="${S.tab===t[0]?'on':''}" data-tab="${t[0]}" ${S.tab===t[0]?'aria-current="page"':''}>${svg(t[2])}<span>${t[1]}</span>${c?`<b class="ct" aria-label="${c} waiting">${c}</b>`:''}</button>`}).join('')}
 $('#nav').onclick=e=>{const b=e.target.closest('[data-tab]');if(b)go(b.dataset.tab)};
 function go(t,f){if(S.tab!==t)S.q='';S.tab=t;if(f){if(t==='payments')S.payF=f;if(t==='users')S.userF=f}history.replaceState(null,'','#'+t);render();scrollTo(0,0)}
 
 /* ── views ── */
-function render(){nav();const V={home:vHome,payments:vPays,users:vUsers,plans:vPlans,codes:vCodes,referrals:vRefs,reminders:vRem,settings:vSet,activity:vAct}[S.tab]||vHome;V();
+function render(){nav();const V={home:vHome,sales:vSales,payments:vPays,users:vUsers,plans:vPlans,codes:vCodes,referrals:vRefs,reminders:vRem,settings:vSet,activity:vAct}[S.tab]||vHome;V();
  if(!S.v5&&!$('#v5w'))$('#view').insertAdjacentHTML('afterbegin','<div class="card danger" id="v5w"><h2>One more step in Supabase</h2><p class="sub" style="margin:0">Run <b>05-admin-extras.sql</b> in Supabase (SQL Editor). It switches on price editing, discount codes, Paid or Free access for many people at once, notes and ending access.</p></div>')}
 const head=(t,s)=>{$('#pgT').textContent=t;$('#pgS').textContent=s||''};
 
@@ -547,8 +598,90 @@ const day=t=>t?new Date(t).toLocaleDateString('en-CA',{timeZone:TZ}):'';
 function csvUsers(){csv('financeos-users-'+day(new Date())+'.csv',[['Name','Email','Phone','Status','Plan','Free or paid','Ends','Last sign-in','Joined','Paid total (INR)','Payments','Note'],...S.users.map(u=>[u.name,u.email,u.phone,userState(u)[1],u.plan_id?PLAN(u.plan_id):'',u.source==='free'?'Free':u.source?'Paid':'',day(u.expires_at),day(u.last_sign_in),day(u.signed_up),u.paid_total,u.payments,u.note])])}
 function csvPays(){csv('financeos-payments-'+day(new Date())+'.csv',[['Request','Name','Email','Plan','Billing','Amount (INR)','Code','UTR','Submitted','Status','Confirmed','Reason'],...S.pays.map(p=>{const u=uById(p.user_id);return [p.id,p.customer_name||u.name,u.email,PLAN(p.plan_id),p.billing_interval==='year'?'Yearly':'Monthly',p.expected_amount,p.coupon_code,isCash(p)?'Cash or bank':p.utr,day(p.submitted_at),(PAYST[p.status]||[])[1],day(p.verified_at),p.rejection_reason]})])}
 
+/* ── Sales IQ: everything here is worked out from confirmed payments ── */
+const SQP=[['30','30 days'],['90','90 days'],['365','12 months'],['all','All time']];
+const sqBase=p=>{const pl=S.plans.find(x=>x.id===p.plan_id);if(!pl)return p.expected_amount||0;return p.billing_interval==='year'?pl.yearly_inr:pl.monthly_inr};
+const sqMonths=p=>p.billing_interval==='year'?12:1;
+const sqPct=(a,b)=>b?Math.round(a/b*100):0;
+function sqCalc(P){
+ const now=Date.now(),span=P==='all'?0:+P*DAY,from=P==='all'?0:now-span,pFrom=now-2*span;
+ const ver=S.pays.filter(p=>p.status==='verified').map(p=>({...p,t:Date.parse(p.verified_at||p.submitted_at)||0})).sort((a,b)=>a.t-b.t);
+ const first={};ver.forEach(p=>{if(!first[p.user_id])first[p.user_id]=p.id});
+ const cur=ver.filter(p=>p.t>=from),prev=P==='all'?[]:ver.filter(p=>p.t>=pFrom&&p.t<from);
+ const sum=a=>a.reduce((n,p)=>n+(p.expected_amount||0),0);
+ const isNew=p=>first[p.user_id]===p.id;
+ const lastBy={};ver.forEach(p=>{lastBy[p.user_id]=p});
+ const people=S.users.filter(u=>!u.is_admin);
+ const paying=people.filter(u=>u.active&&u.source==='payment');
+ const mrr=Math.round(paying.reduce((n,u)=>{const l=lastBy[u.user_id];return l?n+(l.billing_interval==='year'?l.expected_amount/12:l.expected_amount):n},0));
+ const renewedU=new Set(cur.filter(p=>!isNew(p)).map(p=>p.user_id));
+ const churned=people.filter(u=>u.source==='payment'&&!u.active&&u.expires_at&&Date.parse(u.expires_at)>=from&&Date.parse(u.expires_at)<=now&&!renewedU.has(u.user_id));
+ const disc=cur.filter(p=>p.coupon_code||p.referral_code).map(p=>({...p,off:Math.max(0,sqBase(p)-(p.expected_amount||0))}));
+ return{now,from,ver,cur,prev,rev:sum(cur),prevRev:sum(prev),newRev:sum(cur.filter(isNew)),newCust:cur.filter(isNew).length,
+  renewals:cur.filter(p=>!isNew(p)).length,payers:new Set(cur.map(p=>p.user_id)).size,paying,mrr,renewedU,churned,disc,isNew,sum};
+}
+function sqBuckets(c,P){
+ const now=new Date(c.now),B=[];
+ if(P==='30'){for(let i=29;i>=0;i--){const d=new Date(now.getFullYear(),now.getMonth(),now.getDate()-i);B.push({s:d.getTime(),e:d.getTime()+DAY,l:d.toLocaleDateString('en-IN',{day:'numeric',month:'short'}),k:i%5===0||i===0})}}
+ else if(P==='90'){for(let i=12;i>=0;i--){const e=new Date(now.getFullYear(),now.getMonth(),now.getDate()+1-i*7).getTime();B.push({s:e-7*DAY,e,l:'Week of '+new Date(e-7*DAY).toLocaleDateString('en-IN',{day:'numeric',month:'short'}),k:i%3===0})}}
+ else{let n=12;if(P==='all'&&c.ver.length){const f=new Date(c.ver[0].t);n=Math.min(36,Math.max(6,(now.getFullYear()-f.getFullYear())*12+now.getMonth()-f.getMonth()+1))}
+  for(let i=n-1;i>=0;i--){const s=new Date(now.getFullYear(),now.getMonth()-i,1);B.push({s:s.getTime(),e:new Date(s.getFullYear(),s.getMonth()+1,1).getTime(),l:s.toLocaleDateString('en-IN',{month:'short',year:'numeric'}),k:n<=12||i%3===0})}}
+ B.forEach(b=>{const ps=c.ver.filter(p=>p.t>=b.s&&p.t<b.e);b.v=c.sum(ps);b.n=ps.length});return B;
+}
+function sqChart(B){
+ const W=Math.max(300,Math.round((($('#view')||{}).clientWidth||680)-40)),H=230,L=46,R=8,T=12,Bt=28,mx=Math.max(1,...B.map(b=>b.v)),step=Math.pow(10,Math.floor(Math.log10(mx))),top=Math.ceil(mx/step)*step||1;
+ const bw=(W-L-R)/B.length,gap=Math.min(6,bw*.3),y=v=>T+(H-T-Bt)*(1-v/top);
+ const grid=[0,.5,1].map(f=>`<line x1="${L}" x2="${W-R}" y1="${y(top*f)}" y2="${y(top*f)}" class="sq-grid"/><text x="${L-6}" y="${y(top*f)+4}" text-anchor="end" class="sq-ax">${f?'₹'+Math.round(top*f).toLocaleString('en-IN'):'0'}</text>`).join('');
+ const bars=B.map((b,i)=>{const x=L+i*bw+gap/2,w=Math.max(2,bw-gap),h=Math.max(0,y(0)-y(b.v)),r=Math.min(4,w/2,h);
+  const path=h>0?`M${x},${y(0)} V${y(0)-h+r} Q${x},${y(0)-h} ${x+r},${y(0)-h} H${x+w-r} Q${x+w},${y(0)-h} ${x+w},${y(0)-h+r} V${y(0)} Z`:'';
+  return `<g class="sq-b" data-tip="${esc(b.l)}: ${inr(b.v)} from ${b.n} payment${b.n===1?'':'s'}" tabindex="0" role="img" aria-label="${esc(b.l)}: ${inr(b.v)}"><rect x="${L+i*bw}" y="${T}" width="${bw}" height="${H-T-Bt+4}" fill="transparent"/>${path?`<path d="${path}" class="sq-bar"/>`:''}${b.k?`<text x="${x+w/2}" y="${H-10}" text-anchor="middle" class="sq-ax">${esc(b.l.replace('Week of ',''))}</text>`:''}</g>`}).join('');
+ return `<div class="sq-chart"><svg viewBox="0 0 ${W} ${H}" role="group" aria-label="Revenue over time">${grid}<line x1="${L}" x2="${W-R}" y1="${y(0)}" y2="${y(0)}" class="sq-base"/>${bars}</svg><div class="sq-tip" role="status" hidden></div></div>`;
+}
+function sqRows(c){
+ const by={};c.ver.forEach(p=>{const r=by[p.user_id]||(by[p.user_id]={id:p.user_id,all:0,per:0,n:0,months:0,first:p.t,last:p.t,codes:new Set()});
+  r.all+=p.expected_amount||0;r.n++;r.months+=sqMonths(p);r.last=Math.max(r.last,p.t);r.first=Math.min(r.first,p.t);if(p.t>=c.from)r.per+=p.expected_amount||0;if(p.coupon_code)r.codes.add(p.coupon_code);if(p.referral_code)r.codes.add('Referral')});
+ return Object.values(by).map(r=>{const u=uById(r.id);return{...r,u,name:u.name||u.email||'Unknown',email:u.email||'',plan:u.plan_id?PLAN(u.plan_id):'–',state:u.locked?['bad','Blocked']:u.active?(u.source==='free'?['info','Free']:['ok','Active']):u.plan_id?['bad','Lapsed']:['mu','No plan']}}).sort((a,b)=>b.all-a.all);
+}
+function vSales(){head('Sales IQ','Where your money comes from: revenue over time, who pays, what sells and how codes perform. Based on confirmed payments.');
+ const P=S.sqP||'90',c=sqCalc(P),B=sqBuckets(c,P),rows=sqRows(c),q=(S.sqQ||'').toLowerCase();
+ const chg=P==='all'||!c.prevRev?null:Math.round((c.rev-c.prevRev)/c.prevRev*100);
+ const lab=(SQP.find(x=>x[0]===P)||SQP[1])[1].toLowerCase(),per=P==='all'?'all time':'the last '+lab,perC=P==='all'?'All time':'Last '+lab;
+ const kp=(t,v,s,cls)=>`<div class="kpi sq-k ${cls||''}"><small>${t}</small><b>${v}</b>${s?`<em>${s}</em>`:''}</div>`;
+ const rr=c.renewedU.size+c.churned.length?sqPct(c.renewedU.size,c.renewedU.size+c.churned.length)+'%':'–';
+ const plans=S.plans.map(pl=>{const ps=c.cur.filter(p=>p.plan_id===pl.id);return{pl,v:c.sum(ps),n:ps.length,act:c.paying.filter(u=>u.plan_id===pl.id).length}}),pmx=Math.max(1,...plans.map(x=>x.v));
+ const mo=c.cur.filter(p=>p.billing_interval!=='year'),yr=c.cur.filter(p=>p.billing_interval==='year'),cash=c.cur.filter(p=>/^CASH/.test(p.utr||'')),upi=c.cur.filter(p=>!/^CASH/.test(p.utr||''));
+ const codes={};c.disc.forEach(p=>{const k=p.coupon_code||'Referral codes';const r=codes[k]||(codes[k]={k,ref:!p.coupon_code,n:0,v:0,off:0});r.n++;r.v+=p.expected_amount||0;r.off+=p.off});
+ const CL=Object.values(codes).sort((a,b)=>b.v-a.v),offAll=c.disc.reduce((n,p)=>n+p.off,0);
+ const refPaid=S.refs.filter(r=>r.status==='rewarded'),refDueL=S.refs.filter(r=>r.status==='reward_due');
+ const shown=rows.filter(r=>!q||(r.name+' '+r.email).toLowerCase().includes(q));
+ const mix=(t,a,all)=>`<div class="sq-mix"><span>${t}</span><b>${a.length} · ${inr(c.sum(a))}</b><i style="--w:${sqPct(c.sum(a),c.sum(all))}%"></i></div>`;
+ $('#view').innerHTML=`<div class="bar sq-top"><div class="seg" role="group" aria-label="Time range">${SQP.map(x=>`<button class="${P===x[0]?'on':''}" data-sq="${x[0]}" aria-pressed="${P===x[0]}">${x[1]}</button>`).join('')}</div><button class="btn o sm" data-act="sq-csv">Download sales (CSV)</button></div>
+ <div class="kpis sq-kp">${kp('Revenue, '+(P==='all'?'all time':'last '+lab),inr(c.rev),chg==null?(P==='all'?c.cur.length+' payments':'Nothing in the period before'):`<span class="${chg>=0?'up':'dn'}">${chg>=0?'▲':'▼'} ${Math.abs(chg)}%</span> vs the ${lab} before`,'ok')}
+  ${kp('Monthly recurring revenue',inr(c.mrr),c.paying.length+' paying customer'+(c.paying.length===1?'':'s')+' right now')}
+  ${kp('New customers',c.newCust,inr(c.newRev)+' from first payments')}
+  ${kp('Renewals',c.renewals,inr(c.rev-c.newRev)+' from returning customers')}
+  ${kp('Renewal rate',rr,c.churned.length+' lapsed without paying in this period',c.churned.length?'warn':'')}
+  ${kp('Average per customer',c.payers?inr(Math.round(c.rev/c.payers)):'–',c.payers+' customer'+(c.payers===1?'':'s')+' paid')}</div>
+ <div class="card"><h2>Revenue over time</h2><p class="sub">Confirmed payments, by ${P==='30'?'day':P==='90'?'week':'month'}. Hover or tap a bar for the amount.</p>${c.ver.length?sqChart(B):'<div class="empty">No confirmed payments yet. They show here as soon as you confirm the first one.</div>'}</div>
+ <div class="g2"><div class="card"><h2>Which plans sell</h2><p class="sub">Revenue in ${per}, and who is on each plan now.</p>${plans.map(x=>`<div class="sq-pl"><div><b>${esc(x.pl.name)}</b><span>${inr(x.v)} · ${x.n} payment${x.n===1?'':'s'} · ${x.act} active</span></div><i style="--w:${Math.round(x.v/pmx*100)}%"></i></div>`).join('')}</div>
+  <div class="card"><h2>How people pay</h2><p class="sub">Billing and payment method. ${perC}.</p>${mix('Monthly',mo,c.cur)}${mix('Yearly',yr,c.cur)}${mix('UPI QR',upi,c.cur)}${mix('Cash or bank (given in the command center)',cash,c.cur)}</div></div>
+ <div class="g2"><div class="card"><h2>Discount codes and referrals</h2><p class="sub">Confirmed payments that used a code. ${perC}. You gave ${inr(offAll)} in discounts.</p>${CL.length?`<div class="tw"><table><thead><tr><th>Code</th><th class="num">Payments</th><th class="num">Revenue</th><th class="num">Discount given</th></tr></thead><tbody>${CL.map(r=>`<tr><td><b class="mono">${esc(r.k)}</b>${r.ref?'<small>15% for referred friends</small>':''}</td><td class="num">${r.n}</td><td class="num">${inr(r.v)}</td><td class="num">${inr(r.off)}</td></tr>`).join('')}</tbody></table></div>`:'<div class="empty">No codes used in this period.</div>'}
+   <div class="sq-mix" style="margin-top:12px"><span>Referral rewards paid</span><b>${refPaid.length} · ${inr(refPaid.reduce((n,r)=>n+(r.reward_inr||0),0))}</b></div><div class="sq-mix"><span>Referral rewards still to pay</span><b>${refDueL.length} · ${inr(refDueL.reduce((n,r)=>n+(r.reward_inr||0),0))}</b></div></div>
+  <div class="card"><h2>Latest money in</h2><p class="sub">The most recent confirmed payments.</p>${c.cur.length?`<div class="list">${c.cur.slice(-8).reverse().map(p=>{const u=uById(p.user_id);return `<div class="li"><span><b>${esc(u.name||u.email||p.customer_name||'Customer')}</b><small>${esc(PLAN(p.plan_id))} · ${p.billing_interval==='year'?'yearly':'monthly'} · ${c.isNew(p)?'new customer':'renewal'}${p.coupon_code?' · '+esc(p.coupon_code):''}${p.referral_code?' · referral':''} · ${dt(p.t)}</small></span><b>${inr(p.expected_amount)}</b></div>`}).join('')}</div>`:'<div class="empty">Nothing confirmed in this period.</div>'}</div></div>
+ <div class="card"><div class="bar" style="justify-content:space-between"><div><h2>Customers</h2><p class="sub" style="margin:0">Who pays how much, and for how long. Sorted by total paid.</p></div><input class="in" id="sqQ" type="search" placeholder="Search name or email" value="${esc(S.sqQ||'')}" aria-label="Search customers" style="max-width:260px"></div>
+  ${shown.length?`<div class="tw"><table class="rsp"><thead><tr><th>Customer</th><th>Plan now</th><th class="num">Paid, ${P==='all'?'all time':'last '+lab}</th><th class="num">Paid in total</th><th class="num">Payments</th><th class="num">Months bought</th><th>Customer since</th><th>Status</th></tr></thead><tbody>${shown.slice(0,100).map(r=>`<tr><td data-l="Customer"><button class="lnk" data-mng="${esc(r.id)}">${esc(r.name)}</button><small>${esc(r.email)}</small></td><td data-l="Plan now">${esc(r.plan)}</td><td class="num" data-l="Paid, ${P==='all'?'all time':'last '+lab}">${inr(r.per)}</td><td class="num" data-l="Paid in total"><b>${inr(r.all)}</b></td><td class="num" data-l="Payments">${r.n}</td><td class="num" data-l="Months bought">${r.months}</td><td data-l="Customer since">${dt(r.first)}</td><td data-l="Status"><span class="pill p-${r.state[0]}">${r.state[1]}</span></td></tr>`).join('')}</tbody></table></div>`:`<div class="empty">${q?'No customer matches that search.':'No paying customers yet.'}</div>`}</div>`;
+ const tip=$('.sq-tip'),box=$('.sq-chart');
+ if(tip&&box){const showT=g=>{tip.textContent=g.dataset.tip;tip.hidden=false;const r=g.getBoundingClientRect(),br=box.getBoundingClientRect();tip.style.left=Math.min(br.width-tip.offsetWidth-4,Math.max(4,r.left-br.left+r.width/2-tip.offsetWidth/2))+'px';tip.style.top='4px';$$('.sq-b.on',box).forEach(x=>x.classList.remove('on'));g.classList.add('on')};
+  $$('.sq-b',box).forEach(g=>{g.addEventListener('mouseenter',()=>showT(g));g.addEventListener('focus',()=>showT(g));g.addEventListener('click',()=>showT(g))});
+  box.addEventListener('mouseleave',()=>{tip.hidden=true;$$('.sq-b.on',box).forEach(x=>x.classList.remove('on'))})}
+ const qi=$('#sqQ');if(qi)qi.oninput=()=>{S.sqQ=qi.value;const pos=qi.selectionStart;vSales();const n=$('#sqQ');n.focus();try{n.setSelectionRange(pos,pos)}catch(e){}};
+}
+function csvSales(){const c=sqCalc('all');csv('financeos-sales-'+day(new Date())+'.csv',[['Confirmed','Request','Customer','Email','Plan','Billing','Amount (INR)','List price (INR)','Code','Referral','New or renewal','Method'],
+ ...c.ver.slice().reverse().map(p=>{const u=uById(p.user_id);return[dt(p.t),p.id,u.name||p.customer_name||'',u.email||'',PLAN(p.plan_id),p.billing_interval==='year'?'Yearly':'Monthly',p.expected_amount,sqBase(p),p.coupon_code||'',p.referral_code||'',c.isNew(p)?'New':'Renewal',/^CASH/.test(p.utr||'')?'Cash or bank':'UPI']})])}
+
 /* ── clicks ── */
 document.addEventListener('click',e=>{const t=e.target;
+ const sqb=t.closest('[data-sq]');if(sqb){S.sqP=sqb.dataset.sq;vSales();return}
  const g=t.closest('[data-go]');if(g){e.preventDefault();go(g.dataset.go,g.dataset.f||null);return}
  const r=t.closest('[data-rev]');if(r){const ov=t.closest('.ov');if(ov)ov.remove();review(r.dataset.rev);return}
  const m=t.closest('[data-mng]');if(m){manage(m.dataset.mng);return}
@@ -566,6 +699,7 @@ document.addEventListener('click',e=>{const t=e.target;
  const a=t.closest('[data-act]');if(a){const k=a.dataset.act;
   if(k==='selall'){const rows=userRows(),on=rows.length&&rows.every(u=>S.sel.has(u.user_id));rows.forEach(u=>on?S.sel.delete(u.user_id):S.sel.add(u.user_id));vUsers()}
   else if(k==='selnone'){S.sel.clear();vUsers()}
+  else if(k==='sq-csv')csvSales();
   else if(k==='grant-sel')grant([...S.sel]);
   else if(k==='block-sel'||k==='unblock-sel'){const on=k==='block-sel';if(!a.dataset.sure){a.dataset.sure=1;a.textContent='Tap again to '+(on?'block ':'unblock ')+S.sel.size;return}bulkBlock([...S.sel],on)}
   else if(k==='grant-pick')pickUser();
